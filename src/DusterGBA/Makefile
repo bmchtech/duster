@@ -1,13 +1,13 @@
 PATH := $(DEVKITARM)/bin:$(PATH)
 
-TITLE		:= Fountain2
+TITLE		:= Duster
 
 #  Project settings
 
 NAME		:= $(TITLE)
 SOURCE_DIR := src
 LIB_DIR    := lib
-DUSK_DIR   := ../../src/dusk
+DUSK_DIR   := ../../lib/dusk/src/dusk
 DATA_DIR   := asset/build
 SPECS      := -specs=gba.specs
 
