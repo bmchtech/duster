@@ -1,0 +1,3 @@
+[submodule "lib/dusk"]
+	path = lib/dusk
+	url = https://github.com/xdrie/dusk
