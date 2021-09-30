@@ -36,13 +36,6 @@ void board_start() {
     SpriteAtlas atlas = dusk_load_atlas("a_pawn");
     dusk_sprites_upload_atlas(&atlas);
 
-    dusk_sprites_make(0, 8, 8,
-                      (Sprite){
-                          .x = 4,
-                          .y = 4,
-                          .base_tid = 0,
-                      });
-
     // reset game state
     memset32(&game_state, 0, sizeof(GameState) / 4);
 
@@ -54,16 +47,28 @@ void board_start() {
     Team* team0 = &game_state.teams[0];
     sprintf(team0->name, "%s", "BEAN");
     team0->pawns[0] = (Pawn){.unit_class = 1};
-    board->tiles[BOARD_POS(1, 1)].pawn_index = 0; // point to pawn #0
+    board->tiles[BOARD_POS(0, 0)].pawn_index = 0; // point to pawn #0
+    board->tiles[BOARD_POS(3, 1)].pawn_index = 0; // point to pawn #0
 }
 
 void update_board_layout() {
+    // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
+    int pawn_sprite_ix = 1;
+
     // first, we want to draw the pawns
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
             BoardTile* tile = &board->tiles[BOARD_POS(bx, by)];
             if (tile->pawn_index >= 0) {
                 // this is a pawn
+
+                // assign a sprite to drawing this pawn
+                dusk_sprites_make(pawn_sprite_ix++, 8, 8,
+                                  (Sprite){
+                                      .x = bx << 3,
+                                      .y = by << 3,
+                                      .base_tid = 0,
+                                  });
             }
         }
     }
