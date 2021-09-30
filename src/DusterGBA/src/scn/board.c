@@ -11,6 +11,7 @@ void board_start() {
     // init
     dusk_init_graphics_mode0();
     dusk_sprites_init();
+    dusk_sprites_configure(FALSE);
 
     // main bg
     REG_DISPCNT |= DCNT_BG0;

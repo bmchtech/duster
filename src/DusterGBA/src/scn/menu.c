@@ -7,6 +7,9 @@
 void menu_start() {
     dusk_init_graphics_mode0();
 
+    dusk_sprites_init();
+    dusk_sprites_configure(FALSE);
+
     // init tte
     REG_DISPCNT |= DCNT_BG0;
     tte_init_chr4c(0, BG_CBB(1) | BG_SBB(31), 0, 0x0201, CLR_GRAY, NULL, NULL);
