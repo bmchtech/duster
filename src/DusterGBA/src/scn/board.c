@@ -35,7 +35,7 @@ void board_start() {
     game_state.board_size = 4;
     GameBoard* board = &game_state.board;
     // set whole board to -1 (no pawn)
-    memset32(&board, -1, sizeof(GameBoard) / 4);
+    memset32(board, -1, sizeof(GameBoard) / 4);
     Team* team0 = &game_state.teams[0];
     sprintf(team0->name, "%s", "BEAN");
     team0->pawns[0] = (Pawn){.unit_class = 1};
