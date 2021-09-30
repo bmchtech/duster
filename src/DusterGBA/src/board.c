@@ -23,6 +23,10 @@ void board_start()
     schr4c_prep_map(&srf, se_mem[31], 0);
 
     schr4r_line(&srf, 20, 20, 30, 30, 1);
+
+    // // clear CBB 0
+    // memset32(tile_mem[0], 0x00000000, 4096);
+    // schr4c_prep_map(&srf, se_mem[31], 0);
 }
 
 void board_update()
