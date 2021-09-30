@@ -42,15 +42,15 @@ void board_start() {
     memset32(&game_state, 0, sizeof(GameState) / 4);
 
     // set up new game
-    game_state.board_size = 4;
-    board = &game_state.board;
-    // set whole board to -1 (no pawn)
-    memset32(board, -1, sizeof(GameBoard) / 4);
-    Team* team0 = &game_state.teams[0];
-    sprintf(team0->name, "%s", "BEAN");
-    team0->pawns[0] = (Pawn){.unit_class = 1};
-    board->tiles[BOARD_POS(0, 0)].pawn_index = 0; // point to pawn #0
-    board->tiles[BOARD_POS(3, 1)].pawn_index = 0; // point to pawn #0
+    game_init_board(4);
+    game_init_team(0, "PLYR");
+
+    Team* team = &game_state.teams[0];
+    team_set_pawn(team, 0, 1); // first unit is soldier
+    team_set_pawn(team, 1, 2); // second unit is horse
+
+    board_set_pawn(BOARD_POS(0, 0), game_calc_gid(0, 0)); // pawn #0
+    // board_set_pawn(BOARD_POS(3, 0), game_calc_gid(0, 1)); // pawn #1
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
@@ -89,11 +89,11 @@ void update_board_layout() {
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
             BoardTile* tile = &board->tiles[BOARD_POS(bx, by)];
-            if (tile->pawn_index >= 0) {
+            if (tile->pawn_gid >= 0) {
                 // this is a pawn
 
                 // look up the pawn
-                Pawn* pawn = game_get_pawn(tile->pawn_index);
+                Pawn* pawn = game_get_pawn_by_gid(tile->pawn_gid);
 
                 // assign a sprite to drawing this pawn
                 dusk_sprites_make(pawn_sprite_ix++, 8, 8,
