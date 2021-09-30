@@ -8,19 +8,7 @@
 GameBoard* board;
 TSurface board_bg0_srf;
 VPos board_offset;
-
-void draw_board_outline() {
-    // draw the board outline
-    int olx1 = (board_offset.x);
-    int olx2 = (board_offset.x) + (game_state.board_size * 8);
-    int oly1 = (board_offset.y);
-    int oly2 = (board_offset.y) + (game_state.board_size * 8);
-
-    schr4c_hline(&board_bg0_srf, olx1 - 1, oly1 - 1, olx2 + 1, 1);
-    schr4c_vline(&board_bg0_srf, olx1 - 1, oly1 - 1, oly2 + 1, 1);
-    schr4c_hline(&board_bg0_srf, olx1 - 1, oly2 + 1, olx2 + 1, 1);
-    schr4c_vline(&board_bg0_srf, olx2 + 1, oly1 - 1, oly2 + 1, 1);
-}
+bool bg_ui_dirty = true;
 
 void board_start() {
     // init
@@ -66,12 +54,34 @@ void board_start() {
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
+}
 
-    // initial drawing
-    draw_board_outline();
+void draw_board_outline() {
+    // draw the board outline
+    int olx1 = (board_offset.x);
+    int olx2 = (board_offset.x) + (game_state.board_size * 8);
+    int oly1 = (board_offset.y);
+    int oly2 = (board_offset.y) + (game_state.board_size * 8);
+
+    schr4c_hline(&board_bg0_srf, olx1 - 1, oly1 - 1, olx2 + 1, 1);
+    schr4c_vline(&board_bg0_srf, olx1 - 1, oly1 - 1, oly2 + 1, 1);
+    schr4c_hline(&board_bg0_srf, olx1 - 1, oly2 + 1, olx2 + 1, 1);
+    schr4c_vline(&board_bg0_srf, olx2 + 1, oly1 - 1, oly2 + 1, 1);
 }
 
 void update_board_layout() {
+    if (bg_ui_dirty) {
+        // clear bg
+        memset32(tile_mem[0], 0x00000000, 4096);
+        schr4c_prep_map(&board_bg0_srf, se_mem[31], 0);
+
+        // draw bg
+        draw_board_outline();
+
+        // no longer dirty
+        bg_ui_dirty = false;
+    }
+
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
     int pawn_sprite_ix = 1;
 
