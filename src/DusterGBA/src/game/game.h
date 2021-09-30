@@ -33,3 +33,6 @@ typedef struct {
 extern GameState game_state;
 
 #define BOARD_POS(x, y) (y * MAX_BOARD_SIZE + x)
+
+/** get the pawn with by global id */
+Pawn* game_get_pawn(int pawn_id);

@@ -92,12 +92,15 @@ void update_board_layout() {
             if (tile->pawn_index >= 0) {
                 // this is a pawn
 
+                // look up the pawn
+                Pawn* pawn = game_get_pawn(tile->pawn_index);
+
                 // assign a sprite to drawing this pawn
                 dusk_sprites_make(pawn_sprite_ix++, 8, 8,
                                   (Sprite){
                                       .x = board_offset.x + (bx << 3),
                                       .y = board_offset.y + (by << 3),
-                                      .base_tid = 0,
+                                      .base_tid = pawn->unit_class,
                                   });
             }
         }
