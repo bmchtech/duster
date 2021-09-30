@@ -2,6 +2,7 @@
 #include "dusk.h"
 #include "tonc.h"
 #include "res.h"
+#include "contrib/mgba.h"
 
 Sprite *board;
 Anim th_anim1;
@@ -27,6 +28,11 @@ void board_start()
     // // clear CBB 0
     // memset32(tile_mem[0], 0x00000000, 4096);
     // schr4c_prep_map(&srf, se_mem[31], 0);
+
+    // nocash_puts("bean");
+
+    mgba_open();
+    mgba_printf(MGBA_LOG_INFO, "bean");
 }
 
 void board_update()
