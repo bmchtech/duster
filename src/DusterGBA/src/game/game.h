@@ -34,6 +34,7 @@ extern GameState game_state;
 
 #define BOARD_POS(x, y) (y * MAX_BOARD_SIZE + x)
 
+void game_clear_state();
 void game_init_board(u8 board_size);
 void game_init_team(u8 id, const char* name);
 /** get the pawn with by global id */

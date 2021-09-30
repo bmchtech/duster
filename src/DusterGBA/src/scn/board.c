@@ -5,8 +5,7 @@
 #include "contrib/mgba.h"
 #include "game/game.h"
 
-GameBoard* board;
-TSurface board_bg0_srf;
+TSurface bg0_srf;
 VPos board_offset;
 bool bg_ui_dirty = true;
 
@@ -25,12 +24,8 @@ void board_start() {
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
     // set up bg0 as a drawing surface
-    srf_init(&board_bg0_srf, SRF_CHR4C, tile_mem[0], 240, 160, 4, pal_bg_mem);
-    schr4c_prep_map(&board_bg0_srf, se_mem[31], 0);
-
-    // // clear CBB 0
-    // memset32(tile_mem[0], 0x00000000, 4096);
-    // schr4c_prep_map(&board_bg0_srf, se_mem[31], 0);
+    srf_init(&bg0_srf, SRF_CHR4C, tile_mem[0], 240, 160, 4, pal_bg_mem);
+    schr4c_prep_map(&bg0_srf, se_mem[31], 0);
 
     mgba_printf(MGBA_LOG_INFO, "bean");
 
@@ -38,8 +33,7 @@ void board_start() {
     SpriteAtlas atlas = dusk_load_atlas("a_pawn");
     dusk_sprites_upload_atlas(&atlas);
 
-    // reset game state
-    memset32(&game_state, 0, sizeof(GameState) / 4);
+    game_clear_state(); // reset game state
 
     // set up new game
     game_init_board(4);
@@ -50,7 +44,7 @@ void board_start() {
     team_set_pawn(team, 1, 2); // second unit is horse
 
     board_set_pawn(BOARD_POS(0, 0), game_calc_gid(0, 0)); // pawn #0
-    // board_set_pawn(BOARD_POS(3, 0), game_calc_gid(0, 1)); // pawn #1
+    board_set_pawn(BOARD_POS(3, 0), game_calc_gid(0, 1)); // pawn #1
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
@@ -63,17 +57,17 @@ void draw_board_outline() {
     int oly1 = (board_offset.y);
     int oly2 = (board_offset.y) + (game_state.board_size * 8);
 
-    schr4c_hline(&board_bg0_srf, olx1 - 1, oly1 - 1, olx2 + 1, 1);
-    schr4c_vline(&board_bg0_srf, olx1 - 1, oly1 - 1, oly2 + 1, 1);
-    schr4c_hline(&board_bg0_srf, olx1 - 1, oly2 + 1, olx2 + 1, 1);
-    schr4c_vline(&board_bg0_srf, olx2 + 1, oly1 - 1, oly2 + 1, 1);
+    schr4c_hline(&bg0_srf, olx1 - 1, oly1 - 1, olx2 + 1, 1);
+    schr4c_vline(&bg0_srf, olx1 - 1, oly1 - 1, oly2 + 1, 1);
+    schr4c_hline(&bg0_srf, olx1 - 1, oly2 + 1, olx2 + 1, 1);
+    schr4c_vline(&bg0_srf, olx2 + 1, oly1 - 1, oly2 + 1, 1);
 }
 
 void update_board_layout() {
     if (bg_ui_dirty) {
         // clear bg
         memset32(tile_mem[0], 0x00000000, 4096);
-        schr4c_prep_map(&board_bg0_srf, se_mem[31], 0);
+        schr4c_prep_map(&bg0_srf, se_mem[31], 0);
 
         // draw bg
         draw_board_outline();
@@ -88,7 +82,7 @@ void update_board_layout() {
     // draw the pawns
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
-            BoardTile* tile = &board->tiles[BOARD_POS(bx, by)];
+            BoardTile* tile = &game_state.board.tiles[BOARD_POS(bx, by)];
             if (tile->pawn_gid >= 0) {
                 // this is a pawn
 

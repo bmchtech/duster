@@ -4,11 +4,15 @@
 
 EWRAM_DATA GameState game_state;
 
-void game_init_board(u8 board_size) {
-    GameBoard* board = &game_state.board;
-    // set whole board to -1 (no pawn)
-    memset32(board, -1, sizeof(GameBoard) / 4);
+void game_clear_state() {
+    memset32(&game_state, 0, sizeof(GameState) / 4);
+}
+
+void game_init_board(u8 board_size) {    
     game_state.board_size = board_size;
+
+    // set whole board to -1 (no pawn)
+    memset32(&game_state.board, -1, sizeof(GameBoard) / 4);
 }
 
 void game_init_team(u8 id, const char* name) {
