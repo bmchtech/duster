@@ -34,10 +34,6 @@ Pawn* game_get_pawn_by_gid(s16 pawn_id) {
     return pawn;
 }
 
-s16 game_calc_gid(int team, int pawn) {
-    return team * TEAM_MAX_PAWNS + pawn;
-}
-
 void board_set_pawn(int tile, s16 pawn_gid) {
     GameBoard* board = &game_state.board;
 

@@ -45,8 +45,8 @@ void board_start() {
     team_set_pawn(team, 0, 0); // first unit is soldier
     team_set_pawn(team, 1, 1); // second unit is horse
 
-    board_set_pawn(BOARD_POS(0, 0), game_calc_gid(0, 0)); // pawn #0
-    board_set_pawn(BOARD_POS(3, 2), game_calc_gid(0, 1)); // pawn #1
+    board_set_pawn(BOARD_POS(0, 0), PAWN_GID(0, 0)); // pawn #0
+    board_set_pawn(BOARD_POS(3, 2), PAWN_GID(0, 1)); // pawn #1
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
