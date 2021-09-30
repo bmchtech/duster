@@ -4,9 +4,6 @@
 #include "res.h"
 #include "contrib/mgba.h"
 
-Sprite *board;
-Anim th_anim1;
-
 void board_start()
 {
     dusk_init_graphics_mode0();
