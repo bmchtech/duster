@@ -2,9 +2,7 @@
 #include "dusk.h"
 #include "tonc.h"
 #include "res.h"
-
-Sprite *menu;
-Anim th_anim1;
+#include "scenes.h"
 
 void menu_start()
 {
@@ -29,6 +27,10 @@ void menu_start()
 void menu_update()
 {
     dusk_frame();
+
+    if (key_hit(KEY_A) || key_hit(KEY_START)) {
+        dusk_scene_set(board_scene);
+    }
 
     // update sprites
     dusk_sprites_update();
