@@ -6,6 +6,8 @@
 #include "game/game.h"
 
 TSurface bg0_srf;
+int bg0_srf_cbb = 0;
+int bg0_srf_sbb = 31;
 VPos board_offset;
 bool bg_ui_dirty = true;
 
@@ -17,15 +19,15 @@ void board_start() {
 
     // main bg
     REG_DISPCNT |= DCNT_BG0;
-    REG_BG0CNT = BG_CBB(0) | BG_SBB(31);
+    REG_BG0CNT = BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb);
 
     pal_bg_mem[0] = RES_PAL[2]; // bg color
     pal_bg_mem[1] = RES_PAL[0]; // draw col 1
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
     // set up bg0 as a drawing surface
-    srf_init(&bg0_srf, SRF_CHR4C, tile_mem[0], 240, 160, 4, pal_bg_mem);
-    schr4c_prep_map(&bg0_srf, se_mem[31], 0);
+    srf_init(&bg0_srf, SRF_CHR4C, tile_mem[bg0_srf_cbb], 240, 160, 4, pal_bg_mem);
+    schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
 
     mgba_printf(MGBA_LOG_INFO, "bean");
 
@@ -66,8 +68,8 @@ void draw_board_outline() {
 void update_board_layout() {
     if (bg_ui_dirty) {
         // clear bg
-        memset32(tile_mem[0], 0x00000000, 4096);
-        schr4c_prep_map(&bg0_srf, se_mem[31], 0);
+        memset32(tile_mem[bg0_srf_cbb], 0, 4096); // clear cbb
+        schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
 
         // draw bg
         draw_board_outline();
