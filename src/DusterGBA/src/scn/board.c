@@ -6,6 +6,21 @@
 #include "game/game.h"
 
 GameBoard* board;
+TSurface board_bg0_srf;
+VPos board_offset;
+
+void draw_board_outline() {
+    // draw the board outline
+    int olx1 = (board_offset.x);
+    int olx2 = (board_offset.x) + (game_state.board_size * 8);
+    int oly1 = (board_offset.y);
+    int oly2 = (board_offset.y) + (game_state.board_size * 8);
+
+    schr4c_hline(&board_bg0_srf, olx1 - 1, oly1 - 1, olx2 + 1, 1);
+    schr4c_vline(&board_bg0_srf, olx1 - 1, oly1 - 1, oly2 + 1, 1);
+    schr4c_hline(&board_bg0_srf, olx1 - 1, oly2 + 1, olx2 + 1, 1);
+    schr4c_vline(&board_bg0_srf, olx2 + 1, oly1 - 1, oly2 + 1, 1);
+}
 
 void board_start() {
     // init
@@ -17,19 +32,17 @@ void board_start() {
     REG_DISPCNT |= DCNT_BG0;
     REG_BG0CNT = BG_CBB(0) | BG_SBB(31);
 
-    pal_bg_mem[0] = RES_PAL[2];
-    pal_bg_mem[1] = RES_PAL[0];
+    pal_bg_mem[0] = RES_PAL[2]; // bg color
+    pal_bg_mem[1] = RES_PAL[0]; // draw col 1
+    pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
-    // try drawing
-    TSurface srf;
-    srf_init(&srf, SRF_CHR4C, tile_mem[0], 240, 160, 4, pal_bg_mem);
-    schr4c_prep_map(&srf, se_mem[31], 0);
-
-    // schr4r_line(&srf, 20, 20, 30, 30, 1);
+    // set up bg0 as a drawing surface
+    srf_init(&board_bg0_srf, SRF_CHR4C, tile_mem[0], 240, 160, 4, pal_bg_mem);
+    schr4c_prep_map(&board_bg0_srf, se_mem[31], 0);
 
     // // clear CBB 0
     // memset32(tile_mem[0], 0x00000000, 4096);
-    // schr4c_prep_map(&srf, se_mem[31], 0);
+    // schr4c_prep_map(&board_bg0_srf, se_mem[31], 0);
 
     mgba_printf(MGBA_LOG_INFO, "bean");
 
@@ -50,13 +63,19 @@ void board_start() {
     team0->pawns[0] = (Pawn){.unit_class = 1};
     board->tiles[BOARD_POS(0, 0)].pawn_index = 0; // point to pawn #0
     board->tiles[BOARD_POS(3, 1)].pawn_index = 0; // point to pawn #0
+
+    // set vars for drawing
+    board_offset = (VPos){.x = 8, .y = 8};
+
+    // initial drawing
+    draw_board_outline();
 }
 
 void update_board_layout() {
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
     int pawn_sprite_ix = 1;
 
-    // first, we want to draw the pawns
+    // draw the pawns
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
             BoardTile* tile = &board->tiles[BOARD_POS(bx, by)];
@@ -66,8 +85,8 @@ void update_board_layout() {
                 // assign a sprite to drawing this pawn
                 dusk_sprites_make(pawn_sprite_ix++, 8, 8,
                                   (Sprite){
-                                      .x = bx << 3,
-                                      .y = by << 3,
+                                      .x = board_offset.x + (bx << 3),
+                                      .y = board_offset.y + (by << 3),
                                       .base_tid = 0,
                                   });
             }
