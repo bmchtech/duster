@@ -17,8 +17,8 @@ void board_start() {
     REG_DISPCNT |= DCNT_BG0;
     REG_BG0CNT = BG_CBB(0) | BG_SBB(31);
 
-    pal_bg_mem[0] = RES_PAL[0];
-    pal_bg_mem[1] = RES_PAL[2];
+    pal_bg_mem[0] = RES_PAL[2];
+    pal_bg_mem[1] = RES_PAL[0];
 
     // try drawing
     TSurface srf;
