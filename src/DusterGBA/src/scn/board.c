@@ -5,8 +5,12 @@
 #include "contrib/mgba.h"
 #include "game/game.h"
 
+GameBoard* board;
+
 void board_start() {
+    // init
     dusk_init_graphics_mode0();
+    dusk_sprites_init();
 
     // main bg
     REG_DISPCNT |= DCNT_BG0;
@@ -20,7 +24,7 @@ void board_start() {
     srf_init(&srf, SRF_CHR4C, tile_mem[0], 240, 160, 4, pal_bg_mem);
     schr4c_prep_map(&srf, se_mem[31], 0);
 
-    schr4r_line(&srf, 20, 20, 30, 30, 1);
+    // schr4r_line(&srf, 20, 20, 30, 30, 1);
 
     // // clear CBB 0
     // memset32(tile_mem[0], 0x00000000, 4096);
@@ -28,12 +32,23 @@ void board_start() {
 
     mgba_printf(MGBA_LOG_INFO, "bean");
 
+    // pawn spritesheet
+    SpriteAtlas atlas = dusk_load_atlas("a_pawn");
+    dusk_sprites_upload_atlas(&atlas);
+
+    dusk_sprites_make(0, 8, 8,
+                      (Sprite){
+                          .x = 4,
+                          .y = 4,
+                          .base_tid = 0,
+                      });
+
     // reset game state
     memset32(&game_state, 0, sizeof(GameState) / 4);
 
     // set up new game
     game_state.board_size = 4;
-    GameBoard* board = &game_state.board;
+    board = &game_state.board;
     // set whole board to -1 (no pawn)
     memset32(board, -1, sizeof(GameBoard) / 4);
     Team* team0 = &game_state.teams[0];
@@ -44,7 +59,13 @@ void board_start() {
 
 void update_board_layout() {
     // first, we want to draw the pawns
-    for (int i = 0; i < game_state.board_size; i++) {
+    for (int by = 0; by < game_state.board_size; by++) {
+        for (int bx = 0; bx < game_state.board_size; bx++) {
+            BoardTile* tile = &board->tiles[BOARD_POS(bx, by)];
+            if (tile->pawn_index >= 0) {
+                // this is a pawn
+            }
+        }
     }
 
     // // for each team
