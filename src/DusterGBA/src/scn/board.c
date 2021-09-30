@@ -4,8 +4,7 @@
 #include "res.h"
 #include "contrib/mgba.h"
 
-void board_start()
-{
+void board_start() {
     dusk_init_graphics_mode0();
 
     // main bg
@@ -32,8 +31,7 @@ void board_start()
     mgba_printf(MGBA_LOG_INFO, "bean");
 }
 
-void board_update()
-{
+void board_update() {
     dusk_frame();
 
     // update sprites

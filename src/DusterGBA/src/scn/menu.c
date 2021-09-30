@@ -4,8 +4,7 @@
 #include "res.h"
 #include "scenes.h"
 
-void menu_start()
-{
+void menu_start() {
     dusk_init_graphics_mode0();
 
     // init tte
@@ -24,8 +23,7 @@ void menu_start()
     tte_printf("#{P:200,140}#{ci:16}play >");
 }
 
-void menu_update()
-{
+void menu_update() {
     dusk_frame();
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
