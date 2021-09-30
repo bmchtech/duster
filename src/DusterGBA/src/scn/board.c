@@ -3,6 +3,7 @@
 #include "tonc.h"
 #include "res.h"
 #include "contrib/mgba.h"
+#include "game/game.h"
 
 void board_start() {
     dusk_init_graphics_mode0();
@@ -25,14 +26,42 @@ void board_start() {
     // memset32(tile_mem[0], 0x00000000, 4096);
     // schr4c_prep_map(&srf, se_mem[31], 0);
 
-    // nocash_puts("bean");
-
-    mgba_open();
     mgba_printf(MGBA_LOG_INFO, "bean");
+
+    // reset game state
+    memset32(&game_state, 0, sizeof(GameState) / 4);
+
+    // set up new game
+    game_state.board_size = 4;
+    GameBoard* board = &game_state.board;
+    // set whole board to -1 (no pawn)
+    memset32(&board, -1, sizeof(GameBoard) / 4);
+    Team* team0 = &game_state.teams[0];
+    sprintf(team0->name, "%s", "BEAN");
+    team0->pawns[0] = (Pawn){.unit_class = 1};
+    board->tiles[BOARD_POS(1, 1)].pawn_index = 0; // point to pawn #0
+}
+
+void update_board_layout() {
+    // first, we want to draw the pawns
+    for (int i = 0; i < game_state.board_size; i++) {
+    }
+
+    // // for each team
+    // for (int i = 0; i < NUM_TEAMS; i++) {
+    //     Team* team = &game_state.teams[i];
+    //     // draw pawns
+    //     for (int j = 0; j < TEAM_MAX_PAWNS; j++) {
+    //         Pawn* pawn = &team->pawns[j];
+    //     }
+    // }
 }
 
 void board_update() {
     dusk_frame();
+
+    // do layout
+    update_board_layout();
 
     // update sprites
     dusk_sprites_update();
