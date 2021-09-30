@@ -42,8 +42,8 @@ void board_start() {
     game_init_team(0, "PLYR");
 
     Team* team = &game_state.teams[0];
-    team_set_pawn(team, 0, 1); // first unit is soldier
-    team_set_pawn(team, 1, 2); // second unit is horse
+    team_set_pawn(team, 0, 0); // first unit is soldier
+    team_set_pawn(team, 1, 1); // second unit is horse
 
     board_set_pawn(BOARD_POS(0, 0), game_calc_gid(0, 0)); // pawn #0
     board_set_pawn(BOARD_POS(3, 2), game_calc_gid(0, 1)); // pawn #1
