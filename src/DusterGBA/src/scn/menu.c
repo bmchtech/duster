@@ -1,6 +1,6 @@
 #include <string.h>
 #include "dusk.h"
-#include "tonc.h"
+#include <tonc.h>
 #include "res.h"
 #include "scenes.h"
 
