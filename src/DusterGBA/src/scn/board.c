@@ -10,6 +10,7 @@ int bg0_srf_cbb = 0;
 int bg0_srf_sbb = 31;
 VPos board_offset;
 bool bg_ui_dirty = true;
+int game_turn = 0;
 
 void board_start() {
     // init
@@ -19,7 +20,7 @@ void board_start() {
 
     // main bg
     REG_DISPCNT |= DCNT_BG0;
-    REG_BG0CNT = BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb);
+    REG_BG0CNT = BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb) | BG_PRIO(0);
 
     pal_bg_mem[0] = RES_PAL[2]; // bg color
     pal_bg_mem[1] = RES_PAL[0]; // draw col 1
@@ -38,7 +39,7 @@ void board_start() {
     game_clear_state(); // reset game state
 
     // set up new game
-    game_init_board(4);
+    game_init_board(16);
     game_init_team(0, "PLYR");
 
     Team* team = &game_state.teams[0];
@@ -50,6 +51,13 @@ void board_start() {
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
+
+    // tte text bg on bg1
+    REG_DISPCNT |= DCNT_BG1;
+    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(29), 0, 0x0201, pal_bg_mem[1], NULL, NULL);
+    REG_BG1CNT |= BG_PRIO(2);
+    tte_init_con();
+    tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
 }
 
 void draw_board_outline() {
@@ -68,7 +76,7 @@ void draw_board_outline() {
 void update_board_layout() {
     if (bg_ui_dirty) {
         // clear bg
-        memset32(tile_mem[bg0_srf_cbb], 0, 4096); // clear cbb
+        memset32(tile_mem[bg0_srf_cbb], 0, 4096);          // clear cbb
         schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
 
         // draw bg
