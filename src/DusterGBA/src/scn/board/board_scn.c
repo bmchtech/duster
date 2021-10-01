@@ -5,8 +5,10 @@
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
 int bg0_srf_sbb = 31;
+int bg1_tte_cbb = 2;
 VPos board_offset;
-BOOL bg_ui_dirty = TRUE;
+BOOL board_ui_dirty = TRUE;
+BOOL sidebar_dirty = TRUE;
 int game_turn = 0;
 VPos16 cursor_pos;
 BOOL cursor_down = TRUE;
@@ -39,7 +41,7 @@ void boardscn_start() {
 
     mgba_printf(MGBA_LOG_INFO, "bean");
 
-    CC_Array *ar;
+    CC_Array* ar;
     cc_array_new(&ar);
     int arr_in = 17;
     cc_array_add(ar, &arr_in);
@@ -84,12 +86,13 @@ void boardscn_input() {
 
     u32 arrows_touched = key_transit(KEY_LEFT | KEY_RIGHT | KEY_UP | KEY_DOWN);
 
-    if ((arrows_touched || cursor_last_moved_frame < (frame_count - 6)) && (x_move != 0 || y_move != 0)) {
+    if (cursor_down && (arrows_touched || cursor_last_moved_frame < (frame_count - 6)) &&
+        (x_move != 0 || y_move != 0)) {
         // move cursor
         cursor_pos.x += x_move;
         cursor_pos.y += y_move;
 
-        // clamp
+        // ensure cursor position is clamped
         if (cursor_pos.x < 0)
             cursor_pos.x = game_state.board_size - 1;
         if (cursor_pos.x >= game_state.board_size)
@@ -101,15 +104,15 @@ void boardscn_input() {
 
         cursor_last_moved_frame = frame_count;
 
-        if (cursor_down) {
-            // need to redraw bg
-            bg_ui_dirty = TRUE;
-        }
+        // need to redraw bg
+        board_ui_dirty = TRUE;
+        sidebar_dirty = TRUE;
     }
 
     if (key_hit(KEY_SELECT)) {
         cursor_down = !cursor_down; // toggle cursor
-        bg_ui_dirty = TRUE;
+        board_ui_dirty = TRUE;
+        sidebar_dirty = TRUE;
     }
 }
 
@@ -118,6 +121,8 @@ void boardscn_update() {
 
     boardscn_input();
     draw_board();
+
+    draw_sidebar();
 
     // update sprites
     dusk_sprites_update();

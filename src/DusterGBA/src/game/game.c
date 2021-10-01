@@ -40,10 +40,22 @@ Pawn* game_get_pawn_by_gid(s16 pawn_id) {
     return pawn;
 }
 
-void board_set_pawn(int tile, s16 pawn_gid) {
+Pawn* board_get_pawn(int tile_id) {
     GameBoard* board = &game_state.board;
 
-    board->tiles[tile].pawn_gid = pawn_gid;
+    BoardTile* tile = &board->tiles[tile_id];
+    s16 pawn_gid = tile->pawn_gid;
+
+    // this means there is no pawn
+    if (pawn_gid == -1) return NULL;
+
+    return game_get_pawn_by_gid(pawn_gid);
+}
+
+void board_set_pawn(int tile_id, s16 pawn_gid) {
+    GameBoard* board = &game_state.board;
+
+    board->tiles[tile_id].pawn_gid = pawn_gid;
 }
 
 void team_set_pawn(Team* team, int id, int class) {

@@ -54,6 +54,7 @@ void game_init_team(u8 id, const char* name);
 /** get the pawn with by global id */
 Pawn* game_get_pawn_by_gid(s16 pawn_gid);
 
-void board_set_pawn(int tile, s16 pawn_gid);
+Pawn* board_get_pawn(int tile_id);
+void board_set_pawn(int tile_id, s16 pawn_gid);
 
 void team_set_pawn(Team* team, int id, int class);

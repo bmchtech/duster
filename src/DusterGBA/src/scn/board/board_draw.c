@@ -26,7 +26,7 @@ void draw_board_cursor() {
 }
 
 void draw_board() {
-    if (bg_ui_dirty) {
+    if (board_ui_dirty) {
         // clear whole bg ui surface
         memset32(tile_mem[bg0_srf_cbb], 0, 4096);          // clear cbb
         schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
@@ -39,7 +39,7 @@ void draw_board() {
             draw_board_cursor();
 
         // no longer dirty
-        bg_ui_dirty = false;
+        board_ui_dirty = false;
     }
 
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
@@ -74,4 +74,19 @@ void draw_board() {
     //         Pawn* pawn = &team->pawns[j];
     //     }
     // }
+}
+
+void draw_sidebar() {
+    if (!sidebar_dirty) return;
+
+    memset32(tile_mem[bg1_tte_cbb], 0, 4096); // clear cbb
+
+    Pawn* cursor_pawn = get_cursor_pawn();
+
+    int cursor_pawn_class = -1;
+    if (cursor_pawn) {
+        cursor_pawn_class = cursor_pawn->unit_class;
+    }
+
+    tte_printf("#{P:180,8}#{ci:1}pawn: %d", cursor_pawn_class);
 }
