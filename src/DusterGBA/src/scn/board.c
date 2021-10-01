@@ -14,7 +14,7 @@ int game_turn = 0;
 VPos16 cursor_pos;
 bool cursor_down = true;
 
-void board_start() {
+void boardscn_start() {
     // init
     dusk_init_graphics_mode0();
     dusk_sprites_init();
@@ -141,7 +141,7 @@ void draw_board() {
     // }
 }
 
-void board_update() {
+void boardscn_update() {
     dusk_frame();
 
     // do layout
@@ -153,10 +153,10 @@ void board_update() {
     dusk_sprites_update();
 }
 
-void board_end() {}
+void boardscn_end() {}
 
 Scene board_scene = {
-    .start = board_start,
-    .update = board_update,
-    .end = board_end,
+    .start = boardscn_start,
+    .update = boardscn_update,
+    .end = boardscn_end,
 };
