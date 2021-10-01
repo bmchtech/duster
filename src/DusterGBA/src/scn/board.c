@@ -11,6 +11,8 @@ int bg0_srf_sbb = 31;
 VPos board_offset;
 bool bg_ui_dirty = true;
 int game_turn = 0;
+VPos16 cursor_pos;
+bool cursor_down = true;
 
 void board_start() {
     // init
@@ -22,13 +24,20 @@ void board_start() {
     REG_DISPCNT |= DCNT_BG0;
     REG_BG0CNT = BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb) | BG_PRIO(0);
 
-    pal_bg_mem[0] = RES_PAL[2]; // bg color
-    pal_bg_mem[1] = RES_PAL[0]; // draw col 1
-    pal_bg_mem[2] = RES_PAL[3]; // draw col 2
-
     // set up bg0 as a drawing surface
     srf_init(&bg0_srf, SRF_CHR4C, tile_mem[bg0_srf_cbb], 240, 160, 4, pal_bg_mem);
     schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
+
+    // set up bg1 with tte
+    REG_DISPCNT |= DCNT_BG1;
+    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(29), 0, 0x0201, CLR_GRAY, NULL, NULL);
+    REG_BG1CNT |= BG_PRIO(2);
+    tte_init_con();
+
+    // set bg palette
+    pal_bg_mem[0] = RES_PAL[2]; // bg color
+    pal_bg_mem[1] = RES_PAL[0]; // draw col 1
+    pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
     mgba_printf(MGBA_LOG_INFO, "bean");
 
@@ -51,36 +60,48 @@ void board_start() {
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
+    cursor_pos = (VPos16){.x = 0, .y = 0};
 
-    // tte text bg on bg1
-    REG_DISPCNT |= DCNT_BG1;
-    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(29), 0, 0x0201, pal_bg_mem[1], NULL, NULL);
-    REG_BG1CNT |= BG_PRIO(2);
-    tte_init_con();
     tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
 }
 
 void draw_board_outline() {
     // draw the board outline
-    int olx1 = (board_offset.x);
-    int olx2 = (board_offset.x) + (game_state.board_size * 8);
-    int oly1 = (board_offset.y);
-    int oly2 = (board_offset.y) + (game_state.board_size * 8);
+    int x1 = (board_offset.x);
+    int x2 = (board_offset.x) + (game_state.board_size * 8);
+    int y1 = (board_offset.y);
+    int y2 = (board_offset.y) + (game_state.board_size * 8);
 
-    schr4c_hline(&bg0_srf, olx1 - 1, oly1 - 1, olx2 + 1, 1);
-    schr4c_vline(&bg0_srf, olx1 - 1, oly1 - 1, oly2 + 1, 1);
-    schr4c_hline(&bg0_srf, olx1 - 1, oly2 + 1, olx2 + 1, 1);
-    schr4c_vline(&bg0_srf, olx2 + 1, oly1 - 1, oly2 + 1, 1);
+    schr4c_hline(&bg0_srf, x1 - 1, y1 - 1, x2 + 1, 1);
+    schr4c_vline(&bg0_srf, x1 - 1, y1 - 1, y2 + 1, 1);
+    schr4c_hline(&bg0_srf, x1 - 1, y2 + 1, x2 + 1, 1);
+    schr4c_vline(&bg0_srf, x2 + 1, y1 - 1, y2 + 1, 1);
 }
 
-void update_board_layout() {
+void draw_board_cursor() {
+    int x1 = (board_offset.x) + (cursor_pos.x * 8);
+    int x2 = x1 + 7;
+    int y1 = (board_offset.y) + (cursor_pos.y * 8);
+    int y2 = y1 + 7;
+
+    schr4c_hline(&bg0_srf, x1, y1, x2, 2);
+    schr4c_vline(&bg0_srf, x1, y1, y2, 2);
+    schr4c_hline(&bg0_srf, x1, y2, x2, 2);
+    schr4c_vline(&bg0_srf, x2, y1, y2, 2);
+}
+
+void draw_board() {
     if (bg_ui_dirty) {
-        // clear bg
+        // clear whole bg ui surface
         memset32(tile_mem[bg0_srf_cbb], 0, 4096);          // clear cbb
         schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
 
-        // draw bg
+        // draw outline
         draw_board_outline();
+
+        // draw cursor
+        if (cursor_down)
+            draw_board_cursor();
 
         // no longer dirty
         bg_ui_dirty = false;
@@ -124,7 +145,9 @@ void board_update() {
     dusk_frame();
 
     // do layout
-    update_board_layout();
+    draw_board();
+
+    // input
 
     // update sprites
     dusk_sprites_update();
