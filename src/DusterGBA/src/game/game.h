@@ -38,7 +38,7 @@ typedef struct {
 } ClassData;
 
 typedef struct {
-    ClassData class_data[NUM_CLASSES];
+    ClassData* class_data;
 } GameColdData;
 
 extern GameState game_state;

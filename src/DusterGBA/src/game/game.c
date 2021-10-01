@@ -1,6 +1,7 @@
 #include "game.h"
 #include <stdio.h>
 #include <tonc.h>
+#include "cold_data.h"
 
 EWRAM_DATA GameState game_state;
 EWRAM_DATA GameColdData game_data;
@@ -10,7 +11,7 @@ void game_clear_state() {
 }
 
 void game_load_cold_data() {
-    // game_data
+    game_data.class_data = (ClassData*) &cold_class_data;
 }
 
 void game_init_board(u8 board_size) {    
