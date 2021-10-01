@@ -3,9 +3,14 @@
 #include <tonc.h>
 
 EWRAM_DATA GameState game_state;
+EWRAM_DATA GameColdData game_data;
 
 void game_clear_state() {
     memset32(&game_state, 0, sizeof(GameState) / 4);
+}
+
+void game_load_cold_data() {
+    // game_data
 }
 
 void game_init_board(u8 board_size) {    

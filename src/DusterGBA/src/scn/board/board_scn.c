@@ -41,9 +41,9 @@ void boardscn_start() {
     mgba_printf(MGBA_LOG_INFO, "bean");
 
     // test loading data
-    u32 d_class_len;
+    // u32 d_class_len;
     // u8* d_class = (u8*) dusk_load_raw("d_class.bin", &d_class_len);
-    dusk_load_raw("d_class.bin", &d_class_len);
+    // dusk_load_raw("d_class.bin", &d_class_len);
 
     // pawn spritesheet
     SpriteAtlas atlas = dusk_load_atlas("a_pawn");
@@ -52,6 +52,7 @@ void boardscn_start() {
     game_clear_state(); // reset game state
 
     // set up new game
+    game_load_cold_data();
     game_init_board(16);
     game_init_team(0, "player");
 

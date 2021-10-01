@@ -6,6 +6,8 @@
 #define NUM_TEAMS 4
 #define TEAM_MAX_PAWNS 32
 
+#define NUM_CLASSES 16
+
 typedef struct {
     s16 pawn_gid;
 } BoardTile;
@@ -30,12 +32,23 @@ typedef struct {
     Team teams[NUM_TEAMS];
 } GameState;
 
+typedef struct {
+    char name[16];
+    u8 move;
+} ClassData;
+
+typedef struct {
+    ClassData class_data[NUM_CLASSES];
+} GameColdData;
+
 extern GameState game_state;
+extern GameColdData game_data;
 
 #define BOARD_POS(x, y) (y * MAX_BOARD_SIZE + x)
 #define PAWN_GID(team, pawn) (team * TEAM_MAX_PAWNS + pawn)
 
 void game_clear_state();
+void game_load_cold_data();
 void game_init_board(u8 board_size);
 void game_init_team(u8 id, const char* name);
 /** get the pawn with by global id */
