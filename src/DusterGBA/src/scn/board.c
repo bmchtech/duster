@@ -171,6 +171,11 @@ void boardscn_input() {
             bg_ui_dirty = true;
         }
     }
+
+    if (key_hit(KEY_SELECT)) {
+        cursor_down = !cursor_down; // toggle cursor
+        bg_ui_dirty = true;
+    }
 }
 
 void boardscn_update() {
