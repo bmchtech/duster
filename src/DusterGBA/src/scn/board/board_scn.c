@@ -5,7 +5,8 @@
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
 int bg0_srf_sbb = 31;
-int bg1_tte_cbb = 1;
+int bg1_tte_cbb = 2;
+int bg1_tte_sbb = 28;
 VPos board_offset;
 BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
@@ -30,7 +31,7 @@ void boardscn_start() {
 
     // set up bg1 with tte
     REG_DISPCNT |= DCNT_BG1;
-    tte_init_chr4c(1, BG_CBB(bg1_tte_cbb) | BG_SBB(28), 0, 0x0201, CLR_GRAY, NULL, NULL);
+    tte_init_chr4c(1, BG_CBB(bg1_tte_cbb) | BG_SBB(bg1_tte_sbb), 0, 0x0201, CLR_GRAY, NULL, NULL);
     REG_BG1CNT |= BG_PRIO(2);
     tte_init_con();
 

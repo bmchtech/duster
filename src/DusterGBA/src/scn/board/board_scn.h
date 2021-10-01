@@ -2,7 +2,7 @@
 
 #include <string.h>
 #include "dusk.h"
-#include <tonc.h>
+#include "tonc.h"
 #include "res.h"
 #include "contrib/mgba.h"
 #include "game/game.h"
@@ -11,6 +11,7 @@ extern TSurface bg0_srf;
 extern int bg0_srf_cbb;
 extern int bg0_srf_sbb;
 extern int bg1_tte_cbb;
+extern int bg1_tte_sbb;
 extern VPos board_offset;
 extern BOOL board_ui_dirty;
 extern BOOL sidebar_dirty;

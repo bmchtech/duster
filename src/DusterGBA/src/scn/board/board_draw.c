@@ -80,9 +80,8 @@ void draw_sidebar() {
     if (!sidebar_dirty) return;
 
     sidebar_dirty = FALSE;
-
-    memset32(tile_mem[bg1_tte_cbb], 0, 4096); // clear cbb
-    memset32(tile_mem[bg1_tte_cbb + 1], 0, 4096); // clear cbb
+    
+    tte_erase_screen(); // clear tte bg
 
     // turn indicator
     tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
