@@ -73,10 +73,10 @@ void draw_board_outline() {
     int y1 = (board_offset.y);
     int y2 = (board_offset.y) + (game_state.board_size * 8);
 
-    schr4c_hline(&bg0_srf, x1 - 1, y1 - 1, x2 + 1, 1);
-    schr4c_vline(&bg0_srf, x1 - 1, y1 - 1, y2 + 1, 1);
-    schr4c_hline(&bg0_srf, x1 - 1, y2 + 1, x2 + 1, 1);
-    schr4c_vline(&bg0_srf, x2 + 1, y1 - 1, y2 + 1, 1);
+    schr4c_hline(&bg0_srf, x1 - 1, y1 - 1, x2, 1);
+    schr4c_vline(&bg0_srf, x1 - 1, y1 - 1, y2, 1);
+    schr4c_hline(&bg0_srf, x1 - 1, y2, x2, 1);
+    schr4c_vline(&bg0_srf, x2, y1 - 1, y2, 1);
 }
 
 void draw_board_cursor() {
@@ -155,10 +155,14 @@ void boardscn_input() {
         cursor_pos.y += y_move;
 
         // clamp
-        if (cursor_pos.x < 0) cursor_pos.x = game_state.board_size - 1;
-        if (cursor_pos.x >= game_state.board_size) cursor_pos.x = 0;
-        if (cursor_pos.y < 0) cursor_pos.y = game_state.board_size - 1;
-        if (cursor_pos.y >= game_state.board_size) cursor_pos.y = 0;
+        if (cursor_pos.x < 0)
+            cursor_pos.x = game_state.board_size - 1;
+        if (cursor_pos.x >= game_state.board_size)
+            cursor_pos.x = 0;
+        if (cursor_pos.y < 0)
+            cursor_pos.y = game_state.board_size - 1;
+        if (cursor_pos.y >= game_state.board_size)
+            cursor_pos.y = 0;
 
         cursor_last_moved_frame = frame_count;
 
