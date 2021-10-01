@@ -1,7 +1,6 @@
 #include "board_scn.h"
 
-#include "mpack/core.h"
-#include "mpack/conv.h"
+#include "coll/cc_array.h"
 
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
@@ -39,6 +38,14 @@ void boardscn_start() {
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
     mgba_printf(MGBA_LOG_INFO, "bean");
+
+    CC_Array *ar;
+    cc_array_new(&ar);
+    int arr_in = 17;
+    cc_array_add(ar, &arr_in);
+    int* arr_out;
+    cc_array_get_at(ar, 0, (void*)&arr_out);
+    mgba_printf(MGBA_LOG_ERROR, "arr element 0: %d", *arr_out);
 
     // test loading data
     // u32 d_class_len;
