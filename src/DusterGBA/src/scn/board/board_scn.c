@@ -5,7 +5,7 @@
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
 int bg0_srf_sbb = 31;
-int bg1_tte_cbb = 2;
+int bg1_tte_cbb = 1;
 VPos board_offset;
 BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
@@ -30,7 +30,7 @@ void boardscn_start() {
 
     // set up bg1 with tte
     REG_DISPCNT |= DCNT_BG1;
-    tte_init_chr4c(1, BG_CBB(2) | BG_SBB(29), 0, 0x0201, CLR_GRAY, NULL, NULL);
+    tte_init_chr4c(1, BG_CBB(bg1_tte_cbb) | BG_SBB(28), 0, 0x0201, CLR_GRAY, NULL, NULL);
     REG_BG1CNT |= BG_PRIO(2);
     tte_init_con();
 
@@ -75,8 +75,6 @@ void boardscn_start() {
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
     cursor_pos = (VPos16){.x = 0, .y = 0};
-
-    tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
 }
 
 void boardscn_input() {
@@ -120,9 +118,11 @@ void boardscn_update() {
     dusk_frame();
 
     boardscn_input();
-    draw_board();
 
     draw_sidebar();
+    
+    draw_board();
+
 
     // update sprites
     dusk_sprites_update();

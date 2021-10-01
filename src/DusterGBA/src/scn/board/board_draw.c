@@ -79,8 +79,15 @@ void draw_board() {
 void draw_sidebar() {
     if (!sidebar_dirty) return;
 
-    memset32(tile_mem[bg1_tte_cbb], 0, 4096); // clear cbb
+    sidebar_dirty = FALSE;
 
+    memset32(tile_mem[bg1_tte_cbb], 0, 4096); // clear cbb
+    memset32(tile_mem[bg1_tte_cbb + 1], 0, 4096); // clear cbb
+
+    // turn indicator
+    tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
+
+    // currently hovered pawn
     Pawn* cursor_pawn = get_cursor_pawn();
 
     int cursor_pawn_class = -1;
