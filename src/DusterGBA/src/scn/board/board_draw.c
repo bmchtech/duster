@@ -77,10 +77,11 @@ void draw_board() {
 }
 
 void draw_sidebar() {
-    if (!sidebar_dirty) return;
+    if (!sidebar_dirty)
+        return;
 
     sidebar_dirty = FALSE;
-    
+
     tte_erase_screen(); // clear tte bg
 
     // turn indicator
@@ -89,10 +90,8 @@ void draw_sidebar() {
     // currently hovered pawn
     Pawn* cursor_pawn = get_cursor_pawn();
 
-    int cursor_pawn_class = -1;
     if (cursor_pawn) {
-        cursor_pawn_class = cursor_pawn->unit_class;
+        int cursor_pawn_class = cursor_pawn->unit_class;
+        tte_printf("#{P:180,8}#{ci:1}pawn: %d", cursor_pawn_class);
     }
-
-    tte_printf("#{P:180,8}#{ci:1}pawn: %d", cursor_pawn_class);
 }
