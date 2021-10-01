@@ -1,6 +1,6 @@
 #include "board_scn.h"
 
-#include "coll/cc_array.h"
+#include "cc_array.h"
 
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
