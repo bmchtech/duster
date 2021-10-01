@@ -141,13 +141,33 @@ void draw_board() {
     // }
 }
 
+void boardscn_input() {
+    // input
+    int y_move = key_tri_vert();
+    int x_move = key_tri_horz();
+
+    u32 arrows_touched = key_transit(KEY_LEFT | KEY_RIGHT | KEY_UP | KEY_DOWN);
+
+    if (arrows_touched && (x_move != 0 || y_move != 0)) {
+        // move cursor
+        cursor_pos.x += x_move;
+        cursor_pos.y += y_move;
+
+        cursor_pos.x = clamp(cursor_pos.x, 0, game_state.board_size);
+        cursor_pos.y = clamp(cursor_pos.y, 0, game_state.board_size);
+
+        if (cursor_down) {
+            // need to redraw bg
+            bg_ui_dirty = true;
+        }
+    }
+}
+
 void boardscn_update() {
     dusk_frame();
 
-    // do layout
+    boardscn_input();
     draw_board();
-
-    // input
 
     // update sprites
     dusk_sprites_update();
