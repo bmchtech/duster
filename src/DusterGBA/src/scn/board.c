@@ -13,6 +13,7 @@ bool bg_ui_dirty = true;
 int game_turn = 0;
 VPos16 cursor_pos;
 bool cursor_down = true;
+int cursor_last_moved_frame = 0;
 
 void boardscn_start() {
     // init
@@ -148,13 +149,18 @@ void boardscn_input() {
 
     u32 arrows_touched = key_transit(KEY_LEFT | KEY_RIGHT | KEY_UP | KEY_DOWN);
 
-    if (arrows_touched && (x_move != 0 || y_move != 0)) {
+    if ((arrows_touched || cursor_last_moved_frame < (frame_count - 6)) && (x_move != 0 || y_move != 0)) {
         // move cursor
         cursor_pos.x += x_move;
         cursor_pos.y += y_move;
 
-        cursor_pos.x = clamp(cursor_pos.x, 0, game_state.board_size);
-        cursor_pos.y = clamp(cursor_pos.y, 0, game_state.board_size);
+        // clamp
+        if (cursor_pos.x < 0) cursor_pos.x = game_state.board_size - 1;
+        if (cursor_pos.x >= game_state.board_size) cursor_pos.x = 0;
+        if (cursor_pos.y < 0) cursor_pos.y = game_state.board_size - 1;
+        if (cursor_pos.y >= game_state.board_size) cursor_pos.y = 0;
+
+        cursor_last_moved_frame = frame_count;
 
         if (cursor_down) {
             // need to redraw bg

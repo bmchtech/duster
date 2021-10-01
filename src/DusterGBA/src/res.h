@@ -10,6 +10,6 @@ typedef struct {
 } VPos;
 
 typedef struct {
-    u16 x;
-    u16 y;
+    s16 x;
+    s16 y;
 } VPos16;
