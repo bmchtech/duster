@@ -1,13 +1,16 @@
 #include "board_scn.h"
 
+#include "mpack/core.h"
+#include "mpack/conv.h"
+
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
 int bg0_srf_sbb = 31;
 VPos board_offset;
-bool bg_ui_dirty = true;
+BOOL bg_ui_dirty = TRUE;
 int game_turn = 0;
 VPos16 cursor_pos;
-bool cursor_down = true;
+BOOL cursor_down = TRUE;
 int cursor_last_moved_frame = 0;
 
 void boardscn_start() {
@@ -36,6 +39,11 @@ void boardscn_start() {
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
     mgba_printf(MGBA_LOG_INFO, "bean");
+
+    // test loading data
+    u32 d_class_len;
+    // u8* d_class = (u8*) dusk_load_raw("d_class.bin", &d_class_len);
+    dusk_load_raw("d_class.bin", &d_class_len);
 
     // pawn spritesheet
     SpriteAtlas atlas = dusk_load_atlas("a_pawn");
@@ -87,13 +95,13 @@ void boardscn_input() {
 
         if (cursor_down) {
             // need to redraw bg
-            bg_ui_dirty = true;
+            bg_ui_dirty = TRUE;
         }
     }
 
     if (key_hit(KEY_SELECT)) {
         cursor_down = !cursor_down; // toggle cursor
-        bg_ui_dirty = true;
+        bg_ui_dirty = TRUE;
     }
 }
 
