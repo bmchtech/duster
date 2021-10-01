@@ -20,7 +20,7 @@ typedef struct {
 } Pawn;
 
 typedef struct {
-    char name[7];
+    char name[16];
     Pawn pawns[TEAM_MAX_PAWNS];
 } Team;
 

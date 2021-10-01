@@ -40,7 +40,7 @@ void board_start() {
 
     // set up new game
     game_init_board(16);
-    game_init_team(0, "PLYR");
+    game_init_team(0, "player");
 
     Team* team = &game_state.teams[0];
     team_set_pawn(team, 0, 0); // first unit is soldier
