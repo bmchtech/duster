@@ -98,7 +98,7 @@ void boardscn_start() {
     pawn_tween.end_pos = (VPos){.x = 10, .y = 10};
     pawn_tween.pawn_gid = 0;
     pawn_tween.start_frame = frame_count;
-    pawn_tween.end_frame = frame_count + 60;
+    pawn_tween.end_frame = frame_count + 20;
 }
 
 void set_ui_dirty() {
