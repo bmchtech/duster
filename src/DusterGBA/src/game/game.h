@@ -74,3 +74,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
 ClassData* pawn_get_classdata(s16 pawn_gid);
 BOOL pawn_util_is_valid_move(s16 pawn_gid, VPos16 start_pos, VPos16 end_pos);
+
+// LOGIC
+
+void game_logic_step();

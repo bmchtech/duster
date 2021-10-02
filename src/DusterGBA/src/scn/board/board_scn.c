@@ -18,6 +18,7 @@ CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
 VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
 int cache_range_buf_filled = 0;
+BOOL request_step = FALSE;
 
 int cursor_last_moved_frame = 0;
 
@@ -152,12 +153,21 @@ void boardscn_input() {
 void boardscn_update() {
     dusk_frame();
 
+    // logic
+    if (request_step) {
+        request_step = FALSE;
+        mgba_printf(MGBA_LOG_ERROR, "game logic step");
+        game_logic_step();
+    }
+
+    // input
+
     boardscn_input();
 
+    // draw
+
     draw_sidebar();
-
     draw_board();
-
     update_pawn_tween();
 
     // update sprites

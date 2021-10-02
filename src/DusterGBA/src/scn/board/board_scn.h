@@ -43,6 +43,7 @@ extern SpritePawnPair sprite_pawn_pairs[128];
 #define CACHE_RANGE_BUF_LEN 128
 extern VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
 extern int cache_range_buf_filled;
+extern BOOL request_step;
 
 void set_ui_dirty();
 

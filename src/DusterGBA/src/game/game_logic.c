@@ -4,5 +4,7 @@
 #include <tonc.h>
 
 void game_logic_step() {
+    game_state.steps++; // counter
+
     
 }
