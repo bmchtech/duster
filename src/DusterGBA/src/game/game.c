@@ -109,6 +109,10 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos* pos_bu
             if (board_dist(start_tx, start_ty, scan_tx, scan_ty) > range)
                 continue;
 
+            // make sure no other pawn is there
+            if (board_get_pawn(BOARD_POS(scan_tx, scan_ty)))
+                continue;
+
             // this is in range
             pos_buf[pos_buf_ix] = (VPos){.x = scan_tx, .y = scan_ty};
             pos_buf_ix++;
