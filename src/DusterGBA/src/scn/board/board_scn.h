@@ -4,8 +4,18 @@
 #include "dusk.h"
 #include "tonc.h"
 #include "res.h"
+#include "vpos.h"
 #include "contrib/mgba.h"
 #include "game/game.h"
+
+
+typedef struct {
+    int pawn_gid;
+    int frame_count;
+    int end_frame;
+    VPos start_pos;
+    VPos end_pos;
+} PawnTweenInfo;
 
 extern TSurface bg0_srf;
 extern int bg0_srf_cbb;
@@ -20,6 +30,7 @@ extern VPos16 cursor_pos;
 extern BOOL cursor_shown;
 extern BOOL cursor_click;
 extern VPos16 cursor_click_pos;
+extern PawnTweenInfo pawn_tween;
 
 void draw_board_outline();
 void draw_board_cursor();
@@ -28,3 +39,5 @@ void draw_sidebar();
 
 Pawn* get_cursor_pawn();
 Pawn* get_clicked_pawn();
+
+void update_pawn_tween();

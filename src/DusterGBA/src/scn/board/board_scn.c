@@ -15,6 +15,7 @@ VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
 VPos16 cursor_click_pos;
+PawnTweenInfo pawn_tween;
 int cursor_last_moved_frame = 0;
 
 void boardscn_start() {
@@ -84,6 +85,8 @@ void boardscn_start() {
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
     cursor_pos = (VPos16){.x = 0, .y = 0};
+
+    pawn_tween.pawn_gid = -1; // no pawn
 }
 
 void set_ui_dirty() {
@@ -149,6 +152,8 @@ void boardscn_update() {
     draw_sidebar();
 
     draw_board();
+
+    update_pawn_tween();
 
     // update sprites
     dusk_sprites_update();
