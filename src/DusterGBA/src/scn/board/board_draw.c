@@ -31,6 +31,20 @@ void draw_board_cursor() {
     }
 }
 
+void draw_footsteps(int tx, int ty) {
+    int x1 = (board_offset.x) + (tx * 8);
+    int y1 = (board_offset.y) + (ty * 8);
+
+    schr4c_plot(&bg0_srf, x1 + 2, y1 + 2, 2);
+    schr4c_plot(&bg0_srf, x1 + 2, y1 + 5, 2);
+    schr4c_plot(&bg0_srf, x1 + 5, y1 + 5, 2);
+    schr4c_plot(&bg0_srf, x1 + 5, y1 + 2, 2);
+}
+
+BOOL is_on_board(int tx, int ty) {
+    return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
+}
+
 void draw_board() {
     if (board_ui_dirty) {
         // clear whole bg ui surface
@@ -72,6 +86,28 @@ void draw_board() {
                                   });
             }
         }
+    }
+
+    // check if pawn selected
+    Pawn* cursor_pawn = get_cursor_pawn();
+    if (cursor_click && cursor_pawn) {
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (i == 0 && j == 0)
+                    continue;
+
+                int tx = cursor_pos.x + i;
+                int ty = cursor_pos.y + j;
+                if (!is_on_board(tx, ty))
+                    continue;
+
+                draw_footsteps(tx, ty);
+            }
+        }
+        // draw_footsteps(cursor_pos.x - 1, cursor_pos.y);
+        // draw_footsteps(cursor_pos.x + 1, cursor_pos.y);
+        // draw_footsteps(cursor_pos.x, cursor_pos.y - 1);
+        // draw_footsteps(cursor_pos.x, cursor_pos.y + 1);
     }
 
     // // for each team
