@@ -116,7 +116,7 @@ void boardscn_input() {
 
         cursor_last_moved_frame = frame_count;
 
-        cursor_click = FALSE;
+        // cursor_click = FALSE;
 
         // need to redraw bg
         set_ui_dirty();

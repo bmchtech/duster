@@ -91,6 +91,7 @@ void draw_board() {
     // check if pawn selected
     Pawn* clicked_pawn = get_clicked_pawn();
     if (cursor_click && clicked_pawn) {
+        VPos16 pawn_pos = cursor_click_pos;
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
 
         for (int i = -class_data->move; i <= class_data->move; i++) {
@@ -98,21 +99,17 @@ void draw_board() {
                 if (i == 0 && j == 0)
                     continue;
 
-                int tx = cursor_pos.x + i;
-                int ty = cursor_pos.y + j;
+                int tx = pawn_pos.x + i;
+                int ty = pawn_pos.y + j;
                 if (!is_on_board(tx, ty))
                     continue;
 
-                if (board_dist(cursor_pos.x, cursor_pos.y, tx, ty) > class_data->move)
+                if (board_dist(pawn_pos.x, pawn_pos.y, tx, ty) > class_data->move)
                     continue;
 
                 draw_footstep(tx, ty);
             }
         }
-        // draw_footstep(cursor_pos.x - 1, cursor_pos.y);
-        // draw_footstep(cursor_pos.x + 1, cursor_pos.y);
-        // draw_footstep(cursor_pos.x, cursor_pos.y - 1);
-        // draw_footstep(cursor_pos.x, cursor_pos.y + 1);
     }
 
     // // for each team
