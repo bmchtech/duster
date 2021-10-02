@@ -89,9 +89,9 @@ void draw_board() {
     }
 
     // check if pawn selected
-    Pawn* cursor_pawn = get_cursor_pawn();
-    if (cursor_click && cursor_pawn) {
-        ClassData* class_data = &game_data.class_data[cursor_pawn->unit_class];
+    Pawn* clicked_pawn = get_clicked_pawn();
+    if (cursor_click && clicked_pawn) {
+        ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
 
         for (int i = -class_data->move; i <= class_data->move; i++) {
             for (int j = -class_data->move; j <= class_data->move; j++) {
@@ -137,11 +137,11 @@ void draw_sidebar() {
     tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
 
     // currently hovered pawn
-    Pawn* cursor_pawn = get_cursor_pawn();
+    Pawn* clicked_pawn = get_clicked_pawn();
 
-    if (cursor_click && cursor_pawn) {
+    if (cursor_click && clicked_pawn) {
         // show pawn info
-        ClassData* class_data = &game_data.class_data[cursor_pawn->unit_class];
+        ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
         tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
         tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
     }

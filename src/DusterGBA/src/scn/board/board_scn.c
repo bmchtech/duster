@@ -14,6 +14,7 @@ int game_turn = 0;
 VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
+VPos16 cursor_click_pos;
 int cursor_last_moved_frame = 0;
 
 void boardscn_start() {
@@ -134,6 +135,7 @@ void boardscn_input() {
         if (get_cursor_pawn()) {
             // there is pawn
             cursor_click = TRUE;
+            cursor_click_pos = cursor_pos;
             set_ui_dirty();
         }
     }

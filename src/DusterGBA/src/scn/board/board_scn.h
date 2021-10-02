@@ -19,6 +19,7 @@ extern int game_turn;
 extern VPos16 cursor_pos;
 extern BOOL cursor_shown;
 extern BOOL cursor_click;
+extern VPos16 cursor_click_pos;
 
 void draw_board_outline();
 void draw_board_cursor();
@@ -26,3 +27,4 @@ void draw_board();
 void draw_sidebar();
 
 Pawn* get_cursor_pawn();
+Pawn* get_clicked_pawn();
