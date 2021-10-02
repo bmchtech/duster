@@ -56,5 +56,6 @@ Pawn* game_get_pawn_by_gid(s16 pawn_gid);
 
 Pawn* board_get_pawn(int tile_id);
 void board_set_pawn(int tile_id, s16 pawn_gid);
+int board_dist(int tx1, int ty1, int tx2, int ty2);
 
 void team_set_pawn(Team* team, int id, int class);

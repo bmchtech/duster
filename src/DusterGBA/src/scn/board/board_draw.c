@@ -31,7 +31,7 @@ void draw_board_cursor() {
     }
 }
 
-void draw_footsteps(int tx, int ty) {
+void draw_footstep(int tx, int ty) {
     int x1 = (board_offset.x) + (tx * 8);
     int y1 = (board_offset.y) + (ty * 8);
 
@@ -91,8 +91,10 @@ void draw_board() {
     // check if pawn selected
     Pawn* cursor_pawn = get_cursor_pawn();
     if (cursor_click && cursor_pawn) {
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
+        ClassData* class_data = &game_data.class_data[cursor_pawn->unit_class];
+
+        for (int i = -class_data->move; i <= class_data->move; i++) {
+            for (int j = -class_data->move; j <= class_data->move; j++) {
                 if (i == 0 && j == 0)
                     continue;
 
@@ -101,13 +103,16 @@ void draw_board() {
                 if (!is_on_board(tx, ty))
                     continue;
 
-                draw_footsteps(tx, ty);
+                if (board_dist(cursor_pos.x, cursor_pos.y, tx, ty) > class_data->move)
+                    continue;
+
+                draw_footstep(tx, ty);
             }
         }
-        // draw_footsteps(cursor_pos.x - 1, cursor_pos.y);
-        // draw_footsteps(cursor_pos.x + 1, cursor_pos.y);
-        // draw_footsteps(cursor_pos.x, cursor_pos.y - 1);
-        // draw_footsteps(cursor_pos.x, cursor_pos.y + 1);
+        // draw_footstep(cursor_pos.x - 1, cursor_pos.y);
+        // draw_footstep(cursor_pos.x + 1, cursor_pos.y);
+        // draw_footstep(cursor_pos.x, cursor_pos.y - 1);
+        // draw_footstep(cursor_pos.x, cursor_pos.y + 1);
     }
 
     // // for each team
