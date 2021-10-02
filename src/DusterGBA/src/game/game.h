@@ -6,7 +6,7 @@
 #define NUM_TEAMS 4
 #define TEAM_MAX_PAWNS 32
 
-#define NUM_CLASSES 16
+#define NUM_UNIT_CLASSES 4
 
 typedef struct {
     s16 pawn_gid;

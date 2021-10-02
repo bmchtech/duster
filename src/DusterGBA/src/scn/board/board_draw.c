@@ -61,12 +61,14 @@ void draw_board() {
                 // look up the pawn
                 Pawn* pawn = game_get_pawn_by_gid(tile->pawn_gid);
 
+                int team_ix = tile->pawn_gid / TEAM_MAX_PAWNS;
+
                 // assign a sprite to drawing this pawn
                 dusk_sprites_make(pawn_sprite_ix++, 8, 8,
                                   (Sprite){
                                       .x = board_offset.x + (bx << 3),
                                       .y = board_offset.y + (by << 3),
-                                      .base_tid = pawn->unit_class,
+                                      .base_tid = pawn->unit_class + (team_ix * NUM_UNIT_CLASSES),
                                   });
             }
         }

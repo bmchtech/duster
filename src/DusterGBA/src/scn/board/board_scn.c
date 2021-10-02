@@ -66,13 +66,19 @@ void boardscn_start() {
     game_load_cold_data();
     game_init_board(16);
     game_init_team(0, "player");
+    game_init_team(1, "enmy");
 
-    Team* team = &game_state.teams[0];
-    team_set_pawn(team, 0, 0); // first unit is soldier
-    team_set_pawn(team, 1, 1); // second unit is horse
+    Team* team0 = &game_state.teams[0];
+    team_set_pawn(team0, 0, 0); // first unit is soldier
+    team_set_pawn(team0, 1, 1); // second unit is horse
+
+    Team* team1 = &game_state.teams[1];
+    team_set_pawn(team1, 0, 1);
 
     board_set_pawn(BOARD_POS(0, 0), PAWN_GID(0, 0)); // pawn #0
     board_set_pawn(BOARD_POS(3, 2), PAWN_GID(0, 1)); // pawn #1
+
+    board_set_pawn(BOARD_POS(2, 9), PAWN_GID(1, 0));
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
