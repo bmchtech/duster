@@ -1,6 +1,7 @@
 #include "board_scn.h"
 
 #include "cc_array.h"
+#include "cc_hashtable.h"
 
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
@@ -16,6 +17,8 @@ BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
 VPos16 cursor_click_pos;
 PawnTweenInfo pawn_tween;
+CC_HashTable* pawn2sprite;
+
 int cursor_last_moved_frame = 0;
 
 void boardscn_start() {
@@ -52,6 +55,7 @@ void boardscn_start() {
     int* arr_out;
     cc_array_get_at(ar, 0, (void*)&arr_out);
     mgba_printf(MGBA_LOG_ERROR, "arr element 0: %d", *arr_out);
+    cc_array_destroy(ar);
 
     // test loading data
     // u32 d_class_len;
@@ -87,6 +91,17 @@ void boardscn_start() {
     cursor_pos = (VPos16){.x = 0, .y = 0};
 
     pawn_tween.pawn_gid = -1; // no pawn
+
+    // init data structures
+    cc_hashtable_new(&pawn2sprite);
+
+    // set test tween
+    pawn_tween.start_pos = (VPos){.x = 0, .y = 0};
+    pawn_tween.end_pos = (VPos){.x = 10, .y = 10};
+    pawn_tween.pawn_gid = 0;
+    pawn_tween.end_frame = frame_count + 60;
+    pawn_tween.step = (VPos){.x = 6, .y = 6};
+    pawn_tween.num_steps = 10;
 }
 
 void set_ui_dirty() {
@@ -159,7 +174,10 @@ void boardscn_update() {
     dusk_sprites_update();
 }
 
-void boardscn_end() {}
+void boardscn_end() {
+    // clean ds
+    cc_hashtable_destroy(pawn2sprite);
+}
 
 Scene board_scene = {
     .start = boardscn_start,

@@ -11,10 +11,11 @@
 
 typedef struct {
     int pawn_gid;
-    int frame_count;
-    int end_frame;
     VPos start_pos;
     VPos end_pos;
+    VPos step;
+    int num_steps;
+    int end_frame;
 } PawnTweenInfo;
 
 extern TSurface bg0_srf;

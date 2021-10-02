@@ -2,7 +2,7 @@
 
 #include <tonc_types.h>
 
-typedef struct {
+typedef struct VPos {
     u8 x;
     u8 y;
 } VPos;
