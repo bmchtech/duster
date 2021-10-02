@@ -39,7 +39,14 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 // now unclick and set dirty
                 cursor_click = FALSE;
                 set_ui_dirty();
+
+                return; // done
             }
         }
+
+        // if we got here, then the click wasn't within range
+        // unclick
+        cursor_click = FALSE;
+        set_ui_dirty();
     }
 }
