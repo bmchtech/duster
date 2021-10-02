@@ -96,8 +96,10 @@ void draw_sidebar() {
     // currently hovered pawn
     Pawn* cursor_pawn = get_cursor_pawn();
 
-    if (cursor_pawn) {
-        int cursor_pawn_class = cursor_pawn->unit_class;
-        tte_printf("#{P:180,8}#{ci:1}pawn: %d", cursor_pawn_class);
+    if (cursor_click && cursor_pawn) {
+        // show pawn info
+        ClassData* class_data = &game_data.class_data[cursor_pawn->unit_class];
+        tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
+        tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
     }
 }
