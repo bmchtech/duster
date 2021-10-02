@@ -1,8 +1,5 @@
 #include "board_scn.h"
 
-#include "cc_array.h"
-#include "cc_hashtable.h"
-
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
 int bg0_srf_sbb = 31;
@@ -18,6 +15,7 @@ BOOL cursor_click = FALSE;
 VPos16 cursor_click_pos;
 PawnTweenInfo pawn_tween;
 CC_HashTable* pawn2sprite;
+SpritePawnPair sprite_pawn_pairs[128];
 
 int cursor_last_moved_frame = 0;
 

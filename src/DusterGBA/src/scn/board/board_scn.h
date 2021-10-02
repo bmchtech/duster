@@ -8,6 +8,8 @@
 #include "contrib/mgba.h"
 #include "game/game.h"
 
+#include "cc_array.h"
+#include "cc_hashtable.h"
 
 typedef struct {
     int pawn_gid;
@@ -17,6 +19,11 @@ typedef struct {
     int num_steps;
     int end_frame;
 } PawnTweenInfo;
+
+typedef struct {
+    int pawn_gid;
+    int sprite;
+} SpritePawnPair;
 
 extern TSurface bg0_srf;
 extern int bg0_srf_cbb;
@@ -32,6 +39,8 @@ extern BOOL cursor_shown;
 extern BOOL cursor_click;
 extern VPos16 cursor_click_pos;
 extern PawnTweenInfo pawn_tween;
+extern CC_HashTable* pawn2sprite;
+extern SpritePawnPair sprite_pawn_pairs[128];
 
 void draw_board_outline();
 void draw_board_cursor();

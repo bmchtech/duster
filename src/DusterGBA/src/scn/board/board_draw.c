@@ -65,6 +65,8 @@ void draw_board() {
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
     int pawn_sprite_ix = 1;
 
+    cc_hashtable_remove_all(pawn2sprite);
+
     // draw the pawns
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
@@ -77,13 +79,24 @@ void draw_board() {
 
                 int team_ix = tile->pawn_gid / TEAM_MAX_PAWNS;
 
+                int pawn_sprite_id = pawn_sprite_ix;
+
+                SpritePawnPair* pair = &sprite_pawn_pairs[pawn_sprite_id];
+                *pair = (SpritePawnPair){.pawn_gid = tile->pawn_gid, .sprite = pawn_sprite_id};
+
+                cc_hashtable_add(pawn2sprite, &pair->pawn_gid, &pair->sprite);
+
+                mgba_printf(MGBA_LOG_ERROR, "set 2sprite k: %d, v: %d", pair->pawn_gid, pair->sprite);
+
                 // assign a sprite to drawing this pawn
-                dusk_sprites_make(pawn_sprite_ix++, 8, 8,
+                dusk_sprites_make(pawn_sprite_id, 8, 8,
                                   (Sprite){
                                       .x = board_offset.x + (bx << 3),
                                       .y = board_offset.y + (by << 3),
                                       .base_tid = pawn->unit_class + (team_ix * NUM_UNIT_CLASSES),
                                   });
+
+                pawn_sprite_ix++;
             }
         }
     }
