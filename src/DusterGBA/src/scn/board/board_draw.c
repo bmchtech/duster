@@ -93,7 +93,7 @@ void draw_board() {
 
                 cc_hashtable_add(pawn2sprite, &pair->pawn_gid, &pair->sprite);
 
-                mgba_printf(MGBA_LOG_ERROR, "set 2sprite k: %d, v: %d", pair->pawn_gid, pair->sprite);
+                // mgba_printf(MGBA_LOG_ERROR, "set 2sprite k: %d, v: %d", pair->pawn_gid, pair->sprite);
 
                 // assign a sprite to drawing this pawn
                 dusk_sprites_make(pawn_sprite_id, 8, 8,
