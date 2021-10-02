@@ -17,7 +17,7 @@ extern BOOL board_ui_dirty;
 extern BOOL sidebar_dirty;
 extern int game_turn;
 extern VPos16 cursor_pos;
-extern BOOL cursor_down;
+extern BOOL cursor_shown;
 extern BOOL cursor_click;
 
 void draw_board_outline();

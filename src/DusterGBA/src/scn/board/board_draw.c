@@ -41,7 +41,7 @@ void draw_board() {
         draw_board_outline();
 
         // draw cursor
-        if (cursor_down)
+        if (cursor_shown)
             draw_board_cursor();
 
         // no longer dirty

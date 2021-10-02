@@ -12,7 +12,7 @@ BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
 int game_turn = 0;
 VPos16 cursor_pos;
-BOOL cursor_down = TRUE;
+BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
 int cursor_last_moved_frame = 0;
 
@@ -91,7 +91,7 @@ void boardscn_input() {
 
     u32 arrows_touched = key_transit(KEY_LEFT | KEY_RIGHT | KEY_UP | KEY_DOWN);
 
-    if (cursor_down && (arrows_touched || cursor_last_moved_frame < (frame_count - 6)) &&
+    if (cursor_shown && (arrows_touched || cursor_last_moved_frame < (frame_count - 6)) &&
         (x_move != 0 || y_move != 0)) {
         // move cursor
         cursor_pos.x += x_move;
@@ -116,13 +116,13 @@ void boardscn_input() {
     }
 
     if (key_hit(KEY_SELECT)) {
-        cursor_down = !cursor_down; // toggle cursor
+        cursor_shown = !cursor_shown; // toggle cursor
         cursor_click = FALSE;
 
         set_ui_dirty();
     }
 
-    if (cursor_down && key_hit(KEY_A)) {
+    if (cursor_shown && key_hit(KEY_A)) {
         // click input
         // check if pawn there
         if (get_cursor_pawn()) {
