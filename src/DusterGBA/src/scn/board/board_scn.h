@@ -42,6 +42,9 @@ extern CC_HashTable* pawn2sprite;
 extern SpritePawnPair sprite_pawn_pairs[128];
 #define CACHE_RANGE_BUF_LEN 128
 extern VPos cache_range_buf[CACHE_RANGE_BUF_LEN];
+extern int cache_range_buf_filled;
+
+void set_ui_dirty();
 
 VPos16 board_vpos_to_pix_pos(int tx, int ty);
 void draw_board_outline();
@@ -51,6 +54,7 @@ void draw_sidebar();
 
 Pawn* get_cursor_pawn();
 Pawn* get_clicked_pawn();
+void on_cursor_try_click(VPos16 click_pos);
 
 void animate_pawn_move(s16 pawn_gid, VPos start_pos, VPos end_pos);
 void update_pawn_tween();

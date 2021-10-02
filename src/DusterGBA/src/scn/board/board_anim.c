@@ -14,7 +14,7 @@ void animate_pawn_move(s16 pawn_gid, VPos start_pos, VPos end_pos) {
     pawn_tween.end_pos = end_pos;
     pawn_tween.pawn_gid = pawn_gid;
     pawn_tween.start_frame = frame_count;
-    pawn_tween.end_frame = frame_count + 20;
+    pawn_tween.end_frame = frame_count + 6;
 }
 
 void update_pawn_tween() {

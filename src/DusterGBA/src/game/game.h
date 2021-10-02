@@ -56,6 +56,7 @@ void game_init_team(u8 id, const char* name);
 Pawn* game_get_pawn_by_gid(s16 pawn_gid);
 
 int board_find_pawn_tile(s16 pawn_gid);
+BoardTile* board_get_tile(int tile_id);
 Pawn* board_get_pawn(int tile_id);
 void board_set_pawn(int tile_id, s16 pawn_gid);
 void board_move_pawn(s16 pawn_gid, int start_tile_id, int end_tile_id);

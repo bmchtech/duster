@@ -50,10 +50,15 @@ int board_find_pawn_tile(s16 pawn_gid) {
     return -1; // not found
 }
 
-Pawn* board_get_pawn(int tile_id) {
+BoardTile* board_get_tile(int tile_id) {
     GameBoard* board = &game_state.board;
-
     BoardTile* tile = &board->tiles[tile_id];
+
+    return tile;
+}
+
+Pawn* board_get_pawn(int tile_id) {
+    BoardTile* tile = board_get_tile(tile_id);
     s16 pawn_gid = tile->pawn_gid;
 
     // this means there is no pawn
@@ -64,9 +69,9 @@ Pawn* board_get_pawn(int tile_id) {
 }
 
 void board_set_pawn(int tile_id, s16 pawn_gid) {
-    GameBoard* board = &game_state.board;
+    BoardTile* tile = board_get_tile(tile_id);
 
-    board->tiles[tile_id].pawn_gid = pawn_gid;
+    tile->pawn_gid = pawn_gid;
 }
 
 void board_move_pawn(s16 pawn_gid, int start_tile_id, int end_tile_id) {

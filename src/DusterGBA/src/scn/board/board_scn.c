@@ -17,6 +17,7 @@ PawnTweenInfo pawn_tween;
 CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
 VPos cache_range_buf[CACHE_RANGE_BUF_LEN];
+int cache_range_buf_filled = 0;
 
 int cursor_last_moved_frame = 0;
 
@@ -95,7 +96,7 @@ void boardscn_start() {
     cc_hashtable_new(&pawn2sprite);
 
     // set test tween
-    animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
+    // animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
 }
 
 void set_ui_dirty() {
@@ -143,13 +144,7 @@ void boardscn_input() {
 
     if (cursor_shown && key_hit(KEY_A)) {
         // click input
-        // check if pawn there
-        if (get_cursor_pawn()) {
-            // there is pawn
-            cursor_click = TRUE;
-            cursor_click_pos = cursor_pos;
-            set_ui_dirty();
-        }
+        on_cursor_try_click(cursor_pos);
     }
 }
 

@@ -17,6 +17,7 @@ VPos vpos_one();
 VPos vpos_add(VPos p1, VPos p2);
 
 VPos16 vpos16_from_vpos(VPos p1);
+VPos vpos_from_vpos16(VPos16 p1);
 
 VPos16 vpos16_zero();
 VPos16 vpos16_one();
