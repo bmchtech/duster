@@ -17,7 +17,7 @@ void update_pawn_tween() {
     // cc_array_destroy(pawn2sprite_keys);
     // mgba_printf(MGBA_LOG_ERROR, "pawn2sprite size: %d", cc_array_size(pawn2sprite_keys));
 
-    cc_hashtable_foreach_key(pawn2sprite, foreach_pawn2sprite_key);
+    // cc_hashtable_foreach_key(pawn2sprite, foreach_pawn2sprite_key);
 
     // // try getting
     // int* get_test_out;
@@ -59,16 +59,20 @@ void update_pawn_tween() {
     // calculate the between vpos
     int tween_len = pawn_tween.end_frame - pawn_tween.start_frame;
     int frame_prog = frame_count - pawn_tween.start_frame;
-    
-    int dx = pawn_tween.end_pos.x - pawn_tween.start_pos.x;
 
-    int x_step_rate = tween_len / dx; // frames per x pixel
-    int curr_x_step = frame_prog / x_step_rate;
+    VPos16 start_pix_pos = board_vpos_to_pix_pos(pawn_tween.start_pos.x, pawn_tween.start_pos.y);
+    VPos16 end_pix_pos = board_vpos_to_pix_pos(pawn_tween.end_pos.x, pawn_tween.end_pos.y);
+
+    int dx = end_pix_pos.x - start_pix_pos.x;
+    int dy = end_pix_pos.y - start_pix_pos.y;
+
+    int x_step = dx / tween_len; // pix per frame
+    int y_step = dy / tween_len; // pix per frame
 
     // mgba_printf(MGBA_LOG_ERROR, "sr: %d, st: %d", x_step_rate, curr_x_step);
-    int x_prog = pawn_tween.start_pos.x + (curr_x_step * 1);
+    int x_prog = start_pix_pos.x + (frame_prog * x_step);
+    int y_prog = start_pix_pos.y + (frame_prog * y_step);
 
-    VPos16 pix_pos = board_vpos_to_pix_pos(pawn_tween.start_pos.x + x_prog, pawn_tween.end_pos.y);
-    pawn_sprite->x = pix_pos.x;
-    pawn_sprite->y = pix_pos.y;
+    pawn_sprite->x = x_prog;
+    pawn_sprite->y = y_prog;
 }
