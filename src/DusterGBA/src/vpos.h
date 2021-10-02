@@ -15,7 +15,14 @@ typedef struct {
 VPos vpos_zero();
 VPos vpos_one();
 VPos vpos_add(VPos p1, VPos p2);
-// VPos vpos_neg(VPos p1);
+
+VPos16 vpos16_from_vpos(VPos p1);
+
+VPos16 vpos16_zero();
+VPos16 vpos16_one();
+VPos16 vpos16_add(VPos16 p1, VPos16 p2);
+VPos16 vpos16_neg(VPos16 p1);
+
 // VPos vpos_multi(VPos p1, int s);
 // VPos vpos_multf(VPos p1, int s);
 // VPos vpos_lerp(VPos p1, VPos p2);

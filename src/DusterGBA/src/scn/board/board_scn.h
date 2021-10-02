@@ -15,8 +15,7 @@ typedef struct {
     int pawn_gid;
     VPos start_pos;
     VPos end_pos;
-    VPos step;
-    int num_steps;
+    int start_frame;
     int end_frame;
 } PawnTweenInfo;
 

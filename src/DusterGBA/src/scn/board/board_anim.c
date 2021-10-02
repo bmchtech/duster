@@ -52,12 +52,23 @@ void update_pawn_tween() {
         return;
     }
 
-    // // get the assigned sprite
-    // int pawn_sprite_ix = *pawn_sprite_ix_out;
-    // Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
+    // get the assigned sprite
+    int pawn_sprite_ix = *pawn_sprite_ix_out;
+    Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-    // // just set pos to end
-    // VPos16 pix_pos = board_vpos_to_pix_pos(pawn_tween.end_pos.x, pawn_tween.end_pos.y);
-    // pawn_sprite->x = pix_pos.x;
-    // pawn_sprite->y = pix_pos.y;
+    // calculate the between vpos
+    int tween_len = pawn_tween.end_frame - pawn_tween.start_frame;
+    int frame_prog = frame_count - pawn_tween.start_frame;
+    
+    int dx = pawn_tween.end_pos.x - pawn_tween.start_pos.x;
+
+    int x_step_rate = tween_len / dx; // frames per x pixel
+    int curr_x_step = frame_prog / x_step_rate;
+
+    // mgba_printf(MGBA_LOG_ERROR, "sr: %d, st: %d", x_step_rate, curr_x_step);
+    int x_prog = pawn_tween.start_pos.x + (curr_x_step * 1);
+
+    VPos16 pix_pos = board_vpos_to_pix_pos(pawn_tween.start_pos.x + x_prog, pawn_tween.end_pos.y);
+    pawn_sprite->x = pix_pos.x;
+    pawn_sprite->y = pix_pos.y;
 }
