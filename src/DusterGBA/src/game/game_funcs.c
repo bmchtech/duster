@@ -11,6 +11,11 @@ void game_clear_state() { memset32(&game_state, 0, sizeof(GameState) / 4); }
 
 void game_load_cold_data() { game_data.class_data = (ClassData*)&cold_class_data; }
 
+void game_init() {
+    game_state.steps = 0;
+    game_state.turns = 0;
+}
+
 void game_init_board(u8 board_size) {
     game_state.board_size = board_size;
 

@@ -70,6 +70,7 @@ void boardscn_start() {
 
     // set up new game
     game_load_cold_data();
+    game_init();
     game_init_board(16);
     game_init_team(0, "player");
     game_init_team(1, "enmy");

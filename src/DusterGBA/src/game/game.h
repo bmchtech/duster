@@ -31,6 +31,8 @@ typedef struct {
     GameBoard board;
     u8 board_size;
     Team teams[NUM_TEAMS];
+    int steps;
+    int turns;
 } GameState;
 
 typedef struct {
@@ -50,6 +52,7 @@ extern GameColdData game_data;
 
 void game_clear_state();
 void game_load_cold_data();
+void game_init();
 void game_init_board(u8 board_size);
 void game_init_team(u8 id, const char* name);
 /** get the pawn with by global id */
