@@ -1,9 +1,5 @@
 #include "board_scn.h"
 
-BOOL is_on_board(int tx, int ty) {
-    return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
-}
-
 VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     VPos16 ret;
     ret.x = board_offset.x + (tx << 3);
@@ -114,22 +110,33 @@ void draw_board() {
         VPos16 pawn_pos = cursor_click_pos;
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
 
-        for (int i = -class_data->move; i <= class_data->move; i++) {
-            for (int j = -class_data->move; j <= class_data->move; j++) {
-                if (i == 0 && j == 0)
-                    continue;
+        // draw footsteps for all tiles in range
+        const int range_buf_len = 128;
+        VPos range_buf[range_buf_len];
+        int range_buf_filled =
+            board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, range_buf, range_buf_len);
 
-                int tx = pawn_pos.x + i;
-                int ty = pawn_pos.y + j;
-                if (!is_on_board(tx, ty))
-                    continue;
-
-                if (board_dist(pawn_pos.x, pawn_pos.y, tx, ty) > class_data->move)
-                    continue;
-
-                draw_footstep(tx, ty);
-            }
+        for (int i = 0; i < range_buf_filled; i++) {
+            VPos fs_pos = range_buf[i];
+            draw_footstep(fs_pos.x, fs_pos.y);
         }
+
+        // for (int i = -class_data->move; i <= class_data->move; i++) {
+        //     for (int j = -class_data->move; j <= class_data->move; j++) {
+        //         if (i == 0 && j == 0)
+        //             continue;
+
+        //         int tx = pawn_pos.x + i;
+        //         int ty = pawn_pos.y + j;
+        //         if (!is_on_board(tx, ty))
+        //             continue;
+
+        //         if (board_dist(pawn_pos.x, pawn_pos.y, tx, ty) > class_data->move)
+        //             continue;
+
+        //         draw_footstep(tx, ty);
+        //     }
+        // }
     }
 
     // // for each team
