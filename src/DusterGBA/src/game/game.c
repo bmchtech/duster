@@ -98,7 +98,7 @@ VPos16 board_util_tile_id_to_pos(int tile_id) {
 
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len) {
     // clear rangebuf
-    memset(pos_buf, -1, sizeof(VPos16) * pos_buf_len);
+    memset(pos_buf, 0, sizeof(VPos16) * pos_buf_len);
 
     int pos_buf_ix = 0;
 
