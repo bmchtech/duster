@@ -42,6 +42,8 @@ extern PawnTweenInfo pawn_tween;
 extern CC_HashTable* pawn2sprite;
 extern SpritePawnPair sprite_pawn_pairs[128];
 
+BOOL is_on_board(int tx, int ty);
+VPos16 board_pos_to_pix_pos(int tx, int ty);
 void draw_board_outline();
 void draw_board_cursor();
 void draw_board();

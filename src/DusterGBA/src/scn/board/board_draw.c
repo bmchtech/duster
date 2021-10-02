@@ -1,5 +1,16 @@
 #include "board_scn.h"
 
+BOOL is_on_board(int tx, int ty) {
+    return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
+}
+
+VPos16 board_pos_to_pix_pos(int tx, int ty) {
+    VPos16 ret;
+    ret.x = board_offset.x + (tx << 3);
+    ret.y = board_offset.y + (ty << 3);
+    return ret;
+}
+
 void draw_board_outline() {
     // draw the board outline
     int x1 = (board_offset.x);
@@ -39,10 +50,6 @@ void draw_footstep(int tx, int ty) {
     schr4c_plot(&bg0_srf, x1 + 2, y1 + 5, 2);
     schr4c_plot(&bg0_srf, x1 + 5, y1 + 5, 2);
     schr4c_plot(&bg0_srf, x1 + 5, y1 + 2, 2);
-}
-
-BOOL is_on_board(int tx, int ty) {
-    return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
 }
 
 void draw_board() {
