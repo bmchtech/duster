@@ -13,6 +13,7 @@ BOOL sidebar_dirty = TRUE;
 int game_turn = 0;
 VPos16 cursor_pos;
 BOOL cursor_down = TRUE;
+BOOL cursor_click = FALSE;
 int cursor_last_moved_frame = 0;
 
 void boardscn_start() {
@@ -78,6 +79,11 @@ void boardscn_start() {
     cursor_pos = (VPos16){.x = 0, .y = 0};
 }
 
+void set_ui_dirty() {
+    board_ui_dirty = TRUE;
+    sidebar_dirty = TRUE;
+}
+
 void boardscn_input() {
     // input
     int y_move = key_tri_vert();
@@ -103,15 +109,27 @@ void boardscn_input() {
 
         cursor_last_moved_frame = frame_count;
 
+        cursor_click = FALSE;
+
         // need to redraw bg
-        board_ui_dirty = TRUE;
-        sidebar_dirty = TRUE;
+        set_ui_dirty();
     }
 
     if (key_hit(KEY_SELECT)) {
         cursor_down = !cursor_down; // toggle cursor
-        board_ui_dirty = TRUE;
-        sidebar_dirty = TRUE;
+        cursor_click = FALSE;
+
+        set_ui_dirty();
+    }
+
+    if (cursor_down && key_hit(KEY_A)) {
+        // click input
+        // check if pawn there
+        if (get_cursor_pawn()) {
+            // there is pawn
+            cursor_click = TRUE;
+            set_ui_dirty();
+        }
     }
 }
 
@@ -121,9 +139,8 @@ void boardscn_update() {
     boardscn_input();
 
     draw_sidebar();
-    
-    draw_board();
 
+    draw_board();
 
     // update sprites
     dusk_sprites_update();

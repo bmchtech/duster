@@ -19,10 +19,16 @@ void draw_board_cursor() {
     int y1 = (board_offset.y) + (cursor_pos.y * 8);
     int y2 = y1 + 7;
 
-    schr4c_hline(&bg0_srf, x1, y1, x2, 2);
-    schr4c_vline(&bg0_srf, x1, y1, y2, 2);
-    schr4c_hline(&bg0_srf, x1, y2, x2, 2);
-    schr4c_vline(&bg0_srf, x2, y1, y2, 2);
+    if (cursor_click) {
+        // cursor block
+        schr4c_rect(&bg0_srf, x1, y1, x2 + 1, y2 + 1, 2);
+    } else {
+        // cursor outline
+        schr4c_hline(&bg0_srf, x1, y1, x2, 2);
+        schr4c_vline(&bg0_srf, x1, y1, y2, 2);
+        schr4c_hline(&bg0_srf, x1, y2, x2, 2);
+        schr4c_vline(&bg0_srf, x2, y1, y2, 2);
+    }
 }
 
 void draw_board() {
