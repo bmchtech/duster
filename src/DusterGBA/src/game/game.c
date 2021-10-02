@@ -89,6 +89,13 @@ BOOL board_util_is_on_board(int tx, int ty) {
     return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
 }
 
+VPos board_util_tile_id_to_pos(int tile_id) {
+    VPos ret;
+    ret.x = tile_id % MAX_BOARD_SIZE;
+    ret.y = tile_id / MAX_BOARD_SIZE;
+    return ret;
+}
+
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos* pos_buf, int pos_buf_len) {
     // clear rangebuf
     memset(pos_buf, -1, sizeof(VPos) * pos_buf_len);
@@ -124,4 +131,27 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos* pos_bu
     }
 
     return pos_buf_ix;
+}
+
+ClassData* pawn_get_classdata(s16 pawn_gid) {
+    Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
+
+    ClassData* class_data = &game_data.class_data[pawn->unit_class];
+
+    return class_data;
+}
+
+BOOL pawn_util_is_valid_move(s16 pawn_gid, VPos start_pos, VPos end_pos) {
+    ClassData* class_data = pawn_get_classdata(pawn_gid);
+
+    int pawn_max_move = class_data->move;
+
+    // check dist from start to end tiles
+    int start_end_dist = board_dist(start_pos.x, start_pos.y, end_pos.x, end_pos.y);
+
+    // check if dist exceeds max move
+    if (start_end_dist > pawn_max_move)
+        return FALSE;
+
+    return TRUE;
 }

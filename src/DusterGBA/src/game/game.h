@@ -60,9 +60,14 @@ BoardTile* board_get_tile(int tile_id);
 Pawn* board_get_pawn(int tile_id);
 void board_set_pawn(int tile_id, s16 pawn_gid);
 void board_move_pawn(s16 pawn_gid, int start_tile_id, int end_tile_id);
+
 int board_dist(int tx1, int ty1, int tx2, int ty2);
+VPos board_util_tile_id_to_pos(int tile_id);
 
 void team_set_pawn(Team* team, int id, int class);
 
 BOOL board_util_is_on_board(int tx, int ty);
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos* pos_buf, int pos_buf_len);
+
+ClassData* pawn_get_classdata(s16 pawn_gid);
+BOOL pawn_util_is_valid_move(s16 pawn_gid, VPos start_pos, VPos end_pos);
