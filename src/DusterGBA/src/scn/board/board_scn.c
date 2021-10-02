@@ -16,7 +16,7 @@ VPos16 cursor_click_pos;
 PawnTweenInfo pawn_tween;
 CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
-VPos cache_range_buf[CACHE_RANGE_BUF_LEN];
+VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
 int cache_range_buf_filled = 0;
 
 int cursor_last_moved_frame = 0;

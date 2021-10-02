@@ -9,7 +9,7 @@ void foreach_pawn2sprite_key(const void* key) {
     mgba_printf(MGBA_LOG_ERROR, "pawn2sprite k: %d, v: %d", *key_out, *val_out);
 }
 
-void animate_pawn_move(s16 pawn_gid, VPos start_pos, VPos end_pos) {
+void animate_pawn_move(s16 pawn_gid, VPos16 start_pos, VPos16 end_pos) {
     pawn_tween.start_pos = start_pos;
     pawn_tween.end_pos = end_pos;
     pawn_tween.pawn_gid = pawn_gid;

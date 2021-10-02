@@ -29,19 +29,17 @@ void on_cursor_try_click(VPos16 try_click_pos) {
 
         // then check if the click is within the range
         for (int i = 0; i < cache_range_buf_filled; i++) {
-            VPos scan_pos = cache_range_buf[i];
+            VPos16 scan_pos = cache_range_buf[i];
             if (try_click_pos.x == scan_pos.x && try_click_pos.y == scan_pos.y) {
                 // this click is within range
                 // ensure valid
-                BOOL is_move_valid = pawn_util_is_valid_move(clicked_pawn_gid, vpos_from_vpos16(cursor_click_pos),
-                                                             vpos_from_vpos16(try_click_pos));
+                BOOL is_move_valid = pawn_util_is_valid_move(clicked_pawn_gid, cursor_click_pos, try_click_pos);
 
                 if (!is_move_valid)
                     break;
 
                 // request a move anim
-                animate_pawn_move(clicked_pawn_gid, vpos_from_vpos16(cursor_click_pos),
-                                  vpos_from_vpos16(try_click_pos));
+                animate_pawn_move(clicked_pawn_gid, cursor_click_pos, try_click_pos);
 
                 // now unclick and set dirty
                 cursor_click = FALSE;
