@@ -94,11 +94,7 @@ void boardscn_start() {
     cc_hashtable_new(&pawn2sprite);
 
     // set test tween
-    pawn_tween.start_pos = (VPos){.x = 0, .y = 0};
-    pawn_tween.end_pos = (VPos){.x = 10, .y = 10};
-    pawn_tween.pawn_gid = 0;
-    pawn_tween.start_frame = frame_count;
-    pawn_tween.end_frame = frame_count + 20;
+    animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
 }
 
 void set_ui_dirty() {
