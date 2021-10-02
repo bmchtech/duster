@@ -111,13 +111,11 @@ void draw_board() {
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
 
         // draw footsteps for all tiles in range
-        const int range_buf_len = 128;
-        VPos range_buf[range_buf_len];
         int range_buf_filled =
-            board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, range_buf, range_buf_len);
+            board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, cache_range_buf, CACHE_RANGE_BUF_LEN);
 
         for (int i = 0; i < range_buf_filled; i++) {
-            VPos fs_pos = range_buf[i];
+            VPos fs_pos = cache_range_buf[i];
             draw_footstep(fs_pos.x, fs_pos.y);
         }
 

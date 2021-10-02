@@ -40,6 +40,8 @@ extern VPos16 cursor_click_pos;
 extern PawnTweenInfo pawn_tween;
 extern CC_HashTable* pawn2sprite;
 extern SpritePawnPair sprite_pawn_pairs[128];
+#define CACHE_RANGE_BUF_LEN 128
+extern VPos cache_range_buf[CACHE_RANGE_BUF_LEN];
 
 VPos16 board_vpos_to_pix_pos(int tx, int ty);
 void draw_board_outline();
