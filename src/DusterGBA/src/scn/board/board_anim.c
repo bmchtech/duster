@@ -38,15 +38,26 @@ void update_pawn_tween() {
         mgba_printf(MGBA_LOG_ERROR, "failed to get sprite index for pawn gid: %d", pawn_tween.pawn_gid);
         return;
     }
-    int pawn_sprite_ix = *pawn_sprite_ix_out;
-    Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-    // just set pos to end
-    VPos16 pix_pos = board_pos_to_pix_pos(pawn_tween.end_pos.x, pawn_tween.end_pos.y);
-    pawn_sprite->x = pix_pos.x;
-    pawn_sprite->y = pix_pos.y;
+    if (frame_count >= pawn_tween.end_frame) {
+        // done
+        // set real pos to end
+        int pawn_old_pos = board_find_pawn_tile(pawn_tween.pawn_gid);
+        board_move_pawn(pawn_tween.pawn_gid, pawn_old_pos, BOARD_POS(pawn_tween.end_pos.x, pawn_tween.end_pos.y));
 
-    // // cancel anim
-    // memset(&pawn_tween, 0, sizeof(PawnTweenInfo));
-    // pawn_tween.pawn_gid = -1;
+        // clear tween info
+        memset(&pawn_tween, 0, sizeof(PawnTweenInfo));
+        pawn_tween.pawn_gid = -1;
+
+        return;
+    }
+
+    // // get the assigned sprite
+    // int pawn_sprite_ix = *pawn_sprite_ix_out;
+    // Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
+
+    // // just set pos to end
+    // VPos16 pix_pos = board_vpos_to_pix_pos(pawn_tween.end_pos.x, pawn_tween.end_pos.y);
+    // pawn_sprite->x = pix_pos.x;
+    // pawn_sprite->y = pix_pos.y;
 }

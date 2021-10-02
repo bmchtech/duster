@@ -4,7 +4,7 @@ BOOL is_on_board(int tx, int ty) {
     return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
 }
 
-VPos16 board_pos_to_pix_pos(int tx, int ty) {
+VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     VPos16 ret;
     ret.x = board_offset.x + (tx << 3);
     ret.y = board_offset.y + (ty << 3);
