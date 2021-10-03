@@ -62,6 +62,31 @@ void draw_square1(int tx, int ty, int square_sz) {
     schr4c_vline(&bg0_srf, x2, y1 + sq1, y2, 2);
 }
 
+typedef enum {
+    BLOCKED_PATTERN_SOLID,
+    BLOCKED_PATTERN_STRIPE,
+} BlockedPattern;
+
+void draw_blocked_tile(int tx, int ty, BlockedPattern pattern) {
+    int x1 = (board_offset.x) + (tx * 8);
+    int x2 = x1 + 8;
+    int y1 = (board_offset.y) + (ty * 8);
+    int y2 = y1 + 8;
+
+    switch (pattern) {
+    case BLOCKED_PATTERN_SOLID:
+        // filled
+        // schr4c_rect(&bg0_srf, x1, y1, x2, y2, 1);
+    case BLOCKED_PATTERN_STRIPE:
+        // stripes
+        for (int i = 0; i < (y2 - y1); i += 2) {
+            schr4c_hline(&bg0_srf, x1, y1 + i, x2, 1);
+        }
+    default:
+        break;
+    }
+}
+
 void draw_clicked_pawn_graphics() {
     // check if pawn selected
     Pawn* clicked_pawn = get_clicked_pawn();
@@ -118,13 +143,12 @@ void draw_board() {
 
     cc_hashtable_remove_all(pawn2sprite);
 
-    // draw the pawns
+    // go through all tiles
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
             BoardTile* tile = &game_state.board.tiles[BOARD_POS(bx, by)];
             if (tile->pawn_gid >= 0) {
                 // this is a pawn
-
                 // look up the pawn
                 Pawn* pawn = game_get_pawn_by_gid(tile->pawn_gid);
 
@@ -148,6 +172,14 @@ void draw_board() {
                                   });
 
                 pawn_sprite_ix++;
+            }
+            if (tile->terrain > 0) {
+                switch (tile->terrain) {
+                case TERRAIN_BLOCKED:
+                    draw_blocked_tile(bx, by, BLOCKED_PATTERN_STRIPE);
+                default:
+                    break;
+                }
             }
         }
     }
