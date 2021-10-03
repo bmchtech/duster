@@ -95,7 +95,11 @@ void boardscn_start() {
     pawn_tween.pawn_gid = -1; // no pawn
 
     // init data structures
-    cc_hashtable_new(&pawn2sprite);
+    CC_HashTableConf pawn2sprite_conf;
+    cc_hashtable_conf_init(&pawn2sprite_conf);
+    pawn2sprite_conf.hash = GENERAL_HASH;
+    pawn2sprite_conf.key_length = sizeof(int);
+    cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
 
     // set test tween
     // animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
