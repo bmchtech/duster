@@ -32,7 +32,7 @@ void game_init_team(u8 id, const char* name) {
 }
 
 Pawn* game_get_pawn_by_gid(pawn_gid_t pawn_id) {
-    int team_ix = pawn_id / TEAM_MAX_PAWNS; // get which team
+    int team_ix = pawn_id / TEAM_MAX_PAWNS;      // get which team
     int team_pawn_ix = pawn_id % TEAM_MAX_PAWNS; // get which spot in team
 
     // get pawn from team
@@ -159,6 +159,21 @@ BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_p
     // check if dist exceeds max move
     if (start_end_dist > pawn_max_move)
         return FALSE;
+
+    return TRUE;
+}
+
+BOOL pawn_util_is_valid_interaction(pawn_gid_t pawn1_gid, VPos16 pawn1_pos, pawn_gid_t pawn2_gid, VPos16 pawn2_pos) {
+    // ClassData* class_data = pawn_get_classdata(pawn_gid);
+
+    // int pawn_max_move = class_data->move;
+
+    // // check dist from start to end tiles
+    // int start_end_dist = board_dist(start_pos.x, start_pos.y, end_pos.x, end_pos.y);
+
+    // // check if dist exceeds max move
+    // if (start_end_dist > pawn_max_move)
+    //     return FALSE;
 
     return TRUE;
 }

@@ -8,3 +8,7 @@ void game_logic_step() {
 
     
 }
+
+void game_logic_interact() {
+    
+}
