@@ -40,6 +40,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                     // interact with the pawn
                     mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,
                                 dest_tile->pawn_gid);
+                    request_step = TRUE; // request step
                 } else {
                     // request a move anim
                     animate_pawn_move(clicked_pawn_gid, cursor_click_pos, dest_pos);
