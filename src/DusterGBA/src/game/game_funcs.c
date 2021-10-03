@@ -84,6 +84,8 @@ void board_move_pawn(s16 pawn_gid, int start_tile_id, int end_tile_id) {
     board_set_pawn(start_tile_id, -1);
     // set end tile
     board_set_pawn(end_tile_id, pawn_gid);
+
+    game_get_pawn_by_gid(pawn_gid)->last_moved_step = game_state.steps;
 }
 
 void team_set_pawn(Team* team, int id, int class) { team->pawns[id] = (Pawn){.unit_class = class}; }

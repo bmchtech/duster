@@ -20,6 +20,7 @@ typedef struct {
 typedef struct {
     u8 unit_class;
     u8 unit_data;
+    int last_moved_step;
 } Pawn;
 
 typedef struct {
