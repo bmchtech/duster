@@ -136,11 +136,16 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 int* node_stored_shortest_dist;
                 cc_hashtable_get(nodedist, &scan_node, (void*)&node_stored_shortest_dist);
 
+                // debug test set to 1
+                // scan_node_dist = *node_stored_shortest_dist = 1;
+
                 // if the current dist is less, store that instead
                 if (scan_node_dist < *node_stored_shortest_dist) {
                     // mgba_printf(MGBA_LOG_ERROR, "nodedist shortest dist: %d -> %d", *node_stored_shortest_dist,
                     //             scan_node_dist);
                     *node_stored_shortest_dist = scan_node_dist;
+                    ;
+                    cc_hashtable_add(nodedist, &scan_node, node_stored_shortest_dist);
                 } else {
                     // we can update our current value for dist
                     scan_node_dist = *node_stored_shortest_dist;
@@ -196,6 +201,13 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
         int scan_tid = iter_val;
         VPos16 scan_pos = board_util_tile_id_to_pos(scan_tid);
+
+        // check the distance using our shortest path
+        int* scan_tile_shortest_dist;
+        cc_hashtable_get(nodedist, &scan_tid, (void*)&scan_tile_shortest_dist);
+
+        // if (*scan_tile_shortest_dist > range)
+        //     continue;
 
         // ensure not starting point
         if (scan_pos.x == start_tx && scan_pos.y == start_ty)
