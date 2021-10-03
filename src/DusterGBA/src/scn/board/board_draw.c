@@ -97,6 +97,8 @@ void draw_clicked_pawn_graphics() {
 
 void draw_board() {
     if (board_ui_dirty) {
+        board_ui_dirty = false;
+
         // clear whole bg ui surface
         memset32(tile_mem[bg0_srf_cbb], 0, 4096);          // clear cbb
         schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
@@ -109,9 +111,6 @@ void draw_board() {
             draw_board_cursor();
 
         draw_clicked_pawn_graphics();
-
-        // no longer dirty
-        board_ui_dirty = false;
     }
 
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
