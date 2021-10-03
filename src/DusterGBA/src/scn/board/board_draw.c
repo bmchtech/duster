@@ -48,6 +48,20 @@ void draw_footstep(int tx, int ty) {
     schr4c_plot(&bg0_srf, x1 + 5, y1 + 2, 2);
 }
 
+void draw_square1(int tx, int ty, int square_sz) {
+    int sq1 = 0 + square_sz;
+    int sq2 = 7 - square_sz;
+    int x1 = (board_offset.x) + (tx * 8);
+    int x2 = x1 + sq2;
+    int y1 = (board_offset.y) + (ty * 8);
+    int y2 = y1 + sq2;
+
+    schr4c_hline(&bg0_srf, x1 + sq1, y1 + sq1, x2, 2);
+    schr4c_vline(&bg0_srf, x1 + sq1, y1 + sq1, y2, 2);
+    schr4c_hline(&bg0_srf, x1 + sq1, y2, x2, 2);
+    schr4c_vline(&bg0_srf, x2, y1 + sq1, y2, 2);
+}
+
 void draw_board() {
     if (board_ui_dirty) {
         // clear whole bg ui surface
@@ -116,7 +130,12 @@ void draw_board() {
 
         for (int i = 0; i < cache_range_buf_filled; i++) {
             VPos16 fs_pos = cache_range_buf[i];
-            draw_footstep(fs_pos.x, fs_pos.y);
+            if (board_get_pawn(BOARD_POS(fs_pos.x, fs_pos.y))) {
+                // there is a pawn
+                draw_square1(fs_pos.x, fs_pos.y, 2);
+            } else {
+                draw_footstep(fs_pos.x, fs_pos.y);
+            }
         }
 
         // for (int i = -class_data->move; i <= class_data->move; i++) {
