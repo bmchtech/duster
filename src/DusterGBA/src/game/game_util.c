@@ -74,7 +74,13 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     CC_HashSet* visited;
     CC_Deque* queue;
 
-    cc_hashset_new(&visited);
+    // set up hashtable to work with int values
+    CC_HashSetConf conf;
+    cc_hashset_conf_init(&conf);
+    conf.hash = GENERAL_HASH;
+    conf.key_length = sizeof(int);
+
+    cc_hashset_new_conf(&conf, &visited);
     cc_deque_new(&queue);
 
     // 1. initial nodes
@@ -101,16 +107,20 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
             VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
 
-            // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
-            //             scan_node_pos.y);
+            mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
+                        scan_node_pos.y);
 
             // make sure this tile in range
-            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
+            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range) {
+                mgba_printf(MGBA_LOG_ERROR, "bfs failed range test(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
+                            scan_node_pos.y);
                 continue;
+            }
 
             // check if visited
             if (!cc_hashset_contains(visited, &scan_node)) {
-                // mgba_printf(MGBA_LOG_ERROR, "bfs queueing new: %d", scan_node);
+                mgba_printf(MGBA_LOG_ERROR, "bfs queuing neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
+                            scan_node_pos.y);
 
                 // put in storage, then add to queues
                 visit_tile_storage[visit_tile_storage_index] = scan_node;
@@ -129,7 +139,8 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 cc_deque_add_first(queue, scan_node_store);
                 cc_hashset_add(visited, scan_node_store);
             } else {
-                // mgba_printf(MGBA_LOG_ERROR, "bfs neighbor already visited: %d", scan_node);
+                mgba_printf(MGBA_LOG_ERROR, "bfs already visited neighbor(%d): %d (%d, %d)", i, scan_node,
+                            scan_node_pos.x, scan_node_pos.y);
             }
         }
     }
