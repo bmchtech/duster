@@ -12,14 +12,7 @@ Pawn* get_clicked_pawn() {
 }
 
 void on_cursor_try_click(VPos16 try_click_pos) {
-    // check if pawn there
-    if (get_cursor_pawn()) {
-        // there is pawn
-        // set the new click pos
-        cursor_click = TRUE;
-        cursor_click_pos = try_click_pos;
-        set_ui_dirty();
-    } else if (cursor_click) {
+    if (cursor_click) {
         // a pawn is already selected
 
         // get that pawn
@@ -38,8 +31,17 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 if (!is_move_valid)
                     break;
 
-                // request a move anim
-                animate_pawn_move(clicked_pawn_gid, cursor_click_pos, try_click_pos);
+                // now check the dest tile
+                VPos16 dest_pos = try_click_pos;
+
+                BoardTile* dest_tile = board_get_tile(BOARD_POS(dest_pos.x, dest_pos.y));
+                if (dest_tile->pawn_gid >= 0) {
+                    // there is a pawn there
+                    // interact with the pawn
+                } else {
+                    // request a move anim
+                    animate_pawn_move(clicked_pawn_gid, cursor_click_pos, dest_pos);
+                }
 
                 // now unclick and set dirty
                 cursor_click = FALSE;
@@ -52,6 +54,13 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // if we got here, then the click wasn't within range
         // unclick
         cursor_click = FALSE;
+        set_ui_dirty();
+    } else if (get_cursor_pawn()) {
+        // check if pawn there
+        // there is pawn
+        // set the new click pos
+        cursor_click = TRUE;
+        cursor_click_pos = try_click_pos;
         set_ui_dirty();
     }
 }
