@@ -56,16 +56,22 @@ tile_neighbors_t board_util_get_neighbors(int tile_id) {
     return ret;
 }
 
+typedef struct {
+    int tile_id;
+    int dist;
+} BFSVisitStorage;
+
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len) {
     // clear rangebuf
     memset(pos_buf, 0, sizeof(VPos16) * pos_buf_len);
     int pos_buf_ix = 0;
 
     int start_tid = BOARD_POS(start_tx, start_ty);
+    int start_dist = 0;
 
     // storage for intermediate positions
     const int visit_tile_storage_size = 256;
-    int visit_tile_storage[visit_tile_storage_size];
+    BFSVisitStorage visit_tile_storage[visit_tile_storage_size];
     int visit_tile_storage_index = 0;
 
     // do BFS
@@ -73,25 +79,37 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     // 0. data structures
     CC_HashSet* visited;
     CC_Deque* queue;
+    CC_HashTable* nodedist;
 
     // set up hashtable to work with int values
-    CC_HashSetConf conf;
-    cc_hashset_conf_init(&conf);
-    conf.hash = GENERAL_HASH;
-    conf.key_length = sizeof(int);
+    CC_HashSetConf visited_conf;
+    cc_hashset_conf_init(&visited_conf);
+    visited_conf.hash = GENERAL_HASH;
+    visited_conf.key_length = sizeof(int);
+    cc_hashset_new_conf(&visited_conf, &visited);
 
-    cc_hashset_new_conf(&conf, &visited);
     cc_deque_new(&queue);
+
+    CC_HashTableConf nodedist_conf;
+    cc_hashtable_conf_init(&nodedist_conf);
+    nodedist_conf.hash = GENERAL_HASH;
+    nodedist_conf.key_length = sizeof(int);
+    cc_hashtable_new_conf(&nodedist_conf, &nodedist);
 
     // 1. initial nodes
     cc_deque_add_first(queue, &start_tid);
     cc_hashset_add(visited, &start_tid);
+    cc_hashtable_add(nodedist, &start_tid, &start_dist);
 
     // 2. iterate
     while (cc_deque_size(queue) > 0) {
-        int* s_out;
-        cc_deque_remove_first(queue, (void*)&s_out);
-        int curr_node = *s_out;
+        int* curr_node_out;
+        cc_deque_remove_first(queue, (void*)&curr_node_out);
+        int curr_node = *curr_node_out;
+
+        int* curr_node_dist_out;
+        cc_hashtable_get(nodedist, curr_node_out, (void*)&curr_node_dist_out);
+        int curr_node_dist = *curr_node_dist_out;
 
         // mgba_printf(MGBA_LOG_ERROR, "bfs deque get: %d", curr_node);
 
@@ -105,17 +123,20 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             if (scan_node < 0)
                 continue; // invalid
 
-            VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
+            // calculate scan node values
+            int scan_node_dist = curr_node_dist + 1;
+            // VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
 
             // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
             //             scan_node_pos.y);
 
             // make sure this tile in range
-            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range) {
-                // mgba_printf(MGBA_LOG_ERROR, "bfs failed range test(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
-                //             scan_node_pos.y);
+            // shortest dist method
+            if (scan_node_dist > range)
                 continue;
-            }
+            // board dist method
+            // if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
+            //     continue;
 
             // make sure this tile is walkable
             Terrain terrain = board_get_terrain(scan_node);
@@ -128,10 +149,11 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 //             scan_node_pos.y);
 
                 // put in storage, then add to queues
-                visit_tile_storage[visit_tile_storage_index] = scan_node;
+                BFSVisitStorage* storage_slot = &visit_tile_storage[visit_tile_storage_index];
 
-                // version stored in pos mem
-                int* scan_node_store = &visit_tile_storage[visit_tile_storage_index];
+                // set storage slot values
+                storage_slot->tile_id = scan_node;
+                storage_slot->dist = scan_node_dist;
 
                 // ensure pos mem storage has space
                 visit_tile_storage_index++;
@@ -141,8 +163,9 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 }
 
                 // now add to lists
-                cc_deque_add_first(queue, scan_node_store);
-                cc_hashset_add(visited, scan_node_store);
+                cc_deque_add_first(queue, &storage_slot->tile_id);
+                cc_hashset_add(visited, &storage_slot->tile_id);
+                cc_hashtable_add(nodedist, &storage_slot->tile_id, &storage_slot->dist);
             } else {
                 // mgba_printf(MGBA_LOG_ERROR, "bfs already visited neighbor(%d): %d (%d, %d)", i, scan_node,
                 //             scan_node_pos.x, scan_node_pos.y);
@@ -211,6 +234,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     // clean up
     cc_hashset_destroy(visited);
     cc_deque_destroy(queue);
+    cc_hashtable_destroy(nodedist);
 
     return pos_buf_ix;
 }
