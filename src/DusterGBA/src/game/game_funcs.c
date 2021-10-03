@@ -21,8 +21,7 @@ void game_init_board(u8 board_size) {
 
     // clear all board tiles
     for (int i = 0; i < MAX_BOARD_SIZE * MAX_BOARD_SIZE; i++) {
-        game_state.board.tiles[i].pawn_gid = -1;
-        game_state.board.tiles[i].terrain = TERRAIN_GROUND;
+        game_state.board.tiles[i] = (BoardTile){.pawn_gid = -1, .terrain = TERRAIN_GROUND};
     }
 }
 
