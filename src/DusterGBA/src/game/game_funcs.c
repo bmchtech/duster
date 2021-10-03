@@ -19,8 +19,11 @@ void game_init() {
 void game_init_board(u8 board_size) {
     game_state.board_size = board_size;
 
-    // set whole board to -1 (no pawn)
-    memset32(&game_state.board, -1, sizeof(GameBoard) / 4);
+    // clear all board tiles
+    for (int i = 0; i < MAX_BOARD_SIZE * MAX_BOARD_SIZE; i++) {
+        game_state.board.tiles[i].pawn_gid = -1;
+        game_state.board.tiles[i].terrain = TERRAIN_GROUND;
+    }
 }
 
 void game_init_team(u8 id, const char* name) {

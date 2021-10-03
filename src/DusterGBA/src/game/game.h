@@ -12,8 +12,8 @@
 typedef s16 pawn_gid_t;
 
 typedef enum {
-    GROUND,
-    BLOCKED,
+    TERRAIN_GROUND,
+    TERRAIN_BLOCKED,
 } Terrain;
 
 typedef struct {

@@ -88,6 +88,10 @@ void boardscn_start() {
 
     board_set_pawn(BOARD_POS(2, 9), PAWN_GID(1, 0));
 
+    board_set_terrain(BOARD_POS(1, 3), TERRAIN_BLOCKED);
+    board_set_terrain(BOARD_POS(2, 3), TERRAIN_BLOCKED);
+    board_set_terrain(BOARD_POS(3, 3), TERRAIN_BLOCKED);
+
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
     cursor_pos = (VPos16){.x = 0, .y = 0};
