@@ -99,18 +99,18 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             if (scan_node < 0)
                 continue; // invalid
 
-            // make sure this tile is in range
             VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
+
+            // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
+            //             scan_node_pos.y);
 
             // make sure this tile in range
             if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
                 continue;
 
-            // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor: %d", scan_node);
-
             // check if visited
             if (!cc_hashset_contains(visited, &scan_node)) {
-                mgba_printf(MGBA_LOG_ERROR, "bfs queueing new: %d", scan_node);
+                // mgba_printf(MGBA_LOG_ERROR, "bfs queueing new: %d", scan_node);
 
                 // put in storage, then add to queues
                 visit_tile_storage[visit_tile_storage_index] = scan_node;
@@ -140,18 +140,17 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     void* visited_iter_next;
     while (cc_hashset_iter_next(&visited_iter, &visited_iter_next) != CC_ITER_END) {
         int iter_val = *(int*)visited_iter_next;
-        mgba_printf(MGBA_LOG_ERROR, "visited iter: %d", iter_val);
+        // mgba_printf(MGBA_LOG_ERROR, "visited iter: %d", iter_val);
 
         int scan_tid = iter_val;
         VPos16 scan_pos = board_util_tile_id_to_pos(scan_tid);
 
+        // ensure not starting point
         if (scan_pos.x == start_tx && scan_pos.y == start_ty)
             continue;
+        // ensure on board
         if (!board_util_is_on_board(scan_pos.x, scan_pos.y))
             continue;
-
-        // if (board_dist(start_tx, start_ty, scan_tx, scan_ty) > range)
-        //     continue;
 
         // // make sure no other pawn is there
         // if (board_get_pawn(BOARD_POS(scan_pos.x, scan_pos.y)))
