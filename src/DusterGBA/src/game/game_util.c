@@ -125,18 +125,14 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
             // calculate scan node values
             int scan_node_dist = curr_node_dist + 1;
-            // VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
+            VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
 
             // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
             //             scan_node_pos.y);
 
             // make sure this tile in range
-            // shortest dist method
-            if (scan_node_dist > range)
+            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
                 continue;
-            // board dist method
-            // if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
-            //     continue;
 
             // make sure this tile is walkable
             Terrain terrain = board_get_terrain(scan_node);
