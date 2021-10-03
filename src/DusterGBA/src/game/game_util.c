@@ -130,6 +130,23 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
             //             scan_node_pos.y);
 
+            // try to update shortest path (nodedist)
+            if (cc_hashtable_contains_key(nodedist, &scan_node)) {
+                // this node has been seen before, let's look at the stored shortest dist
+                int* node_stored_shortest_dist;
+                cc_hashtable_get(nodedist, &scan_node, (void*)&node_stored_shortest_dist);
+
+                // if the current dist is less, store that instead
+                if (scan_node_dist < *node_stored_shortest_dist) {
+                    // mgba_printf(MGBA_LOG_ERROR, "nodedist shortest dist: %d -> %d", *node_stored_shortest_dist,
+                    //             scan_node_dist);
+                    *node_stored_shortest_dist = scan_node_dist;
+                } else {
+                    // we can update our current value for dist
+                    scan_node_dist = *node_stored_shortest_dist;
+                }
+            }
+
             // make sure this tile in range
             if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
                 continue;
