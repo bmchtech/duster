@@ -54,8 +54,8 @@ typedef struct {
 extern GameState game_state;
 extern GameColdData game_data;
 
-#define BOARD_POS(x, y) (y * MAX_BOARD_SIZE + x)
-#define PAWN_GID(team, pawn) (team * TEAM_MAX_PAWNS + pawn)
+#define BOARD_POS(x, y) ((y) * MAX_BOARD_SIZE + (x))
+#define PAWN_GID(team, pawn) ((team) * TEAM_MAX_PAWNS + (pawn))
 
 void game_clear_state();
 void game_load_cold_data();
