@@ -38,6 +38,8 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 if (dest_tile->pawn_gid >= 0) {
                     // there is a pawn there
                     // interact with the pawn
+                    mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,
+                                dest_tile->pawn_gid);
                 } else {
                     // request a move anim
                     animate_pawn_move(clicked_pawn_gid, cursor_click_pos, dest_pos);
