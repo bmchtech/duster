@@ -216,34 +216,6 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             return pos_buf_ix;
     }
 
-    // // scan in square
-    // for (int i = -range; i <= range; i++) {
-    //     for (int j = -range; j <= range; j++) {
-    //         if (i == 0 && j == 0)
-    //             continue;
-
-    //         int scan_tx = start_tx + i;
-    //         int scan_ty = start_ty + j;
-    //         if (!board_util_is_on_board(scan_tx, scan_ty))
-    //             continue;
-
-    //         if (board_dist(start_tx, start_ty, scan_tx, scan_ty) > range)
-    //             continue;
-
-    //         // // make sure no other pawn is there
-    //         // if (board_get_pawn(BOARD_POS(scan_tx, scan_ty)))
-    //         //     continue;
-
-    //         // this is in range
-    //         pos_buf[pos_buf_ix] = (VPos16){.x = scan_tx, .y = scan_ty};
-    //         pos_buf_ix++;
-
-    //         // if pos buf is full, leave
-    //         if (pos_buf_ix >= pos_buf_len - 1)
-    //             return pos_buf_ix;
-    //     }
-    // }
-
     // clean up
     cc_hashset_destroy(visited);
     cc_deque_destroy(queue);
