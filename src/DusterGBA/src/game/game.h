@@ -11,8 +11,14 @@
 
 typedef s16 pawn_gid_t;
 
+typedef enum {
+    GROUND,
+    BLOCKED,
+} Terrain;
+
 typedef struct {
     pawn_gid_t pawn_gid;
+    Terrain terrain;
 } BoardTile;
 
 typedef struct {
@@ -69,6 +75,7 @@ int board_find_pawn_tile(pawn_gid_t pawn_gid);
 BoardTile* board_get_tile(int tile_id);
 Pawn* board_get_pawn(int tile_id);
 void board_set_pawn(int tile_id, pawn_gid_t pawn_gid);
+void board_set_terrain(int tile_id, Terrain terrain);
 void board_move_pawn(pawn_gid_t pawn_gid, int start_tile_id, int end_tile_id);
 
 int board_dist(int tx1, int ty1, int tx2, int ty2);

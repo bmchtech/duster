@@ -79,6 +79,12 @@ void board_set_pawn(int tile_id, pawn_gid_t pawn_gid) {
     tile->pawn_gid = pawn_gid;
 }
 
+void board_set_terrain(int tile_id, Terrain terrain) {
+    BoardTile* tile = board_get_tile(tile_id);
+
+    tile->terrain = terrain;
+}
+
 void board_move_pawn(pawn_gid_t pawn_gid, int start_tile_id, int end_tile_id) {
     // clear start tile
     board_set_pawn(start_tile_id, -1);
