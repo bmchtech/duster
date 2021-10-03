@@ -64,9 +64,9 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     int start_tid = BOARD_POS(start_tx, start_ty);
 
     // storage for intermediate positions
-    const int pos_mem_size = 256;
-    int pos_mem[pos_mem_size];
-    int pos_mem_index = 0;
+    const int visit_tile_storage_size = 256;
+    int visit_tile_storage[visit_tile_storage_size];
+    int visit_tile_storage_index = 0;
 
     // do BFS
 
@@ -96,25 +96,31 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         for (int i = 0; i < 4; i++) {
             int scan_node = tn.neighbors[i];
 
-            if (scan_node < 0) continue; // invalid
+            if (scan_node < 0)
+                continue; // invalid
+
+            // make sure this tile is in range
+            VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
+
+            // make sure this tile in range
+            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
+                continue;
 
             // mgba_printf(MGBA_LOG_ERROR, "bfs checking neighbor: %d", scan_node);
-
-            return -1;
 
             // check if visited
             if (!cc_hashset_contains(visited, &scan_node)) {
                 mgba_printf(MGBA_LOG_ERROR, "bfs queueing new: %d", scan_node);
 
                 // put in storage, then add to queues
-                pos_mem[pos_mem_index] = scan_node;
+                visit_tile_storage[visit_tile_storage_index] = scan_node;
 
                 // version stored in pos mem
-                int* scan_node_store = &pos_mem[pos_mem_index];
+                int* scan_node_store = &visit_tile_storage[visit_tile_storage_index];
 
                 // ensure pos mem storage has space
-                pos_mem_index++;
-                if (pos_mem_index >= pos_mem_size) {
+                visit_tile_storage_index++;
+                if (visit_tile_storage_index >= visit_tile_storage_size) {
                     mgba_printf(MGBA_LOG_ERROR, "bfs error, pos mem out of space");
                     return -1;
                 }
@@ -126,6 +132,37 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 // mgba_printf(MGBA_LOG_ERROR, "bfs neighbor already visited: %d", scan_node);
             }
         }
+    }
+
+    // copy visited data to pos buf
+    CC_HashSetIter visited_iter;
+    cc_hashset_iter_init(&visited_iter, visited);
+    void* visited_iter_next;
+    while (cc_hashset_iter_next(&visited_iter, &visited_iter_next) != CC_ITER_END) {
+        int iter_val = *(int*)visited_iter_next;
+        mgba_printf(MGBA_LOG_ERROR, "visited iter: %d", iter_val);
+
+        int scan_tid = iter_val;
+        VPos16 scan_pos = board_util_tile_id_to_pos(scan_tid);
+
+        if (scan_pos.x == start_tx && scan_pos.y == start_ty)
+            continue;
+        if (!board_util_is_on_board(scan_pos.x, scan_pos.y))
+            continue;
+
+        // if (board_dist(start_tx, start_ty, scan_tx, scan_ty) > range)
+        //     continue;
+
+        // // make sure no other pawn is there
+        // if (board_get_pawn(BOARD_POS(scan_pos.x, scan_pos.y)))
+        //     continue;
+
+        pos_buf[pos_buf_ix] = scan_pos;
+        pos_buf_ix++;
+
+        // if pos buf is full, leave
+        if (pos_buf_ix >= pos_buf_len - 1)
+            return pos_buf_ix;
     }
 
     // // scan in square
