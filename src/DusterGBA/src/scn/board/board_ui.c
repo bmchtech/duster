@@ -41,8 +41,6 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 // request a move anim
                 animate_pawn_move(clicked_pawn_gid, cursor_click_pos, try_click_pos);
 
-                request_step = TRUE; // step
-
                 // now unclick and set dirty
                 cursor_click = FALSE;
                 set_ui_dirty();

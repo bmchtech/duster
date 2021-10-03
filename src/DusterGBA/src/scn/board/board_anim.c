@@ -53,6 +53,8 @@ void update_pawn_tween() {
         int pawn_old_pos = board_find_pawn_tile(pawn_tween.pawn_gid);
         board_move_pawn(pawn_tween.pawn_gid, pawn_old_pos, BOARD_POS(pawn_tween.end_pos.x, pawn_tween.end_pos.y));
 
+        request_step = TRUE; // step
+
         // clear tween info
         memset(&pawn_tween, 0, sizeof(PawnTweenInfo));
         pawn_tween.pawn_gid = -1;
