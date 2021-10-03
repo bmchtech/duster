@@ -62,6 +62,39 @@ void draw_square1(int tx, int ty, int square_sz) {
     schr4c_vline(&bg0_srf, x2, y1 + sq1, y2, 2);
 }
 
+void draw_clicked_pawn_graphics() {
+    // check if pawn selected
+    Pawn* clicked_pawn = get_clicked_pawn();
+    if (cursor_click && clicked_pawn) {
+        VPos16 pawn_pos = cursor_click_pos;
+        ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
+
+        // draw footsteps for all tiles in range
+        cache_range_buf_filled =
+            board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, cache_range_buf, CACHE_RANGE_BUF_LEN);
+
+        if (cache_range_buf_filled > 0) {
+            // range buf is filled
+            for (int i = 0; i < cache_range_buf_filled; i++) {
+                VPos16 fs_pos = cache_range_buf[i];
+                if (board_get_pawn(BOARD_POS(fs_pos.x, fs_pos.y))) {
+                    // there is a pawn
+                    draw_square1(fs_pos.x, fs_pos.y, 2);
+                } else {
+                    draw_footstep(fs_pos.x, fs_pos.y);
+                }
+            }
+        } else {
+            // calc range failed
+            mgba_printf(MGBA_LOG_ERROR, "calculate range buf for pawn %d failed (code %d)!", get_clicked_pawn_gid(),
+                        cache_range_buf_filled);
+            // unclick
+            cursor_click = FALSE;
+            set_ui_dirty();
+        }
+    }
+}
+
 void draw_board() {
     if (board_ui_dirty) {
         // clear whole bg ui surface
@@ -74,6 +107,8 @@ void draw_board() {
         // draw cursor
         if (cursor_shown)
             draw_board_cursor();
+
+        draw_clicked_pawn_graphics();
 
         // no longer dirty
         board_ui_dirty = false;
@@ -116,44 +151,6 @@ void draw_board() {
                 pawn_sprite_ix++;
             }
         }
-    }
-
-    // check if pawn selected
-    Pawn* clicked_pawn = get_clicked_pawn();
-    if (cursor_click && clicked_pawn) {
-        VPos16 pawn_pos = cursor_click_pos;
-        ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
-
-        // draw footsteps for all tiles in range
-        cache_range_buf_filled =
-            board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, cache_range_buf, CACHE_RANGE_BUF_LEN);
-
-        for (int i = 0; i < cache_range_buf_filled; i++) {
-            VPos16 fs_pos = cache_range_buf[i];
-            if (board_get_pawn(BOARD_POS(fs_pos.x, fs_pos.y))) {
-                // there is a pawn
-                draw_square1(fs_pos.x, fs_pos.y, 2);
-            } else {
-                draw_footstep(fs_pos.x, fs_pos.y);
-            }
-        }
-
-        // for (int i = -class_data->move; i <= class_data->move; i++) {
-        //     for (int j = -class_data->move; j <= class_data->move; j++) {
-        //         if (i == 0 && j == 0)
-        //             continue;
-
-        //         int tx = pawn_pos.x + i;
-        //         int ty = pawn_pos.y + j;
-        //         if (!is_on_board(tx, ty))
-        //             continue;
-
-        //         if (board_dist(pawn_pos.x, pawn_pos.y, tx, ty) > class_data->move)
-        //             continue;
-
-        //         draw_footstep(tx, ty);
-        //     }
-        // }
     }
 
     // // for each team
