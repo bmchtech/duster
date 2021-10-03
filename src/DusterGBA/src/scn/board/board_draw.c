@@ -179,12 +179,17 @@ void draw_sidebar() {
 
     // currently hovered pawn
     Pawn* clicked_pawn = get_clicked_pawn();
+    pawn_gid_t clicked_pawn_gid = get_clicked_pawn_gid();
 
     if (cursor_click && clicked_pawn) {
         // show pawn info
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
-        
+
+        int pawn_team_ix = clicked_pawn_gid / TEAM_MAX_PAWNS;
+
         tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
         tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
+        tte_printf("#{P:142,22}#{ci:1}team: %d", pawn_team_ix);
+        tte_printf("#{P:142,30}#{ci:1}gid: %d", clicked_pawn_gid);
     }
 }

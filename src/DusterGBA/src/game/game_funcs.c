@@ -32,8 +32,8 @@ void game_init_team(u8 id, const char* name) {
 }
 
 Pawn* game_get_pawn_by_gid(pawn_gid_t pawn_id) {
-    int team_ix = pawn_id / TEAM_MAX_PAWNS;
-    int team_pawn_ix = pawn_id % TEAM_MAX_PAWNS;
+    int team_ix = pawn_id / TEAM_MAX_PAWNS; // get which team
+    int team_pawn_ix = pawn_id % TEAM_MAX_PAWNS; // get which spot in team
 
     // get pawn from team
     Team* team = &game_state.teams[team_ix];
