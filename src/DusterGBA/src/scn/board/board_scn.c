@@ -98,7 +98,7 @@ void boardscn_start() {
     CC_HashTableConf pawn2sprite_conf;
     cc_hashtable_conf_init(&pawn2sprite_conf);
     pawn2sprite_conf.hash = GENERAL_HASH;
-    pawn2sprite_conf.key_length = sizeof(int);
+    pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
 
     // set test tween

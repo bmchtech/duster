@@ -20,7 +20,7 @@ typedef struct {
 } PawnTweenInfo;
 
 typedef struct {
-    int pawn_gid;
+    pawn_gid_t pawn_gid;
     int sprite;
 } SpritePawnPair;
 
