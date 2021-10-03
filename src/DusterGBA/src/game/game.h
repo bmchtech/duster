@@ -20,8 +20,12 @@ typedef struct {
 } GameBoard;
 
 typedef struct {
+    u8 unused0;
+} UnitData;
+
+typedef struct {
     u8 unit_class;
-    u8 unit_data;
+    UnitData unit_data;
     int last_moved_step;
 } Pawn;
 
