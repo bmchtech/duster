@@ -117,6 +117,11 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 continue;
             }
 
+            // make sure this tile is walkable
+            Terrain terrain = board_get_terrain(scan_node);
+            if (terrain != TERRAIN_GROUND)
+                continue;
+
             // check if visited
             if (!cc_hashset_contains(visited, &scan_node)) {
                 // mgba_printf(MGBA_LOG_ERROR, "bfs queuing neighbor(%d): %d (%d, %d)", i, scan_node, scan_node_pos.x,
