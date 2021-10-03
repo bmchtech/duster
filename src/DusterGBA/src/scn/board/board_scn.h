@@ -54,8 +54,9 @@ void draw_board();
 void draw_sidebar();
 
 Pawn* get_cursor_pawn();
+pawn_gid_t get_clicked_pawn_gid();
 Pawn* get_clicked_pawn();
 void on_cursor_try_click(VPos16 click_pos);
 
-void animate_pawn_move(s16 pawn_gid, VPos16 start_pos, VPos16 end_pos);
+void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
 void update_pawn_tween();

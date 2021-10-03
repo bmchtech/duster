@@ -5,6 +5,13 @@ Pawn* get_cursor_pawn() {
         return NULL;
     return board_get_pawn(BOARD_POS(cursor_pos.x, cursor_pos.y));
 }
+
+pawn_gid_t get_clicked_pawn_gid() {
+    if (!cursor_click)
+        return -1;
+    return board_get_tile(BOARD_POS(cursor_click_pos.x, cursor_click_pos.y))->pawn_gid;
+}
+
 Pawn* get_clicked_pawn() {
     if (!cursor_click)
         return NULL;
@@ -18,7 +25,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // get that pawn
         // Pawn* clicked_pawn = get_clicked_pawn();
         // get pawn gid
-        int clicked_pawn_gid = board_get_tile(BOARD_POS(cursor_click_pos.x, cursor_click_pos.y))->pawn_gid;
+        int clicked_pawn_gid = get_clicked_pawn_gid();
 
         // then check if the click is within the range
         for (int i = 0; i < cache_range_buf_filled; i++) {

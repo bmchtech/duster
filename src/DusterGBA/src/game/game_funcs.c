@@ -31,7 +31,7 @@ void game_init_team(u8 id, const char* name) {
     memset32(team->pawns, 0, sizeof(team->pawns) / 4);
 }
 
-Pawn* game_get_pawn_by_gid(s16 pawn_id) {
+Pawn* game_get_pawn_by_gid(pawn_gid_t pawn_id) {
     int team_ix = pawn_id / TEAM_MAX_PAWNS;
     int team_pawn_ix = pawn_id % TEAM_MAX_PAWNS;
 
@@ -42,7 +42,7 @@ Pawn* game_get_pawn_by_gid(s16 pawn_id) {
     return pawn;
 }
 
-int board_find_pawn_tile(s16 pawn_gid) {
+int board_find_pawn_tile(pawn_gid_t pawn_gid) {
     for (int by = 0; by < game_state.board_size; by++) {
         for (int bx = 0; bx < game_state.board_size; bx++) {
             int curr_tid = BOARD_POS(bx, by);
@@ -64,7 +64,7 @@ BoardTile* board_get_tile(int tile_id) {
 
 Pawn* board_get_pawn(int tile_id) {
     BoardTile* tile = board_get_tile(tile_id);
-    s16 pawn_gid = tile->pawn_gid;
+    pawn_gid_t pawn_gid = tile->pawn_gid;
 
     // this means there is no pawn
     if (pawn_gid == -1)
@@ -73,13 +73,13 @@ Pawn* board_get_pawn(int tile_id) {
     return game_get_pawn_by_gid(pawn_gid);
 }
 
-void board_set_pawn(int tile_id, s16 pawn_gid) {
+void board_set_pawn(int tile_id, pawn_gid_t pawn_gid) {
     BoardTile* tile = board_get_tile(tile_id);
 
     tile->pawn_gid = pawn_gid;
 }
 
-void board_move_pawn(s16 pawn_gid, int start_tile_id, int end_tile_id) {
+void board_move_pawn(pawn_gid_t pawn_gid, int start_tile_id, int end_tile_id) {
     // clear start tile
     board_set_pawn(start_tile_id, -1);
     // set end tile
@@ -140,7 +140,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     return pos_buf_ix;
 }
 
-ClassData* pawn_get_classdata(s16 pawn_gid) {
+ClassData* pawn_get_classdata(pawn_gid_t pawn_gid) {
     Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
 
     ClassData* class_data = &game_data.class_data[pawn->unit_class];
@@ -148,7 +148,7 @@ ClassData* pawn_get_classdata(s16 pawn_gid) {
     return class_data;
 }
 
-BOOL pawn_util_is_valid_move(s16 pawn_gid, VPos16 start_pos, VPos16 end_pos) {
+BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
     ClassData* class_data = pawn_get_classdata(pawn_gid);
 
     int pawn_max_move = class_data->move;

@@ -183,6 +183,7 @@ void draw_sidebar() {
     if (cursor_click && clicked_pawn) {
         // show pawn info
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
+        
         tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
         tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
     }
