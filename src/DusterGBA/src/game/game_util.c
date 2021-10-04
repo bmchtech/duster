@@ -4,6 +4,7 @@
 #include <tonc.h>
 #include "cold_data.h"
 #include "cc_queue.h"
+#include "cc_pqueue.h"
 #include "cc_hashset.h"
 #include "contrib/mgba.h"
 
@@ -60,6 +61,24 @@ typedef struct {
     int tile_id;
 } BFSVisitStorage;
 
+typedef struct {
+    int dist;
+    int ix;
+} DijkstraStorage;
+
+typedef struct {
+    int value;
+    int prio;
+    int ix;
+} PQueuePair;
+
+static int pqueue_pair_cmp(const void* a, const void* b) {
+    PQueuePair* a1 = (PQueuePair*)a;
+    PQueuePair* b1 = (PQueuePair*)b;
+
+    return a1->prio - b1->prio;
+}
+
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len) {
     // clear rangebuf
     memset(pos_buf, 0, sizeof(VPos16) * pos_buf_len);
@@ -109,7 +128,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
             // calculate scan node values
             VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
-            
+
             // make sure this tile in range
             if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
                 continue;
@@ -143,12 +162,41 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
     // dijkstra
     CC_HashTable* nodedist;
+    CC_PQueue* unvisited;
+
+    const int dij_storage_size = 256;
+    DijkstraStorage dij_storage[dij_storage_size];
+    PQueuePair pair_storage[dij_storage_size];
+    int dij_storage_index = 0;
 
     CC_HashTableConf nodedist_conf;
     cc_hashtable_conf_init(&nodedist_conf);
     nodedist_conf.hash = GENERAL_HASH;
     nodedist_conf.key_length = sizeof(int);
     cc_hashtable_new_conf(&nodedist_conf, &nodedist);
+
+    cc_pqueue_new(&unvisited, pqueue_pair_cmp);
+
+    // add all nodes to unvisited
+    CC_HashSetIter visited_iter_dij;
+    cc_hashset_iter_init(&visited_iter_dij, visited);
+    void* visited_iter_dij_next;
+    while (cc_hashset_iter_next(&visited_iter_dij, &visited_iter_dij_next) != CC_ITER_END) {
+        int iter_val = *(int*)visited_iter_dij_next;
+
+        DijkstraStorage* st1 = &dij_storage[dij_storage_index];
+        PQueuePair* p1 = &pair_storage[dij_storage_index];
+
+        st1->dist = 99999;
+
+        st1->ix = dij_storage_index;
+
+        p1->ix = dij_storage_index;
+        p1->prio = st1->dist;
+        p1->value = dij_storage_index;
+
+        dij_storage_index++;
+    }
 
     // copy visited data to pos buf
     CC_HashSetIter visited_iter;
@@ -194,6 +242,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     cc_hashset_destroy(visited);
     cc_deque_destroy(queue);
     cc_hashtable_destroy(nodedist);
+    cc_pqueue_destroy(unvisited);
 
     return pos_buf_ix;
 }
