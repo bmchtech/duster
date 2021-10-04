@@ -95,9 +95,22 @@ void draw_clicked_pawn_graphics() {
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
 
         // draw footsteps for all tiles in range
-        cache_range_buf_filled =
-            board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, cache_range_buf, CACHE_RANGE_BUF_LEN);
 
+        // compute range buf if needed
+        if (pawn_move_range_dirty) {
+            cache_range_buf_filled = board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, cache_range_buf,
+                                                              CACHE_RANGE_BUF_LEN);
+            if (cache_range_buf_filled <= 0) {
+                // calc range failed
+                mgba_printf(MGBA_LOG_ERROR, "calculate range buf for pawn %d failed (code %d)!", get_clicked_pawn_gid(),
+                            cache_range_buf_filled);
+                // unclick
+                cursor_click = FALSE;
+                set_ui_dirty();
+            }
+        }
+
+        // draw from cached buf
         if (cache_range_buf_filled > 0) {
             // range buf is filled
             for (int i = 0; i < cache_range_buf_filled; i++) {
@@ -109,13 +122,6 @@ void draw_clicked_pawn_graphics() {
                     draw_footstep(fs_pos.x, fs_pos.y);
                 }
             }
-        } else {
-            // calc range failed
-            mgba_printf(MGBA_LOG_ERROR, "calculate range buf for pawn %d failed (code %d)!", get_clicked_pawn_gid(),
-                        cache_range_buf_filled);
-            // unclick
-            cursor_click = FALSE;
-            set_ui_dirty();
         }
     }
 }

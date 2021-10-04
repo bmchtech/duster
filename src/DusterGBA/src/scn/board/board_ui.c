@@ -71,6 +71,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // set the new click pos
         cursor_click = TRUE;
         cursor_click_pos = try_click_pos;
+        pawn_move_range_dirty = TRUE;
         set_ui_dirty();
     }
 }

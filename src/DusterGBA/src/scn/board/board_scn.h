@@ -44,6 +44,7 @@ extern SpritePawnPair sprite_pawn_pairs[128];
 extern VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
 extern int cache_range_buf_filled;
 extern BOOL request_step;
+extern BOOL pawn_move_range_dirty;
 
 void set_ui_dirty();
 
