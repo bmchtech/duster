@@ -40,14 +40,45 @@ void on_cursor_try_click(VPos16 try_click_pos) {
 
                 // now check the dest tile
                 VPos16 dest_pos = try_click_pos;
+                int dest_tid = BOARD_POS(dest_pos.x, dest_pos.y);
 
-                BoardTile* dest_tile = board_get_tile(BOARD_POS(dest_pos.x, dest_pos.y));
+                BoardTile* dest_tile = board_get_tile(dest_tid);
                 if (dest_tile->pawn_gid >= 0) {
                     // there is a pawn there
-                    // interact with the pawn
-                    mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,
-                                dest_tile->pawn_gid);
-                    request_step = TRUE; // request step
+
+                    // try to move to the closest neighboring tile
+                    tile_neighbors_t nb = board_util_get_neighbors(dest_tid);
+
+                    int closest_neighbor_tid = -1;
+                    int closest_neighbor_dist = -1;
+
+                    for (int j = 0; j < 4; j++) {
+                        int nb_tid = nb.neighbors[j];
+                        if (nb_tid < 0)
+                            continue;
+
+                        VPos16 nb_pos = board_util_tile_id_to_pos(nb_tid);
+                        int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos.y);
+
+                        if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
+                            closest_neighbor_dist = nb_test_dist;
+                            closest_neighbor_tid = nb_tid;
+                        }
+                    }
+
+                    if (closest_neighbor_tid) {
+                        // we have a valid intermediate
+                        VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(closest_neighbor_tid);
+                        animate_pawn_move(clicked_pawn_gid, cursor_click_pos, interact_itmdt_pos);
+
+                        // interact with the pawn
+                        mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,
+                                    dest_tile->pawn_gid);
+
+                        // request_step = TRUE; // request step
+                    } else {
+                        // we can't reach this pawn, give up
+                    }
                 } else {
                     // request a move anim
                     animate_pawn_move(clicked_pawn_gid, cursor_click_pos, dest_pos);

@@ -57,11 +57,15 @@ typedef struct {
     ClassData* class_data;
 } GameColdData;
 
+typedef struct {
+    int neighbors[4];
+} tile_neighbors_t;
+
 extern GameState game_state;
 extern GameColdData game_data;
 
-#define BOARD_POS(x, y) ((y) * MAX_BOARD_SIZE + (x))
-#define PAWN_GID(team, pawn) ((team) * TEAM_MAX_PAWNS + (pawn))
+#define BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
+#define PAWN_GID(team, pawn) ((team)*TEAM_MAX_PAWNS + (pawn))
 #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
 #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
 
@@ -82,16 +86,19 @@ void board_set_terrain(int tile_id, Terrain terrain);
 Terrain board_get_terrain(int tile_id);
 
 int board_dist(int tx1, int ty1, int tx2, int ty2);
-VPos16 board_util_tile_id_to_pos(int tile_id);
 
 void team_set_pawn(Team* team, int id, int class);
 
-BOOL board_util_is_on_board(int tx, int ty);
-int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);
-
 ClassData* pawn_get_classdata(pawn_gid_t pawn_gid);
-BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
 
 // LOGIC
 
 void game_logic_step();
+
+// UTIL
+
+BOOL board_util_is_on_board(int tx, int ty);
+VPos16 board_util_tile_id_to_pos(int tile_id);
+tile_neighbors_t board_util_get_neighbors(int tile_id);
+int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);
+BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);

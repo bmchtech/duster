@@ -19,10 +19,6 @@ VPos16 board_util_tile_id_to_pos(int tile_id) {
     return ret;
 }
 
-typedef struct {
-    int neighbors[4];
-} tile_neighbors_t;
-
 tile_neighbors_t board_util_get_neighbors(int tile_id) {
     tile_neighbors_t ret;
 
