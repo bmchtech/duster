@@ -98,6 +98,8 @@ void draw_clicked_pawn_graphics() {
 
         // compute range buf if needed
         if (pawn_move_range_dirty) {
+            pawn_move_range_dirty = FALSE;
+
             cache_range_buf_filled = board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data->move, cache_range_buf,
                                                               CACHE_RANGE_BUF_LEN);
             if (cache_range_buf_filled <= 0) {
