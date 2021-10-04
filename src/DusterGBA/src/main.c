@@ -23,6 +23,9 @@ int main() {
 
     maxmod_audio_init();
 
+    // set waitstates to be as fast as possible
+    REG_WAITCNT = 0b0100011011011010;
+
 #ifdef DEBUG
     mgba_open();
 #endif
