@@ -64,6 +64,7 @@ typedef struct {
 typedef struct {
     int dist;
     int ix;
+    int value;
 } DijkstraStorage;
 
 typedef struct {
@@ -76,7 +77,7 @@ static int pqueue_pair_cmp(const void* a, const void* b) {
     PQueuePair* a1 = (PQueuePair*)a;
     PQueuePair* b1 = (PQueuePair*)b;
 
-    return a1->prio - b1->prio;
+    return b1->prio - a1->prio;
 }
 
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len) {
@@ -182,20 +183,74 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
     cc_hashset_iter_init(&visited_iter_dij, visited);
     void* visited_iter_dij_next;
     while (cc_hashset_iter_next(&visited_iter_dij, &visited_iter_dij_next) != CC_ITER_END) {
-        int iter_val = *(int*)visited_iter_dij_next;
+        int tid = *(int*)visited_iter_dij_next;
 
         DijkstraStorage* st1 = &dij_storage[dij_storage_index];
         PQueuePair* p1 = &pair_storage[dij_storage_index];
 
-        st1->dist = 99999;
+        if (tid == start_tid) {
+            st1->dist = 0;
+        } else {
+            st1->dist = 99999;
+        }
 
         st1->ix = dij_storage_index;
+        st1->value = tid;
 
         p1->ix = dij_storage_index;
         p1->prio = st1->dist;
-        p1->value = dij_storage_index;
+        p1->value = tid;
 
         dij_storage_index++;
+
+        cc_hashtable_add(nodedist, &st1->value, (void**)st1);
+        cc_pqueue_push(unvisited, p1);
+    }
+
+    PQueuePair* current;
+    while (cc_pqueue_top(unvisited, (void*)&current) == CC_OK) {
+        int tid = current->value;
+
+        // get storage entry
+        DijkstraStorage* curr_entry;
+        cc_hashtable_get(nodedist, &tid, (void*)&curr_entry);
+
+        int curr_dist = curr_entry->dist;
+
+        VPos16 curr_pos = board_util_tile_id_to_pos(tid);
+
+        mgba_printf(MGBA_LOG_ERROR, "visit: (%d, %d), prio: %d, dist: %d", curr_pos.x, curr_pos.y, current->prio,
+                    curr_dist);
+
+        tile_neighbors_t tn = board_util_get_neighbors(tid);
+
+        // neighbors
+        for (int i = 0; i < 4; i++) {
+            int scan_node = tn.neighbors[i];
+            int cost = 1;
+            int scan_dist = curr_dist + cost;
+
+            VPos16 scan_pos = board_util_tile_id_to_pos(scan_node);
+
+            // get storage entry
+            DijkstraStorage* nb_entry;
+            cc_hashtable_get(nodedist, &scan_node, (void**)&nb_entry);
+            PQueuePair* nb_pair = &pair_storage[nb_entry->ix];
+
+            mgba_printf(MGBA_LOG_ERROR, "neighbor: (%d, %d), dist: %d", scan_pos.x, scan_pos.y, scan_dist);
+
+            // try to set dist
+            if (scan_dist < nb_entry->dist) {
+                // set entry dist
+                nb_entry->dist = scan_dist;
+                // update priority
+                nb_pair->prio = nb_entry->dist;
+                cc_pqueue_heapify(unvisited, 0, true);
+            }
+        }
+
+        // done visit
+        cc_pqueue_pop(unvisited, (void*)current);
     }
 
     // copy visited data to pos buf
@@ -210,14 +265,14 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         VPos16 scan_pos = board_util_tile_id_to_pos(scan_tid);
 
         // check the distance using our shortest path
-        int* scan_tile_shortest_dist;
-        cc_hashtable_get(nodedist, &scan_tid, (void*)&scan_tile_shortest_dist);
+        DijkstraStorage* scan_tile_shortest_entry;
+        cc_hashtable_get(nodedist, &scan_tid, (void**)&scan_tile_shortest_entry);
 
-        // mgba_printf(MGBA_LOG_ERROR, "shortest dist to (%d,%d): %d", scan_pos.x, scan_pos.y,
-        // *scan_tile_shortest_dist);
+        mgba_printf(MGBA_LOG_ERROR, "shortest dist to (%d,%d): %d", scan_pos.x, scan_pos.y,
+                    scan_tile_shortest_entry->dist);
 
-        // if (*scan_tile_shortest_dist > range)
-        //     continue;
+        if (scan_tile_shortest_entry->dist > range)
+            continue;
 
         // ensure not starting point
         if (scan_pos.x == start_tx && scan_pos.y == start_ty)
