@@ -64,8 +64,7 @@ $(ATLS_PNG): $(ATLS_OUT)
 
 # rule for building soundbank
 $(SOUND_BIN) $(SOUND_H): $(SOUND_SRC)
-	# @mmutil $^ -osoundbank.bin -hsoundbank.h
-	@true
+	mmutil -v $^ -osoundbank.bin -hsoundbank.h
 
 # debug:
 #     $(foreach var,$(.VARIABLES),$(info $(var) = $($(var))))
