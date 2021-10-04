@@ -69,7 +69,7 @@ typedef enum {
 
 void draw_blocked_tile(int tx, int ty, BlockedPattern pattern) {
     int x1 = (board_offset.x) + (tx * 8);
-    int x2 = x1 + 8;
+    int x2 = x1 + 7;
     int y1 = (board_offset.y) + (ty * 8);
     int y2 = y1 + 8;
 
