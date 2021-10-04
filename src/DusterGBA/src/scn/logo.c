@@ -12,31 +12,8 @@ int start_frame;
 int fade_step; // frames per fade unit
 mm_sound_effect intro_chime;
 
-void logo_init_audio() {
-    // irq setup for maxmod dma
-    irq_init(NULL);
-    irq_add(II_VBLANK, mmVBlank);
-    irq_enable(II_VBLANK);
-
-    // load soundbank
-    u32 soundbank_len;
-    const u32* soundbank_bin = gbfs_get_obj(gbfs_dat, "soundbank.bin", &soundbank_len);
-
-    // initialise maxmod with soundbank and 8 channels
-    mmInitDefault((mm_addr)soundbank_bin, 8);
-
-    // define sfx
-    intro_chime.handle = 0;
-    intro_chime.id = SFX_INTRO;
-    intro_chime.rate = (int)(1.0f * (1 << 10));
-    intro_chime.volume = 255;
-    intro_chime.panning = 128;
-}
-
 void logo_start() {
     dusk_init_graphics_mode0();
-
-    logo_init_audio();
 
     REG_DISPCNT |= DCNT_BG0;
 
@@ -80,13 +57,18 @@ void logo_start() {
     tte_printf("#{P:92,24}#{ci:2}bean machine");
     tte_printf("#{P:100,36}#{ci:3}presents");
 
+    // define sfx
+    intro_chime.handle = 0;
+    intro_chime.id = SFX_INTRO;
+    intro_chime.rate = (int)(1.0f * (1 << 10));
+    intro_chime.volume = 255;
+    intro_chime.panning = 128;
     // play sound effect
     mmEffectEx(&intro_chime);
 }
 
 void logo_update() {
     dusk_frame();
-    mmFrame();
 
     int progress = (frame_count - start_frame);
     if (progress <= FADE_LENGTH) {
