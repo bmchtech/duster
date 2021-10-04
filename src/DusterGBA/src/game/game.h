@@ -62,6 +62,8 @@ extern GameColdData game_data;
 
 #define BOARD_POS(x, y) ((y) * MAX_BOARD_SIZE + (x))
 #define PAWN_GID(team, pawn) ((team) * TEAM_MAX_PAWNS + (pawn))
+#define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
+#define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
 
 void game_clear_state();
 void game_load_cold_data();

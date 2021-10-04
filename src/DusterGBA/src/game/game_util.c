@@ -227,8 +227,15 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         for (int i = 0; i < 4; i++) {
             int scan_node = tn.neighbors[i];
             int cost = 1;
-            int scan_dist = curr_dist + cost;
 
+            // // check if any pawns on that tile
+            // BoardTile* scan_tile = board_get_tile(scan_node);
+            // if (scan_tile->pawn_gid > 0) {
+            //     // a pawn is here
+            //     cost += 1;
+            // }
+
+            int scan_dist = curr_dist + cost;
 
             // get storage entry
             DijkstraStorage* nb_entry;
