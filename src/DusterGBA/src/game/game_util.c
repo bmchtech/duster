@@ -141,8 +141,8 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
                 // if the current dist is less, store that instead
                 if (scan_node_dist < *node_stored_shortest_dist) {
-                    mgba_printf(MGBA_LOG_ERROR, "shortest dist (%d, %d): %d -> %d", scan_node_pos.x, scan_node_pos.y,
-                                *node_stored_shortest_dist, scan_node_dist);
+                    // mgba_printf(MGBA_LOG_ERROR, "nodedist shortest dist: %d -> %d", *node_stored_shortest_dist,
+                    //             scan_node_dist);
                     *node_stored_shortest_dist = scan_node_dist;
                     ;
                     cc_hashtable_add(nodedist, &scan_node, node_stored_shortest_dist);
@@ -153,7 +153,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             }
 
             // make sure this tile in range
-            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range + 2)
+            if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
                 continue;
 
             // make sure this tile is walkable
@@ -206,11 +206,10 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         int* scan_tile_shortest_dist;
         cc_hashtable_get(nodedist, &scan_tid, (void*)&scan_tile_shortest_dist);
 
-        // mgba_printf(MGBA_LOG_ERROR, "shortest dist to (%d,%d): %d", scan_pos.x, scan_pos.y,
-        // *scan_tile_shortest_dist);
+        // mgba_printf(MGBA_LOG_ERROR, "shortest dist to (%d,%d): %d", scan_pos.x, scan_pos.y, *scan_tile_shortest_dist);
 
-        if (*scan_tile_shortest_dist > range)
-            continue;
+        // if (*scan_tile_shortest_dist > range)
+        //     continue;
 
         // ensure not starting point
         if (scan_pos.x == start_tx && scan_pos.y == start_ty)
