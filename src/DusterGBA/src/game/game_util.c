@@ -217,9 +217,9 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
         int curr_dist = curr_entry->dist;
 
-        // VPos16 curr_pos = board_util_tile_id_to_pos(tid);
-        // mgba_printf(MGBA_LOG_ERROR, "visit: (%d, %d), prio: %d, dist: %d", curr_pos.x, curr_pos.y, current->prio,
-        //             curr_dist);
+        VPos16 curr_pos = board_util_tile_id_to_pos(tid);
+        mgba_printf(MGBA_LOG_ERROR, "visit: (%d, %d), prio: %d, dist: %d", curr_pos.x, curr_pos.y, current->prio,
+                    curr_dist);
 
         tile_neighbors_t tn = board_util_get_neighbors(tid);
 
@@ -245,9 +245,8 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             cc_hashtable_get(nodedist, &scan_node, (void**)&nb_entry);
             PQueuePair* nb_pair = &pair_storage[nb_entry->ix];
 
-            // VPos16 scan_pos = board_util_tile_id_to_pos(scan_node);
-
-            // mgba_printf(MGBA_LOG_ERROR, "neighbor: (%d, %d), dist: %d", scan_pos.x, scan_pos.y, scan_dist);
+            VPos16 scan_pos = board_util_tile_id_to_pos(scan_node);
+            mgba_printf(MGBA_LOG_ERROR, "neighbor: (%d, %d), dist: %d", scan_pos.x, scan_pos.y, scan_dist);
 
             // try to set dist
             if (scan_dist < nb_entry->dist) {
@@ -258,9 +257,10 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             }
         }
 
+        cc_pqueue_heapify(unvisited, 0, true);
+        
         // done visit
         cc_pqueue_pop(unvisited, (void*)current);
-        cc_pqueue_heapify(unvisited, 0, true);
     }
 
     // copy visited data to pos buf
