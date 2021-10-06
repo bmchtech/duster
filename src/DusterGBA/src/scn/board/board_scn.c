@@ -20,6 +20,8 @@ VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
 int cache_range_buf_filled = 0;
 BOOL request_step = FALSE;
 BOOL pawn_move_range_dirty = TRUE;
+BoardScenePage board_scene_page = BOARDSCN_BOARD;
+BOOL pausemenu_dirty = TRUE;
 
 int cursor_last_moved_frame = 0;
 
@@ -153,6 +155,17 @@ void boardscn_input() {
         set_ui_dirty();
     }
 
+    if (key_hit(KEY_START)) {
+        // pause menu
+        if (board_scene_page == BOARDSCN_BOARD)
+            board_scene_page = BOARDSCN_PAUSEMENU;
+        else if (board_scene_page == BOARDSCN_PAUSEMENU)
+            board_scene_page = BOARDSCN_BOARD;
+
+        pausemenu_dirty = TRUE;
+        set_ui_dirty();
+    }
+
     if (cursor_shown && key_hit(KEY_A)) {
         // click input
         on_cursor_try_click(cursor_pos);
@@ -175,12 +188,21 @@ void boardscn_update() {
 
     // draw
 
-    draw_sidebar();
-    draw_board();
-    update_pawn_tween();
+    switch (board_scene_page) {
+    case BOARDSCN_BOARD:
+        draw_sidebar();
+        draw_board();
+        update_pawn_tween();
 
-    // update sprites
-    dusk_sprites_update();
+        // update sprites
+        dusk_sprites_update();
+
+        break;
+    case BOARDSCN_PAUSEMENU:
+        draw_pause_ui();
+
+        break;
+    }
 }
 
 void boardscn_end() {

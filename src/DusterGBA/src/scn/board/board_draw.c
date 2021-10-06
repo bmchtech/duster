@@ -87,6 +87,16 @@ void draw_blocked_tile(int tx, int ty, BlockedPattern pattern) {
     }
 }
 
+void draw_clear_ui_surface() {
+    // clear whole bg ui surface
+    memset32(tile_mem[bg0_srf_cbb], 0, 4096);          // clear cbb
+    schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
+}
+
+void draw_clear_text_surface() {
+    tte_erase_screen(); // clear tte bg
+}
+
 void draw_clicked_pawn_graphics() {
     // check if pawn selected
     Pawn* clicked_pawn = get_clicked_pawn();
@@ -132,9 +142,7 @@ void draw_board() {
     if (board_ui_dirty) {
         board_ui_dirty = false;
 
-        // clear whole bg ui surface
-        memset32(tile_mem[bg0_srf_cbb], 0, 4096);          // clear cbb
-        schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
+        draw_clear_ui_surface();
 
         // draw outline
         draw_board_outline();
@@ -208,7 +216,7 @@ void draw_sidebar() {
 
     sidebar_dirty = FALSE;
 
-    tte_erase_screen(); // clear tte bg
+    draw_clear_text_surface();
 
     // turn indicator
     tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
