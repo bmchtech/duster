@@ -75,7 +75,8 @@ void game_clear_state();
 void game_load_cold_data();
 void game_init();
 void game_init_board(u8 board_size);
-void game_init_team(u8 id, const char* name);
+void game_init_team(u8 team_id, const char* name);
+Team* game_get_team(u8 team_id);
 /** get the pawn with by global id */
 Pawn* game_get_pawn_by_gid(pawn_gid_t pawn_gid);
 
@@ -89,7 +90,8 @@ Terrain board_get_terrain(int tile_id);
 
 int board_dist(int tx1, int ty1, int tx2, int ty2);
 
-void team_set_pawn(Team* team, int id, int class);
+void team_set_pawn_t(Team* team, int pawn_id, int class);
+pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class);
 
 ClassData* pawn_get_classdata(pawn_gid_t pawn_gid);
 

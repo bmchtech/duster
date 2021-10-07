@@ -25,12 +25,17 @@ void game_init_board(u8 board_size) {
     }
 }
 
-void game_init_team(u8 id, const char* name) {
-    Team* team = &game_state.teams[id];
+void game_init_team(u8 team_id, const char* name) {
+    Team* team = &game_state.teams[team_id];
     sprintf(team->name, "%s", name);
 
     // set all pawns to empty
     memset32(team->pawns, 0, sizeof(team->pawns) / 4);
+}
+
+Team* game_get_team(u8 team_id) {
+    Team* team = &game_state.teams[team_id];
+    return team;
 }
 
 Pawn* game_get_pawn_by_gid(pawn_gid_t pawn_id) {
@@ -98,7 +103,13 @@ void board_set_terrain(int tile_id, Terrain terrain) {
 
 Terrain board_get_terrain(int tile_id) { return board_get_tile(tile_id)->terrain; }
 
-void team_set_pawn(Team* team, int id, int class) { team->pawns[id] = (Pawn){.unit_class = class}; }
+void team_set_pawn_t(Team* team, int pawn_id, int class) { team->pawns[pawn_id] = (Pawn){.unit_class = class}; }
+
+pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class) {
+    Team* team = game_get_team(team_id);
+    team->pawns[pawn_id] = (Pawn){.unit_class = class};
+    return PAWN_GID(team_id, pawn_id);
+}
 
 int board_dist(int tx1, int ty1, int tx2, int ty2) { return ABS(tx2 - tx1) + ABS(ty2 - ty1); }
 
