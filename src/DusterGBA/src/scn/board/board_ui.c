@@ -62,7 +62,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                                 // out of range
                                 continue;
 
-                            if (!board_util_is_on_board(nb_pos.x, nb_pos.y))
+                            if (!board_util_is_walkable(nb_pos.x, nb_pos.y))
                                 continue;
 
                             mgba_printf(MGBA_LOG_ERROR, "checking (%d, %d)", nb_pos.x, nb_pos.y);
