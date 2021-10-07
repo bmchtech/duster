@@ -68,6 +68,7 @@ extern GameColdData game_data;
 #define PAWN_GID(team, pawn) ((team)*TEAM_MAX_PAWNS + (pawn))
 #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
 #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
+#define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
 
 void game_clear_state();
 void game_load_cold_data();
@@ -98,6 +99,7 @@ void game_logic_step();
 // UTIL
 
 BOOL board_util_is_on_board(int tx, int ty);
+BOOL board_util_is_walkable(int tx, int ty);
 VPos16 board_util_tile_id_to_pos(int tile_id);
 tile_neighbors_t board_util_get_neighbors(int tile_id);
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);

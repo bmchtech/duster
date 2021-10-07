@@ -24,6 +24,11 @@ typedef struct {
     int sprite;
 } SpritePawnPair;
 
+typedef enum {
+    BOARDSCN_BOARD,
+    BOARDSCN_PAUSEMENU,
+} BoardScenePage;
+
 extern TSurface bg0_srf;
 extern int bg0_srf_cbb;
 extern int bg0_srf_sbb;
@@ -45,10 +50,14 @@ extern VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
 extern int cache_range_buf_filled;
 extern BOOL request_step;
 extern BOOL pawn_move_range_dirty;
+extern BoardScenePage board_scene_page;
+extern BOOL pausemenu_dirty;
 
 void set_ui_dirty();
 
 VPos16 board_vpos_to_pix_pos(int tx, int ty);
+void draw_clear_text_surface();
+void draw_clear_ui_surface();
 void draw_board_outline();
 void draw_board_cursor();
 void draw_board();
@@ -61,3 +70,5 @@ void on_cursor_try_click(VPos16 click_pos);
 
 void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
 void update_pawn_tween();
+
+void draw_pause_ui();
