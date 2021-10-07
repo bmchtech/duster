@@ -103,7 +103,7 @@ void update_pawn_flash_tween() {
 
     // check if we are at start of tween
     if (frame_count == tween->start_frame) {
-        mgba_printf(MGBA_LOG_ERROR, "started tween at: %d", tween->start_frame);
+        mgba_printf(MGBA_LOG_ERROR, "started FLASH tween at: %d", tween->start_frame);
 
         // TODO: code to set up tween
     }
