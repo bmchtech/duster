@@ -26,6 +26,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // Pawn* clicked_pawn = get_clicked_pawn();
         // get pawn gid
         int clicked_pawn_gid = get_clicked_pawn_gid();
+        ClassData* clicked_pawn_class_data = pawn_get_classdata(clicked_pawn_gid);
 
         // then check if the click is within the range
         for (int i = 0; i < cache_range_buf_filled; i++) {
@@ -47,7 +48,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                     // there is a pawn there
 
                     // try to move to the closest tile within interact range ir
-                    int ir = 2;
+                    int ir = clicked_pawn_class_data->interact_range;
 
                     int closest_neighbor_tid = -1;
                     int closest_neighbor_dist = -1;
