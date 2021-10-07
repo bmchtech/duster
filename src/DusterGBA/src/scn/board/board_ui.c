@@ -46,6 +46,8 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 BoardTile* dest_tile = board_get_tile(dest_tid);
                 if (dest_tile->pawn_gid >= 0) {
                     // there is a pawn there
+                    pawn_gid_t dest_pawn_gid = dest_tile->pawn_gid;
+                    // Pawn* dest_pawn = board_get_pawn(dest_tid);
 
                     // try to move to the closest tile within interact range ir
                     int ir = clicked_pawn_class_data->interact_range;
@@ -80,10 +82,11 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                         // we have a valid intermediate
                         VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(closest_neighbor_tid);
                         animate_pawn_move(clicked_pawn_gid, cursor_click_pos, interact_itmdt_pos);
+                        animate_pawn_flash(dest_pawn_gid);
 
-                        // interact with the pawn
-                        mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,
-                                    dest_tile->pawn_gid);
+                        // // interact with the pawn
+                        // mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,
+                        //             dest_tile->pawn_gid);
 
                         // request_step = TRUE; // request step
                     } else {
