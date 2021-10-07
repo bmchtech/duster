@@ -10,14 +10,20 @@ void foreach_pawn2sprite_key(const void* key) {
 }
 
 void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
-    pawn_tween.start_pos = start_pos;
-    pawn_tween.end_pos = end_pos;
-    pawn_tween.pawn_gid = pawn_gid;
-    pawn_tween.start_frame = frame_count;
-    pawn_tween.end_frame = frame_count + 6;
+    pawn_move_tween.start_pos = start_pos;
+    pawn_move_tween.end_pos = end_pos;
+    pawn_move_tween.pawn_gid = pawn_gid;
+    pawn_move_tween.start_frame = frame_count;
+    pawn_move_tween.end_frame = frame_count + 6;
 }
 
-void update_pawn_tween() {
+void animate_pawn_flash(pawn_gid_t pawn_gid) {
+    pawn_flash_tween.pawn_gid = pawn_gid;
+    pawn_flash_tween.start_frame = frame_count;
+    pawn_flash_tween.end_frame = frame_count + 6;
+}
+
+void update_pawn_move_tween() {
     // log mappings
 
     // CC_Array* pawn2sprite_keys;
@@ -37,27 +43,28 @@ void update_pawn_tween() {
     //     mgba_printf(MGBA_LOG_ERROR, "pawn2sprite get test fail: key: %d", get_test_key);
     // }
 
-    if (pawn_tween.pawn_gid < 0)
+    if (pawn_move_tween.pawn_gid < 0)
         return;
 
     // now we tween
     int* pawn_sprite_ix_out;
-    if (cc_hashtable_get(pawn2sprite, &pawn_tween.pawn_gid, (void*)&pawn_sprite_ix_out) != CC_OK) {
-        mgba_printf(MGBA_LOG_ERROR, "failed to get sprite index for pawn gid: %d", pawn_tween.pawn_gid);
+    if (cc_hashtable_get(pawn2sprite, &pawn_move_tween.pawn_gid, (void*)&pawn_sprite_ix_out) != CC_OK) {
+        mgba_printf(MGBA_LOG_ERROR, "failed to get sprite index for pawn gid: %d", pawn_move_tween.pawn_gid);
         return;
     }
 
-    if (frame_count >= pawn_tween.end_frame) {
+    if (frame_count >= pawn_move_tween.end_frame) {
         // done
         // set real pos to end
-        int pawn_old_pos = board_find_pawn_tile(pawn_tween.pawn_gid);
-        board_move_pawn(pawn_tween.pawn_gid, pawn_old_pos, BOARD_POS(pawn_tween.end_pos.x, pawn_tween.end_pos.y));
+        int pawn_old_pos = board_find_pawn_tile(pawn_move_tween.pawn_gid);
+        board_move_pawn(pawn_move_tween.pawn_gid, pawn_old_pos,
+                        BOARD_POS(pawn_move_tween.end_pos.x, pawn_move_tween.end_pos.y));
 
         request_step = TRUE; // step
 
         // clear tween info
-        memset(&pawn_tween, 0, sizeof(PawnTweenInfo));
-        pawn_tween.pawn_gid = -1;
+        memset(&pawn_move_tween, 0, sizeof(PawnMoveTweenInfo));
+        pawn_move_tween.pawn_gid = -1;
 
         return;
     }
@@ -67,11 +74,11 @@ void update_pawn_tween() {
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
     // calculate the between vpos
-    int tween_len = pawn_tween.end_frame - pawn_tween.start_frame;
-    int frame_prog = frame_count - pawn_tween.start_frame;
+    int tween_len = pawn_move_tween.end_frame - pawn_move_tween.start_frame;
+    int frame_prog = frame_count - pawn_move_tween.start_frame;
 
-    VPos16 start_pix_pos = board_vpos_to_pix_pos(pawn_tween.start_pos.x, pawn_tween.start_pos.y);
-    VPos16 end_pix_pos = board_vpos_to_pix_pos(pawn_tween.end_pos.x, pawn_tween.end_pos.y);
+    VPos16 start_pix_pos = board_vpos_to_pix_pos(pawn_move_tween.start_pos.x, pawn_move_tween.start_pos.y);
+    VPos16 end_pix_pos = board_vpos_to_pix_pos(pawn_move_tween.end_pos.x, pawn_move_tween.end_pos.y);
 
     int dx = end_pix_pos.x - start_pix_pos.x;
     int dy = end_pix_pos.y - start_pix_pos.y;
@@ -85,4 +92,13 @@ void update_pawn_tween() {
 
     pawn_sprite->x = x_prog;
     pawn_sprite->y = y_prog;
+}
+
+void update_pawn_flash_tween() {
+
+}
+
+void update_pawn_tweens() {
+    update_pawn_move_tween();
+    update_pawn_flash_tween();
 }

@@ -13,7 +13,8 @@ VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
 VPos16 cursor_click_pos;
-PawnTweenInfo pawn_tween;
+PawnMoveTweenInfo pawn_move_tween;
+PawnFlashTweenInfo pawn_flash_tween;
 CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
 VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
@@ -103,7 +104,9 @@ void boardscn_start() {
     board_offset = (VPos){.x = 8, .y = 8};
     cursor_pos = (VPos16){.x = 0, .y = 0};
 
-    pawn_tween.pawn_gid = -1; // no pawn
+    // clear tweens
+    pawn_move_tween.pawn_gid = -1;
+    pawn_flash_tween.pawn_gid = -1;
 
     // init data structures
     CC_HashTableConf pawn2sprite_conf;
@@ -114,6 +117,7 @@ void boardscn_start() {
 
     // set test tween
     // animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
+    animate_pawn_flash(PAWN_GID(0, 0));
 }
 
 void set_ui_dirty() {
@@ -196,7 +200,7 @@ void boardscn_update() {
     case BOARDSCN_BOARD:
         draw_sidebar();
         draw_board();
-        update_pawn_tween();
+        update_pawn_tweens();
 
         // update sprites
         dusk_sprites_update();

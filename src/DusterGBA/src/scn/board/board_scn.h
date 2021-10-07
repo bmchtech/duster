@@ -17,7 +17,13 @@ typedef struct {
     VPos16 end_pos;
     int start_frame;
     int end_frame;
-} PawnTweenInfo;
+} PawnMoveTweenInfo;
+
+typedef struct {
+    int pawn_gid;
+    int start_frame;
+    int end_frame;
+} PawnFlashTweenInfo;
 
 typedef struct {
     pawn_gid_t pawn_gid;
@@ -42,7 +48,8 @@ extern VPos16 cursor_pos;
 extern BOOL cursor_shown;
 extern BOOL cursor_click;
 extern VPos16 cursor_click_pos;
-extern PawnTweenInfo pawn_tween;
+extern PawnMoveTweenInfo pawn_move_tween;
+extern PawnFlashTweenInfo pawn_flash_tween;
 extern CC_HashTable* pawn2sprite;
 extern SpritePawnPair sprite_pawn_pairs[128];
 #define CACHE_RANGE_BUF_LEN 128
@@ -69,6 +76,7 @@ Pawn* get_clicked_pawn();
 void on_cursor_try_click(VPos16 click_pos);
 
 void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
-void update_pawn_tween();
+void animate_pawn_flash(pawn_gid_t pawn_gid);
+void update_pawn_tweens();
 
 void draw_pause_ui();
