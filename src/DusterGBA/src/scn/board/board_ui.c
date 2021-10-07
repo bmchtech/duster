@@ -46,27 +46,36 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 if (dest_tile->pawn_gid >= 0) {
                     // there is a pawn there
 
-                    // try to move to the closest neighboring tile
-                    tile_neighbors_t nb = board_util_get_neighbors(dest_tid);
+                    // try to move to the closest tile within interact range ir
+                    int ir = 2;
 
                     int closest_neighbor_tid = -1;
                     int closest_neighbor_dist = -1;
 
-                    for (int j = 0; j < 4; j++) {
-                        int nb_tid = nb.neighbors[j];
-                        if (nb_tid < 0)
-                            continue;
+                    for (int nx = -ir; nx <= ir; nx++) {
+                        for (int ny = -ir; ny <= ir; ny++) {
+                            VPos16 nb_pos = (VPos16){.x = dest_pos.x + nx, .y = dest_pos.y + ny};
+                            int nb_tid = POS_TO_TID(nb_pos);
 
-                        VPos16 nb_pos = board_util_tile_id_to_pos(nb_tid);
-                        int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos.y);
+                            int nb_dist_to_target = board_dist(nb_pos.x, nb_pos.y, dest_pos.x, dest_pos.y);
+                            if (nb_dist_to_target > ir)
+                                // out of range
+                                continue;
 
-                        if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
-                            closest_neighbor_dist = nb_test_dist;
-                            closest_neighbor_tid = nb_tid;
+                            if (!board_util_is_on_board(nb_pos.x, nb_pos.y))
+                                continue;
+
+                            mgba_printf(MGBA_LOG_ERROR, "checking (%d, %d)", nb_pos.x, nb_pos.y);
+                            int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos.y);
+
+                            if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
+                                closest_neighbor_dist = nb_test_dist;
+                                closest_neighbor_tid = nb_tid;
+                            }
                         }
                     }
 
-                    if (closest_neighbor_tid) {
+                    if (closest_neighbor_tid > 0) {
                         // we have a valid intermediate
                         VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(closest_neighbor_tid);
                         animate_pawn_move(clicked_pawn_gid, cursor_click_pos, interact_itmdt_pos);
@@ -78,6 +87,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                         // request_step = TRUE; // request step
                     } else {
                         // we can't reach this pawn, give up
+                        mgba_printf(MGBA_LOG_ERROR, "we couldn't reach this pawn");
                     }
                 } else {
                     // request a move anim
