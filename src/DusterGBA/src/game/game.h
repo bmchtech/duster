@@ -99,6 +99,7 @@ void game_logic_step();
 // UTIL
 
 BOOL board_util_is_on_board(int tx, int ty);
+BOOL board_util_is_walkable(int tx, int ty);
 VPos16 board_util_tile_id_to_pos(int tile_id);
 tile_neighbors_t board_util_get_neighbors(int tile_id);
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);

@@ -12,6 +12,17 @@ BOOL board_util_is_on_board(int tx, int ty) {
     return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
 }
 
+BOOL board_util_is_walkable(int tx, int ty) {
+    if (!board_util_is_on_board(tx, ty)) return FALSE;
+
+    // check terrain
+    Terrain terrain = board_get_terrain(BOARD_POS(tx, ty));
+    if (terrain == TERRAIN_GROUND)
+        return TRUE;
+
+    return FALSE;
+}
+
 VPos16 board_util_tile_id_to_pos(int tile_id) {
     VPos16 ret;
     ret.x = tile_id % MAX_BOARD_SIZE;
@@ -130,9 +141,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
                 continue;
 
-            // make sure this tile is walkable
-            Terrain terrain = board_get_terrain(scan_node);
-            if (terrain != TERRAIN_GROUND)
+            if (!board_util_is_walkable(scan_node_pos.x, scan_node_pos.y))
                 continue;
 
             // check if visited
