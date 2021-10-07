@@ -68,7 +68,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                             if (!board_util_is_walkable(nb_pos.x, nb_pos.y))
                                 continue;
 
-                            mgba_printf(MGBA_LOG_ERROR, "checking (%d, %d)", nb_pos.x, nb_pos.y);
+                            // mgba_printf(MGBA_LOG_ERROR, "checking (%d, %d)", nb_pos.x, nb_pos.y);
                             int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos.y);
 
                             if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
