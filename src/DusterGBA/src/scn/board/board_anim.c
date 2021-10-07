@@ -11,7 +11,7 @@ void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
 void animate_pawn_flash(pawn_gid_t pawn_gid) {
     pawn_flash_tween.pawn_gid = pawn_gid;
     pawn_flash_tween.start_frame = frame_count;
-    pawn_flash_tween.end_frame = frame_count + 6;
+    pawn_flash_tween.end_frame = frame_count + 30;
 }
 
 int get_sprite_index_for_pawn(pawn_gid_t pawn_gid) {
@@ -19,8 +19,8 @@ int get_sprite_index_for_pawn(pawn_gid_t pawn_gid) {
         return -2;
 
     int* pawn_sprite_ix_out;
-    if (cc_hashtable_get(pawn2sprite, &pawn_move_tween.pawn_gid, (void*)&pawn_sprite_ix_out) != CC_OK) {
-        mgba_printf(MGBA_LOG_ERROR, "failed to get sprite index for pawn gid: %d", pawn_move_tween.pawn_gid);
+    if (cc_hashtable_get(pawn2sprite, &pawn_gid, (void*)&pawn_sprite_ix_out) != CC_OK) {
+        mgba_printf(MGBA_LOG_ERROR, "failed to get sprite index for pawn gid: %d", pawn_gid);
         return -1;
     }
 
@@ -55,11 +55,13 @@ void update_pawn_move_tween() {
 
     // get the assigned sprite
     int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
+    if (pawn_sprite_ix < 0)
+        return; // FAIL
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
     // get anim progress
     int tween_len = tween->end_frame - tween->start_frame; // total length of tween in frames
-    int frame_prog = frame_count - tween->start_frame; // how many frames have elapsed since the start frame
+    int frame_prog = frame_count - tween->start_frame;     // how many frames have elapsed since the start frame
 
     // calculate the between vpos
     VPos16 start_pix_pos = board_vpos_to_pix_pos(tween->start_pos.x, tween->start_pos.y);
@@ -90,6 +92,8 @@ void update_pawn_flash_tween() {
     if (frame_count >= tween->end_frame) {
         // done
 
+        // TODO: code to clean up after tween
+
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
         tween->pawn_gid = -1;
@@ -97,15 +101,25 @@ void update_pawn_flash_tween() {
         return;
     }
 
+    // check if we are at start of tween
+    if (frame_count == tween->start_frame) {
+        mgba_printf(MGBA_LOG_ERROR, "started tween at: %d", tween->start_frame);
+
+        // TODO: code to set up tween
+    }
+
     // continue the anim...
 
     // get the assigned sprite
     int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
+    if (pawn_sprite_ix < 0)
+        return; // FAIL
+
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
     // get anim progress
     int tween_len = tween->end_frame - tween->start_frame; // total length of tween in frames
-    int frame_prog = frame_count - tween->start_frame; // how many frames have elapsed since the start frame
+    int frame_prog = frame_count - tween->start_frame;     // how many frames have elapsed since the start frame
 
     // TODO: do cool sprite flash stuff, using the above vars as progress
 }

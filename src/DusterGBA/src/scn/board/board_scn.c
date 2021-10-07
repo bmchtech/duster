@@ -200,6 +200,8 @@ void boardscn_update() {
     case BOARDSCN_BOARD:
         draw_sidebar();
         draw_board();
+
+        // tween updates are last
         update_pawn_tweens();
 
         // update sprites
