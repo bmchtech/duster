@@ -92,8 +92,9 @@ void update_pawn_flash_tween() {
     if (frame_count >= tween->end_frame) {
         // done
 
-        // TODO: code to clean up after tween
-
+        // TODO: code to clean up after tweeN
+	REG_DISPCNT &= ~DCNT_WIN0;
+ 
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
         tween->pawn_gid = -1;
@@ -106,6 +107,18 @@ void update_pawn_flash_tween() {
         mgba_printf(MGBA_LOG_ERROR, "started FLASH tween at: %d", tween->start_frame);
 
         // TODO: code to set up tween
+
+        :int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
+        if (pawn_sprite_ix < 0) return; // FAIL
+	
+	REG_DISPCNT |= DCNT_WIN0;
+        Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
+
+	REG_WIN0H  = WIN_BUILD((pawn_sprite->x + 8), (pawn_sprite->x));
+	REG_WIN0V  = WIN_BUILD((pawn_sprite->y + 8), (pawn_sprite->y));
+	REG_WININ  = WININ_BUILD (WIN_OBJ, 0);
+	REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
+	REG_BLDCNT = BLD_BUILD(BLD_OBJ, BLD_OFF, BLD_WHITE); 
     }
 
     // continue the anim...
@@ -121,6 +134,7 @@ void update_pawn_flash_tween() {
     int tween_len = tween->end_frame - tween->start_frame; // total length of tween in frames
     int frame_prog = frame_count - tween->start_frame;     // how many frames have elapsed since the start frame
 
+    REG_BLDY = frame_prog;
     // TODO: do cool sprite flash stuff, using the above vars as progress
 }
 
