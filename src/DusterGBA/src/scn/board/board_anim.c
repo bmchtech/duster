@@ -116,11 +116,12 @@ void update_pawn_flash_tween() {
         REG_DISPCNT |= DCNT_WIN0;
         Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-        REG_WIN0H = WIN_BUILD((pawn_sprite->x + 8), (pawn_sprite->x));
-        REG_WIN0V = WIN_BUILD((pawn_sprite->y + 8), (pawn_sprite->y));
+        REG_WIN0H = WIN_BUILD(pawn_sprite->x, pawn_sprite->x + 8);
+        REG_WIN0V = WIN_BUILD(pawn_sprite->y, pawn_sprite->y + 8);
         REG_WININ = WININ_BUILD(WIN_OBJ, 0);
         REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
         REG_BLDCNT = BLD_BUILD(BLD_OBJ, BLD_OFF, BLD_WHITE);
+        REG_BLDY = BLDY_BUILD(16);
         mgba_printf(MGBA_LOG_ERROR, "lechuga");
     }
 
@@ -137,7 +138,7 @@ void update_pawn_flash_tween() {
     int tween_len = tween->end_frame - tween->start_frame; // total length of tween in frames
     int frame_prog = frame_count - tween->start_frame;     // how many frames have elapsed since the start frame
 
-    REG_BLDY = frame_prog;
+    // REG_BLDY = frame_prog;
     // TODO: do cool sprite flash stuff, using the above vars as progress
 }
 
