@@ -120,7 +120,7 @@ void update_pawn_flash_tween() {
         REG_WIN0V = WIN_BUILD(pawn_sprite->y, pawn_sprite->y + 8);
         REG_WININ = WININ_BUILD(WIN_OBJ, 0);
         REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
-        REG_BLDCNT = BLD_BUILD(BLD_OBJ, BLD_OFF, BLD_WHITE);
+        REG_BLDCNT = BLD_OBJ | BLD_WHITE;
         REG_BLDY = BLDY_BUILD(16);
         mgba_printf(MGBA_LOG_ERROR, "lechuga");
     }
