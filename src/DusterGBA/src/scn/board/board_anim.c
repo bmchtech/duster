@@ -93,8 +93,8 @@ void update_pawn_flash_tween() {
         // done
 
         // TODO: code to clean up after tweeN
-	REG_DISPCNT &= ~DCNT_WIN0;
- 
+        REG_DISPCNT &= ~DCNT_WIN0;
+
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
         tween->pawn_gid = -1;
@@ -108,17 +108,20 @@ void update_pawn_flash_tween() {
 
         // TODO: code to set up tween
 
-        :int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
-        if (pawn_sprite_ix < 0) return; // FAIL
-	
-	REG_DISPCNT |= DCNT_WIN0;
+        int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
+        mgba_printf(MGBA_LOG_ERROR, "bawn: %d", pawn_sprite_ix);
+        if (pawn_sprite_ix < 0)
+            return; // FAIL
+
+        REG_DISPCNT |= DCNT_WIN0;
         Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-	REG_WIN0H  = WIN_BUILD((pawn_sprite->x + 8), (pawn_sprite->x));
-	REG_WIN0V  = WIN_BUILD((pawn_sprite->y + 8), (pawn_sprite->y));
-	REG_WININ  = WININ_BUILD (WIN_OBJ, 0);
-	REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
-	REG_BLDCNT = BLD_BUILD(BLD_OBJ, BLD_OFF, BLD_WHITE); 
+        REG_WIN0H = WIN_BUILD((pawn_sprite->x + 8), (pawn_sprite->x));
+        REG_WIN0V = WIN_BUILD((pawn_sprite->y + 8), (pawn_sprite->y));
+        REG_WININ = WININ_BUILD(WIN_OBJ, 0);
+        REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
+        REG_BLDCNT = BLD_BUILD(BLD_OBJ, BLD_OFF, BLD_WHITE);
+        mgba_printf(MGBA_LOG_ERROR, "lechuga");
     }
 
     // continue the anim...

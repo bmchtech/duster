@@ -117,7 +117,7 @@ void boardscn_start() {
 
     // set test tween
     // animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
-    animate_pawn_flash(PAWN_GID(0, 0));
+    // animate_pawn_flash(PAWN_GID(0, 0));
 }
 
 void set_ui_dirty() {
