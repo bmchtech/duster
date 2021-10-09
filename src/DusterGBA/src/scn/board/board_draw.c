@@ -240,5 +240,10 @@ void draw_sidebar() {
         tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
         tte_printf("#{P:142,22}#{ci:1}team: %d", pawn_team_ix);
         tte_printf("#{P:142,30}#{ci:1}gid: %d", clicked_pawn_gid);
+    } else {
+        int hover_tid = POS_TO_TID(cursor_pos);
+        tte_printf("#{P:142,6}#{ci:1}tid: %d", hover_tid);
+        BoardTile* tile = board_get_tile(hover_tid);
+        tte_printf("#{P:142,14}#{ci:1}pawn: %d", tile->pawn_gid);
     }
 }
