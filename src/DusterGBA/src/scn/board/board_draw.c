@@ -157,6 +157,11 @@ void draw_board() {
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
     int pawn_sprite_ix = 1;
 
+    // hide all sprites from M to NUM_SPRITES
+    for (int i = 0; i < NUM_SPRITES; i++) {
+        sprites[i].flags |= ~DUSKSPRITE_FLAGS_VISIBLE; // set not visible
+    }
+
     cc_hashtable_remove_all(pawn2sprite);
 
     // go through all tiles

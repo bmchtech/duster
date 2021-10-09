@@ -104,14 +104,14 @@ void update_pawn_flash_tween() {
         // disable blend
         REG_BLDY = BLDY_BUILD(0);
 
-        // clear tween info
-        memset(tween, 0, sizeof(PawnFlashTweenInfo));
-        tween->pawn_gid = -1;
-
         // propagate real actions
         game_logic_interact(tween->initiator_gid, tween->pawn_gid);
 
         request_step = TRUE;
+
+        // clear tween info
+        memset(tween, 0, sizeof(PawnFlashTweenInfo));
+        tween->pawn_gid = -1;
 
         return;
     }
