@@ -6,6 +6,8 @@
 
 void game_logic_step() {
     game_state.steps++; // counter
+
+    mgba_printf(MGBA_LOG_ERROR, "logic step (%d)", game_state.steps);
 }
 
 void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver) {

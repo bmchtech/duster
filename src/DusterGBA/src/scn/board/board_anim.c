@@ -139,8 +139,6 @@ void update_pawn_flash_tween() {
             REG_BLDCNT |= BLD_WHITE;
         else
             REG_BLDCNT |= BLD_BLACK;
-
-        mgba_printf(MGBA_LOG_ERROR, "lechuga");
     }
 
     // get anim progress

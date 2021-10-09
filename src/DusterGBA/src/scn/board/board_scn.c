@@ -51,17 +51,6 @@ void boardscn_start() {
     pal_bg_mem[1] = RES_PAL[0]; // draw col 1
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
-    mgba_printf(MGBA_LOG_INFO, "bean");
-
-    CC_Array* ar;
-    cc_array_new(&ar);
-    int arr_in = 17;
-    cc_array_add(ar, &arr_in);
-    int* arr_out;
-    cc_array_get_at(ar, 0, (void*)&arr_out);
-    mgba_printf(MGBA_LOG_ERROR, "arr element 0: %d", *arr_out);
-    cc_array_destroy(ar);
-
     // test loading data
     // u32 d_class_len;
     // u8* d_class = (u8*) dusk_load_raw("d_class.bin", &d_class_len);
@@ -186,7 +175,6 @@ void boardscn_update() {
     // logic
     if (request_step) {
         request_step = FALSE;
-        mgba_printf(MGBA_LOG_ERROR, "game logic step");
         game_logic_step();
     }
 
