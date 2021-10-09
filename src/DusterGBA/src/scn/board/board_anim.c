@@ -94,7 +94,7 @@ void update_pawn_flash_tween() {
 
         // TODO: code to clean up after tweeN
         // REG_DISPCNT &= ~DCNT_WIN0;
-        REG_BLDY = BLDY_BUILD(16);
+        REG_BLDY = BLDY_BUILD(0);
 
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
