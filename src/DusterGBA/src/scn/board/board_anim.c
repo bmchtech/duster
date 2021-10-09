@@ -11,7 +11,7 @@ void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
 void animate_pawn_flash(pawn_gid_t pawn_gid) {
     pawn_flash_tween.pawn_gid = pawn_gid;
     pawn_flash_tween.start_frame = frame_count;
-    pawn_flash_tween.end_frame = frame_count + 30;
+    pawn_flash_tween.end_frame = frame_count + 20;
 }
 
 int get_sprite_index_for_pawn(pawn_gid_t pawn_gid) {
@@ -117,7 +117,8 @@ void update_pawn_flash_tween() {
         REG_DISPCNT |= DCNT_WIN0;
         Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-        mgba_printf(MGBA_LOG_ERROR, "window dims: %d %d %d %d", pawn_sprite->x, pawn_sprite->y, pawn_sprite->x + 8, pawn_sprite->y + 8);
+        mgba_printf(MGBA_LOG_ERROR, "window dims: %d %d %d %d", pawn_sprite->x, pawn_sprite->y, pawn_sprite->x + 8,
+                    pawn_sprite->y + 8);
 
         REG_WIN0H = WIN_BUILD(pawn_sprite->x + 8, pawn_sprite->x);
         REG_WIN0V = WIN_BUILD(pawn_sprite->y + 8, pawn_sprite->y);
@@ -125,7 +126,7 @@ void update_pawn_flash_tween() {
         REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
 
         REG_BLDCNT = BLD_OBJ | BLD_WHITE;
-        REG_BLDY = BLDY_BUILD(16);
+        // REG_BLDY = BLDY_BUILD(16);
 
         mgba_printf(MGBA_LOG_ERROR, "lechuga");
     }
@@ -143,8 +144,15 @@ void update_pawn_flash_tween() {
     int tween_len = tween->end_frame - tween->start_frame; // total length of tween in frames
     int frame_prog = frame_count - tween->start_frame;     // how many frames have elapsed since the start frame
 
-    // REG_BLDY = frame_prog;
-    // TODO: do cool sprite flash stuff, using the above vars as progress
+    // do sprite flash
+
+    if (tween_len > 16) {
+        int fade_step1 = tween_len / 16; // frames per blend step
+        REG_BLDY = frame_prog / fade_step1;
+    } else {
+        int fade_step2 = 16 / tween_len; // blend steps per frame
+        REG_BLDY = frame_prog * fade_step2;
+    }
 }
 
 void update_pawn_tweens() {
