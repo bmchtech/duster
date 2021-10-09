@@ -82,7 +82,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                         // we have a valid intermediate
                         VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(closest_neighbor_tid);
                         animate_pawn_move(clicked_pawn_gid, cursor_click_pos, interact_itmdt_pos);
-                        animate_pawn_flash(dest_pawn_gid);
+                        animate_pawn_flash(dest_pawn_gid, FALSE);
 
                         // // interact with the pawn
                         // mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", clicked_pawn_gid,

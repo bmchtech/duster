@@ -23,6 +23,7 @@ typedef struct {
     int pawn_gid;
     int start_frame;
     int end_frame;
+    BOOL flash_color;
 } PawnFlashTweenInfo;
 
 typedef struct {
@@ -76,7 +77,7 @@ Pawn* get_clicked_pawn();
 void on_cursor_try_click(VPos16 click_pos);
 
 void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
-void animate_pawn_flash(pawn_gid_t pawn_gid);
+void animate_pawn_flash(pawn_gid_t pawn_gid, BOOL flash_color);
 void update_pawn_tweens();
 
 void draw_pause_ui();

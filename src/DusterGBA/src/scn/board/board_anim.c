@@ -8,9 +8,10 @@ void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
     pawn_move_tween.end_frame = frame_count + 6;
 }
 
-void animate_pawn_flash(pawn_gid_t pawn_gid) {
+void animate_pawn_flash(pawn_gid_t pawn_gid, BOOL flash_color) {
     pawn_flash_tween.pawn_gid = pawn_gid;
     pawn_flash_tween.start_frame = frame_count;
+    pawn_flash_tween.flash_color = flash_color;
     pawn_flash_tween.end_frame = frame_count + 20;
 }
 
@@ -92,8 +93,12 @@ void update_pawn_flash_tween() {
     if (frame_count >= tween->end_frame) {
         // done
 
-        // TODO: code to clean up after tweeN
+        // clean up effects
+
+        // disable window
         REG_DISPCNT &= ~DCNT_WIN0;
+
+        // disable blend
         REG_BLDY = BLDY_BUILD(0);
 
         // clear tween info
@@ -103,42 +108,32 @@ void update_pawn_flash_tween() {
         return;
     }
 
+    // get the assigned sprite
+    int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
+    Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
+    if (pawn_sprite_ix < 0)
+        return; // FAIL
+
     // check if we are at start of tween
     if (frame_count == tween->start_frame) {
-        mgba_printf(MGBA_LOG_ERROR, "started FLASH tween at: %d", tween->start_frame);
-
-        // TODO: code to set up tween
-
-        int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
-        mgba_printf(MGBA_LOG_ERROR, "bawn: %d", pawn_sprite_ix);
-        if (pawn_sprite_ix < 0)
-            return; // FAIL
-
+        // enable window
         REG_DISPCNT |= DCNT_WIN0;
-        Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-        mgba_printf(MGBA_LOG_ERROR, "window dims: %d %d %d %d", pawn_sprite->x, pawn_sprite->y, pawn_sprite->x + 8,
-                    pawn_sprite->y + 8);
-
+        // set up win0
         REG_WIN0H = WIN_BUILD(pawn_sprite->x + 8, pawn_sprite->x);
         REG_WIN0V = WIN_BUILD(pawn_sprite->y + 8, pawn_sprite->y);
         REG_WININ = WININ_BUILD(WIN_OBJ | WIN_BLD, 0);
         REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
 
-        REG_BLDCNT = BLD_OBJ | BLD_WHITE;
-        // REG_BLDY = BLDY_BUILD(16);
+        // set up blending
+        REG_BLDCNT = BLD_OBJ;
+        if (tween->flash_color)
+            REG_BLDCNT |= BLD_WHITE;
+        else
+            REG_BLDCNT |= BLD_BLACK;
 
         mgba_printf(MGBA_LOG_ERROR, "lechuga");
     }
-
-    // continue the anim...
-
-    // get the assigned sprite
-    int pawn_sprite_ix = get_sprite_index_for_pawn(tween->pawn_gid);
-    if (pawn_sprite_ix < 0)
-        return; // FAIL
-
-    Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
     // get anim progress
     int tween_len = tween->end_frame - tween->start_frame; // total length of tween in frames
