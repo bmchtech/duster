@@ -42,22 +42,23 @@ void on_cursor_click_move(VPos16 dest_pos) {
         int interact_itmdt_tid = -1;
 
         if (!within_ir) {
-            // try to move to the closest tile within ir
+            // try to find to the closest tile within ir
+            // use that tile as the intermediate
 
             // initialize to starting tile
             int closest_neighbor_tid = -1;
             int closest_neighbor_dist = -1;
 
+            // check all neighbors
             for (int nx = -ir; nx <= ir; nx++) {
                 for (int ny = -ir; ny <= ir; ny++) {
+                    // get neighbor tile info
                     VPos16 nb_pos = (VPos16){.x = dest_pos.x + nx, .y = dest_pos.y + ny};
                     int nb_tid = POS_TO_TID(nb_pos);
 
-                    // ensure that this tile is within range of target
-                    int nb_dist_to_target = board_dist(nb_pos.x, nb_pos.y, dest_pos.x, dest_pos.y);
-                    if (nb_dist_to_target > ir)
-                        // out of range
-                        continue;
+                    // ensure that from this tile, we're within ir
+                    if (board_dist(nb_pos.x, nb_pos.y, dest_pos.x, dest_pos.y) > ir)
+                        continue; // out of range
 
                     // make sure this tile is walkable
                     if (!board_util_is_walkable(nb_pos.x, nb_pos.y))
@@ -142,8 +143,6 @@ void on_cursor_try_click(VPos16 try_click_pos) {
 
         if (try_click_is_valid_move) {
             on_cursor_click_move(try_click_pos);
-            cursor_click = FALSE;
-            set_ui_dirty();
             return;
         }
 
@@ -152,9 +151,8 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         cursor_click = FALSE;
         set_ui_dirty();
     } else if (get_cursor_pawn()) {
-        // check if pawn there
-        // there is pawn
-        // set the new click pos
+        // nothing is currently selected, but our cursor is over a pawn
+        // set that pawn as clicked
         cursor_click = TRUE;
         cursor_click_pos = try_click_pos;
         pawn_move_range_dirty = TRUE;
