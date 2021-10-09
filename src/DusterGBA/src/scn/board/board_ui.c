@@ -122,8 +122,6 @@ void on_cursor_try_click(VPos16 try_click_pos) {
 
         // get the already selected pawn
         int sel_pawn_gid = get_clicked_pawn_gid();
-        ClassData* sel_pawn_cd = pawn_get_classdata(sel_pawn_gid);
-        VPos16 sel_pawn_pos = cursor_click_pos;
 
         BOOL try_click_is_valid_move = FALSE;
         // then check if the click is within the range
