@@ -9,6 +9,6 @@ void game_logic_step() {
     
 }
 
-void game_logic_interact() {
+void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver) {
     
 }

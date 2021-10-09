@@ -8,8 +8,9 @@ void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
     pawn_move_tween.end_frame = frame_count + 6;
 }
 
-void animate_pawn_flash(pawn_gid_t pawn_gid, BOOL flash_color) {
+void animate_pawn_flash(pawn_gid_t pawn_gid, pawn_gid_t initiator_gid, BOOL flash_color) {
     pawn_flash_tween.pawn_gid = pawn_gid;
+    pawn_flash_tween.initiator_gid = initiator_gid;
     pawn_flash_tween.start_frame = frame_count;
     pawn_flash_tween.flash_color = flash_color;
     pawn_flash_tween.end_frame = frame_count + 20;
@@ -38,6 +39,8 @@ void update_pawn_move_tween() {
     // check if we are at end of anim
     if (frame_count >= tween->end_frame) {
         // done
+
+        // propagate real actions
 
         // set real pos to end
         int pawn_old_pos = board_find_pawn_tile(tween->pawn_gid);
@@ -104,6 +107,11 @@ void update_pawn_flash_tween() {
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
         tween->pawn_gid = -1;
+
+        // propagate real actions
+        game_logic_interact(tween->initiator_gid, tween->pawn_gid);
+
+        request_step = TRUE;
 
         return;
     }

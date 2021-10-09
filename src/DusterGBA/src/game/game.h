@@ -98,6 +98,7 @@ ClassData* pawn_get_classdata(pawn_gid_t pawn_gid);
 // LOGIC
 
 void game_logic_step();
+void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver);
 
 // UTIL
 
