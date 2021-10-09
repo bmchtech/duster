@@ -158,8 +158,8 @@ void draw_board() {
     int pawn_sprite_ix = 1;
 
     // hide all sprites from M to NUM_SPRITES
-    for (int i = 0; i < NUM_SPRITES; i++) {
-        sprites[i].flags |= ~DUSKSPRITE_FLAGS_VISIBLE; // set not visible
+    for (int i = pawn_sprite_ix; i < NUM_SPRITES; i++) {
+        sprites[i].flags &= ~DUSKSPRITE_FLAGS_VISIBLE; // set not visible
     }
 
     cc_hashtable_remove_all(pawn2sprite);
