@@ -65,7 +65,12 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                                 // out of range
                                 continue;
 
+                            // make sure this tile is walkable
                             if (!board_util_is_walkable(nb_pos.x, nb_pos.y))
+                                continue;
+
+                            // make sure nobody else is standing there!
+                            if (board_get_pawn(BOARD_POS(nb_pos.x, nb_pos.y)))
                                 continue;
 
                             // mgba_printf(MGBA_LOG_ERROR, "checking (%d, %d)", nb_pos.x, nb_pos.y);
