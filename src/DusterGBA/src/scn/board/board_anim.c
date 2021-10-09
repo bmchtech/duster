@@ -93,7 +93,8 @@ void update_pawn_flash_tween() {
         // done
 
         // TODO: code to clean up after tweeN
-        REG_DISPCNT &= ~DCNT_WIN0;
+        // REG_DISPCNT &= ~DCNT_WIN0;
+        REG_BLDY = BLDY_BUILD(16);
 
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
@@ -113,13 +114,13 @@ void update_pawn_flash_tween() {
         if (pawn_sprite_ix < 0)
             return; // FAIL
 
-        REG_DISPCNT |= DCNT_WIN0;
+        // REG_DISPCNT |= DCNT_WIN0;
         Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
-        REG_WIN0H = WIN_BUILD(pawn_sprite->x, pawn_sprite->x + 8);
-        REG_WIN0V = WIN_BUILD(pawn_sprite->y, pawn_sprite->y + 8);
-        REG_WININ = WININ_BUILD(WIN_OBJ, 0);
-        REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
+        // REG_WIN0H = WIN_BUILD(pawn_sprite->x, pawn_sprite->x + 8);
+        // REG_WIN0V = WIN_BUILD(pawn_sprite->y, pawn_sprite->y + 8);
+        // REG_WININ = WININ_BUILD(WIN_OBJ | WIN_BLD, 0);
+        // REG_WINOUT = WINOUT_BUILD(WIN_BG0 | WIN_BG1, 0);
         REG_BLDCNT = BLD_OBJ | BLD_WHITE;
         REG_BLDY = BLDY_BUILD(16);
         mgba_printf(MGBA_LOG_ERROR, "lechuga");
