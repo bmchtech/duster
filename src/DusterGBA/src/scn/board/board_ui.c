@@ -27,6 +27,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // get pawn gid
         int clicked_pawn_gid = get_clicked_pawn_gid();
         ClassData* clicked_pawn_class_data = pawn_get_classdata(clicked_pawn_gid);
+        VPos16 clicked_pawn_pos = cursor_click_pos;
 
         // then check if the click is within the range
         for (int i = 0; i < cache_range_buf_filled; i++) {
@@ -49,43 +50,63 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                     pawn_gid_t dest_pawn_gid = dest_tile->pawn_gid;
                     // Pawn* dest_pawn = board_get_pawn(dest_tid);
 
-                    // try to move to the closest tile within interact range ir
                     int ir = clicked_pawn_class_data->interact_range;
 
-                    int closest_neighbor_tid = -1;
-                    int closest_neighbor_dist = -1;
+                    // are we within interact range (ir)?
+                    BOOL within_ir = board_dist(clicked_pawn_pos.x, clicked_pawn_pos.y, dest_pos.x, dest_pos.y) <= ir;
 
-                    for (int nx = -ir; nx <= ir; nx++) {
-                        for (int ny = -ir; ny <= ir; ny++) {
-                            VPos16 nb_pos = (VPos16){.x = dest_pos.x + nx, .y = dest_pos.y + ny};
-                            int nb_tid = POS_TO_TID(nb_pos);
+                    // tid of intermediate tile
+                    int interact_itmdt_tid = -1;
 
-                            int nb_dist_to_target = board_dist(nb_pos.x, nb_pos.y, dest_pos.x, dest_pos.y);
-                            if (nb_dist_to_target > ir)
-                                // out of range
-                                continue;
+                    if (!within_ir) {
+                        // try to move to the closest tile within ir
 
-                            // make sure this tile is walkable
-                            if (!board_util_is_walkable(nb_pos.x, nb_pos.y))
-                                continue;
+                        // initialize to starting tile
+                        int closest_neighbor_tid = -1;
+                        int closest_neighbor_dist = -1;
 
-                            // make sure nobody else is standing there!
-                            if (board_get_pawn(BOARD_POS(nb_pos.x, nb_pos.y)))
-                                continue;
+                        for (int nx = -ir; nx <= ir; nx++) {
+                            for (int ny = -ir; ny <= ir; ny++) {
+                                VPos16 nb_pos = (VPos16){.x = dest_pos.x + nx, .y = dest_pos.y + ny};
+                                int nb_tid = POS_TO_TID(nb_pos);
 
-                            // mgba_printf(MGBA_LOG_ERROR, "checking (%d, %d)", nb_pos.x, nb_pos.y);
-                            int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos.y);
+                                // ensure that this tile is within range of target
+                                int nb_dist_to_target = board_dist(nb_pos.x, nb_pos.y, dest_pos.x, dest_pos.y);
+                                if (nb_dist_to_target > ir)
+                                    // out of range
+                                    continue;
 
-                            if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
-                                closest_neighbor_dist = nb_test_dist;
-                                closest_neighbor_tid = nb_tid;
+                                // make sure this tile is walkable
+                                if (!board_util_is_walkable(nb_pos.x, nb_pos.y))
+                                    continue;
+
+                                // make sure nobody else is standing there!
+                                if (board_get_pawn(BOARD_POS(nb_pos.x, nb_pos.y)))
+                                    continue;
+
+                                // test distance from start pos
+                                int nb_test_dist =
+                                    board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos.y);
+
+                                if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
+                                    closest_neighbor_dist = nb_test_dist;
+                                    closest_neighbor_tid = nb_tid;
+                                }
                             }
                         }
+
+                        if (closest_neighbor_tid > 0) {
+                            // the intermediate is the most convenient neighbor
+                            interact_itmdt_tid = closest_neighbor_tid;
+                        }
+                    } else {
+                        // we are already within ir
+                        interact_itmdt_tid = POS_TO_TID(clicked_pawn_pos);
                     }
 
-                    if (closest_neighbor_tid > 0) {
+                    if (interact_itmdt_tid > 0) {
                         // we have a valid intermediate
-                        VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(closest_neighbor_tid);
+                        VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(interact_itmdt_tid);
                         animate_pawn_move(clicked_pawn_gid, cursor_click_pos, interact_itmdt_pos);
                         animate_pawn_flash(dest_pawn_gid, FALSE);
 
