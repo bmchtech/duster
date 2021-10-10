@@ -26,7 +26,13 @@ typedef struct {
 } GameBoard;
 
 typedef struct {
-    u8 unused0;
+    u8 atk, def, hp;
+} UnitDataStats;
+
+typedef struct {
+    s16 hitpoints;
+    s16 item;
+    UnitDataStats stats;
 } UnitData;
 
 typedef struct {
