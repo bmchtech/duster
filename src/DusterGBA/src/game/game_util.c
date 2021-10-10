@@ -367,3 +367,10 @@ BOOL pawn_util_is_valid_interaction(pawn_gid_t pawn1_gid, VPos16 pawn1_pos, pawn
 BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2) {
     return PAWN_WHICH_TEAM(pawn1) == PAWN_WHICH_TEAM(pawn2);
 }
+
+BOOL game_util_is_my_turn(pawn_gid_t pawn_gid) {
+    int my_team = PAWN_WHICH_TEAM(pawn_gid);
+    int whose_turn = game_state.turns % NUM_TEAMS;
+
+    return my_team == whose_turn;
+}
