@@ -233,13 +233,14 @@ void draw_sidebar() {
     if (cursor_click && clicked_pawn) {
         // show pawn info
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
+        UnitData* unit_data = &clicked_pawn->unit_data;
 
         int pawn_team_ix = clicked_pawn_gid / TEAM_MAX_PAWNS;
 
         tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
-        tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
-        tte_printf("#{P:142,22}#{ci:1}team: %d", pawn_team_ix);
-        tte_printf("#{P:142,30}#{ci:1}gid: %d", clicked_pawn_gid);
+        tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
+        tte_printf("#{P:142,22}#{ci:1}stats: %d | %d | %d", unit_data->stats.atk, unit_data->stats.def,
+                   unit_data->stats.hp);
     } else {
         int hover_tid = POS_TO_TID(cursor_pos);
         tte_printf("#{P:142,6}#{ci:1}tid: %d", hover_tid);
