@@ -7,6 +7,10 @@ VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     return ret;
 }
 
+// void srfbg_draw_rect() {
+
+// }
+
 void draw_board_outline() {
     // draw the board outline
     int x1 = (board_offset.x);
