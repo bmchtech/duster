@@ -1,7 +1,7 @@
 #include "board_scn.h"
 
 void update_pause_ui() {
-    
+
 }
 
 void draw_pause_ui() {
@@ -27,7 +27,7 @@ void draw_pause_ui() {
     // box
 
     // for now just draw something
-    schr4r_hline(&bg0_srf, 80, 40, 85, 1);
+    schr4c_hline(&bg0_srf, 80, 100, 85, 1);
 
     // todo
 }
