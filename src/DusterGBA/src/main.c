@@ -35,6 +35,7 @@ int main() {
     while (TRUE) {
         key_poll(); // update inputF
 
+        mgba_printf(MGBA_LOG_ERROR, "%d", REG_VCOUNT);
         dusk_scene_update();
         mmFrame();
     }
