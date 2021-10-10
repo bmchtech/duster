@@ -153,6 +153,15 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         set_ui_dirty();
     } else if (get_cursor_pawn()) {
         // nothing is currently selected, but our cursor is over a pawn
+
+        // check if this pawn is valid to be selected
+        BoardTile* tile = board_get_tile(BOARD_POS(cursor_pos.x, cursor_pos.y));
+        int hover_pawn_gid = tile->pawn_gid;
+
+        // // ensure it is our turn
+        // if (!game_util_is_my_turn(hover_pawn_gid))
+        //     return;
+
         // set that pawn as clicked
         cursor_click = TRUE;
         cursor_click_pos = try_click_pos;
