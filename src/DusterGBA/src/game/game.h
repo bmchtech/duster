@@ -58,6 +58,7 @@ typedef struct {
     char name[16];
     u8 move;
     u8 interact_range;
+    UnitDataStats base_stats;
 } ClassData;
 
 typedef struct {

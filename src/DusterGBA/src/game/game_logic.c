@@ -15,7 +15,8 @@ void game_logic_kill_if_dead(pawn_gid_t pawn_gid) {
 
     if (pawn->unit_data.hitpoints <= 0) {
         // dead
-        board_set_pawn(pawn_gid, -1);
+        int pawn_tile = board_find_pawn_tile(pawn_gid);
+        board_set_pawn(pawn_tile, -1);
         mgba_printf(MGBA_LOG_ERROR, "pawn died: %d", pawn_gid);
     }
 }

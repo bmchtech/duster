@@ -103,7 +103,21 @@ void board_set_terrain(int tile_id, Terrain terrain) {
 
 Terrain board_get_terrain(int tile_id) { return board_get_tile(tile_id)->terrain; }
 
-void team_set_pawn_t(Team* team, int pawn_id, int class) { team->pawns[pawn_id] = (Pawn){.unit_class = class}; }
+void team_set_pawn_t(Team* team, int pawn_id, int class) {
+    Pawn pw;
+
+    ClassData* class_data = &game_data.class_data[class];
+
+    // initialize pawn
+    // set class
+    pw.unit_class = class;
+    // set stats to base
+    pw.unit_data.stats = class_data->base_stats;
+    // set initial hp
+    pw.unit_data.hitpoints = pw.unit_data.stats.hp;
+
+    team->pawns[pawn_id] = pw;
+}
 
 pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class) {
     Team* team = game_get_team(team_id);
