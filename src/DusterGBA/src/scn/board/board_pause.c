@@ -21,5 +21,9 @@ void draw_pause_ui() {
     tte_printf("#{P:16,46}#{ci:1}quit");
 
     // box
+
+    // for now just draw something
+    schr4r_hline(&bg0_srf, 80, 40, 85, 1);
+
     // todo
 }
