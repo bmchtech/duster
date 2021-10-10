@@ -13,7 +13,8 @@ BOOL board_util_is_on_board(int tx, int ty) {
 }
 
 BOOL board_util_is_walkable(int tx, int ty) {
-    if (!board_util_is_on_board(tx, ty)) return FALSE;
+    if (!board_util_is_on_board(tx, ty))
+        return FALSE;
 
     // check terrain
     Terrain terrain = board_get_terrain(BOARD_POS(tx, ty));
@@ -361,4 +362,8 @@ BOOL pawn_util_is_valid_interaction(pawn_gid_t pawn1_gid, VPos16 pawn1_pos, pawn
     //     return FALSE;
 
     return TRUE;
+}
+
+BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2) {
+    return PAWN_WHICH_TEAM(pawn1) == PAWN_WHICH_TEAM(pawn2);
 }

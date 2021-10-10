@@ -94,7 +94,8 @@ void on_cursor_click_move(VPos16 dest_pos) {
             // move our pawn to the intermediate
             animate_pawn_move(sel_pawn_gid, cursor_click_pos, interact_itmdt_pos);
             // flash the dest pawn
-            animate_pawn_flash(dest_pawn_gid, sel_pawn_gid, FALSE);
+            BOOL is_same_team = pawn_util_on_same_team(sel_pawn_gid, dest_pawn_gid);
+            animate_pawn_flash(dest_pawn_gid, sel_pawn_gid, is_same_team);
 
             // interact with the pawn
             mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile->pawn_gid);
