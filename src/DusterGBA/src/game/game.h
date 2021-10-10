@@ -26,7 +26,13 @@ typedef struct {
 } GameBoard;
 
 typedef struct {
-    u8 unused0;
+    u8 atk, def, hp;
+} UnitDataStats;
+
+typedef struct {
+    s16 hitpoints;
+    s16 item;
+    UnitDataStats stats;
 } UnitData;
 
 typedef struct {
@@ -51,6 +57,8 @@ typedef struct {
 typedef struct {
     char name[16];
     u8 move;
+    u8 interact_range;
+    UnitDataStats base_stats;
 } ClassData;
 
 typedef struct {
@@ -74,7 +82,8 @@ void game_clear_state();
 void game_load_cold_data();
 void game_init();
 void game_init_board(u8 board_size);
-void game_init_team(u8 id, const char* name);
+void game_init_team(u8 team_id, const char* name);
+Team* game_get_team(u8 team_id);
 /** get the pawn with by global id */
 Pawn* game_get_pawn_by_gid(pawn_gid_t pawn_gid);
 
@@ -88,13 +97,15 @@ Terrain board_get_terrain(int tile_id);
 
 int board_dist(int tx1, int ty1, int tx2, int ty2);
 
-void team_set_pawn(Team* team, int id, int class);
+void team_set_pawn_t(Team* team, int pawn_id, int class);
+pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class);
 
 ClassData* pawn_get_classdata(pawn_gid_t pawn_gid);
 
 // LOGIC
 
 void game_logic_step();
+void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver);
 
 // UTIL
 
@@ -104,3 +115,5 @@ VPos16 board_util_tile_id_to_pos(int tile_id);
 tile_neighbors_t board_util_get_neighbors(int tile_id);
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);
 BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
+BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2);
+BOOL game_util_is_my_turn(pawn_gid_t pawn_gid);

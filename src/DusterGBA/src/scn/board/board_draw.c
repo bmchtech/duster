@@ -7,6 +7,10 @@ VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     return ret;
 }
 
+// void srfbg_draw_rect() {
+
+// }
+
 void draw_board_outline() {
     // draw the board outline
     int x1 = (board_offset.x);
@@ -157,6 +161,11 @@ void draw_board() {
     // start assigning sprites from sprite M, and every time a new pawn is found increment the counter
     int pawn_sprite_ix = 1;
 
+    // hide all sprites from M to NUM_SPRITES
+    for (int i = pawn_sprite_ix; i < NUM_SPRITES; i++) {
+        sprites[i].flags &= ~DUSKSPRITE_FLAGS_VISIBLE; // set not visible
+    }
+
     cc_hashtable_remove_all(pawn2sprite);
 
     // go through all tiles
@@ -228,12 +237,18 @@ void draw_sidebar() {
     if (cursor_click && clicked_pawn) {
         // show pawn info
         ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
+        UnitData* unit_data = &clicked_pawn->unit_data;
 
         int pawn_team_ix = clicked_pawn_gid / TEAM_MAX_PAWNS;
 
         tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
-        tte_printf("#{P:142,14}#{ci:1}move: %d", class_data->move);
-        tte_printf("#{P:142,22}#{ci:1}team: %d", pawn_team_ix);
-        tte_printf("#{P:142,30}#{ci:1}gid: %d", clicked_pawn_gid);
+        tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
+        tte_printf("#{P:142,22}#{ci:1}stats: %d | %d | %d", unit_data->stats.atk, unit_data->stats.def,
+                   unit_data->stats.hp);
+    } else {
+        int hover_tid = POS_TO_TID(cursor_pos);
+        tte_printf("#{P:142,6}#{ci:1}tid: %d", hover_tid);
+        BoardTile* tile = board_get_tile(hover_tid);
+        tte_printf("#{P:142,14}#{ci:1}pawn: %d", tile->pawn_gid);
     }
 }

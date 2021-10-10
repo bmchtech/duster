@@ -13,7 +13,8 @@ BOOL board_util_is_on_board(int tx, int ty) {
 }
 
 BOOL board_util_is_walkable(int tx, int ty) {
-    if (!board_util_is_on_board(tx, ty)) return FALSE;
+    if (!board_util_is_on_board(tx, ty))
+        return FALSE;
 
     // check terrain
     Terrain terrain = board_get_terrain(BOARD_POS(tx, ty));
@@ -240,7 +241,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             BoardTile* scan_tile = board_get_tile(scan_node);
             if (scan_tile->pawn_gid > 0) {
                 // a pawn is here
-                cost += 2;
+                cost += 1;
             }
 
             int scan_dist = curr_dist + cost;
@@ -361,4 +362,15 @@ BOOL pawn_util_is_valid_interaction(pawn_gid_t pawn1_gid, VPos16 pawn1_pos, pawn
     //     return FALSE;
 
     return TRUE;
+}
+
+BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2) {
+    return PAWN_WHICH_TEAM(pawn1) == PAWN_WHICH_TEAM(pawn2);
+}
+
+BOOL game_util_is_my_turn(pawn_gid_t pawn_gid) {
+    int my_team = PAWN_WHICH_TEAM(pawn_gid);
+    int whose_turn = game_state.turns % NUM_TEAMS;
+
+    return my_team == whose_turn;
 }

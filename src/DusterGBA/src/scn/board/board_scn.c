@@ -13,7 +13,8 @@ VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
 VPos16 cursor_click_pos;
-PawnTweenInfo pawn_tween;
+PawnMoveTweenInfo pawn_move_tween;
+PawnFlashTweenInfo pawn_flash_tween;
 CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
 VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
@@ -50,17 +51,6 @@ void boardscn_start() {
     pal_bg_mem[1] = RES_PAL[0]; // draw col 1
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
-    mgba_printf(MGBA_LOG_INFO, "bean");
-
-    CC_Array* ar;
-    cc_array_new(&ar);
-    int arr_in = 17;
-    cc_array_add(ar, &arr_in);
-    int* arr_out;
-    cc_array_get_at(ar, 0, (void*)&arr_out);
-    mgba_printf(MGBA_LOG_ERROR, "arr element 0: %d", *arr_out);
-    cc_array_destroy(ar);
-
     // test loading data
     // u32 d_class_len;
     // u8* d_class = (u8*) dusk_load_raw("d_class.bin", &d_class_len);
@@ -80,16 +70,20 @@ void boardscn_start() {
     game_init_team(1, "enmy");
 
     Team* team0 = &game_state.teams[0];
-    team_set_pawn(team0, 0, 0); // first unit is soldier
-    team_set_pawn(team0, 1, 1); // second unit is horse
+    team_set_pawn_t(team0, 0, 0); // first unit is soldier
+    team_set_pawn_t(team0, 1, 1); // second unit is horse
+    team_set_pawn_t(team0, 2, 3); // third unit is mage
 
     Team* team1 = &game_state.teams[1];
-    team_set_pawn(team1, 0, 1);
+    team_set_pawn_t(team1, 0, 1);
+    team_set_pawn_t(team1, 1, 2);
 
     board_set_pawn(BOARD_POS(0, 0), PAWN_GID(0, 0)); // pawn #0
     board_set_pawn(BOARD_POS(3, 2), PAWN_GID(0, 1)); // pawn #1
+    board_set_pawn(BOARD_POS(2, 4), PAWN_GID(0, 2)); // pawn #2
 
     board_set_pawn(BOARD_POS(2, 9), PAWN_GID(1, 0));
+    board_set_pawn(BOARD_POS(3, 8), PAWN_GID(1, 1));
 
     board_set_terrain(BOARD_POS(1, 3), TERRAIN_BLOCKED);
     board_set_terrain(BOARD_POS(2, 3), TERRAIN_BLOCKED);
@@ -99,7 +93,9 @@ void boardscn_start() {
     board_offset = (VPos){.x = 8, .y = 8};
     cursor_pos = (VPos16){.x = 0, .y = 0};
 
-    pawn_tween.pawn_gid = -1; // no pawn
+    // clear tweens
+    pawn_move_tween.pawn_gid = -1;
+    pawn_flash_tween.pawn_gid = -1;
 
     // init data structures
     CC_HashTableConf pawn2sprite_conf;
@@ -110,6 +106,7 @@ void boardscn_start() {
 
     // set test tween
     // animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
+    // animate_pawn_flash(PAWN_GID(0, 0));
 }
 
 void set_ui_dirty() {
@@ -178,7 +175,6 @@ void boardscn_update() {
     // logic
     if (request_step) {
         request_step = FALSE;
-        mgba_printf(MGBA_LOG_ERROR, "game logic step");
         game_logic_step();
     }
 
@@ -192,7 +188,9 @@ void boardscn_update() {
     case BOARDSCN_BOARD:
         draw_sidebar();
         draw_board();
-        update_pawn_tween();
+
+        // tween updates are last
+        update_pawn_tweens();
 
         // update sprites
         dusk_sprites_update();
