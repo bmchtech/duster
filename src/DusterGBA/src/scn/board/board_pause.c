@@ -1,5 +1,9 @@
 #include "board_scn.h"
 
+void update_pause_ui() {
+    
+}
+
 void draw_pause_ui() {
     if (!pausemenu_dirty)
         return;

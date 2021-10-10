@@ -81,4 +81,5 @@ void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
 void animate_pawn_flash(pawn_gid_t pawn_gid, pawn_gid_t initiator_gid, BOOL flash_color);
 void update_pawn_tweens();
 
+void update_pause_ui();
 void draw_pause_ui();
