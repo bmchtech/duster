@@ -107,7 +107,7 @@ void team_set_pawn_t(Team* team, int pawn_id, int class) { team->pawns[pawn_id] 
 
 pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class) {
     Team* team = game_get_team(team_id);
-    team->pawns[pawn_id] = (Pawn){.unit_class = class};
+    team_set_pawn_t(team, pawn_id, class);
     return PAWN_GID(team_id, pawn_id);
 }
 
