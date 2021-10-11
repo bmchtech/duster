@@ -1,9 +1,17 @@
 #include "board_scn.h"
-
+#include "scenes.h"
 
 #define NUM_PAUSE_SELECTIONS 3
 VPos pause_cursor_pos;
 int pause_cursor_selection = 0;
+
+void pause_menu_back_selected() {
+    board_scene_page = BOARDSCN_BOARD;
+}
+
+void pause_menu_quit_selected() {
+    dusk_scene_set(logo_scene);
+}
 
 void update_pause_ui() {
     if (key_hit(KEY_DOWN) && pause_cursor_selection < (NUM_PAUSE_SELECTIONS - 1)) {
@@ -14,6 +22,13 @@ void update_pause_ui() {
     if (key_hit(KEY_UP) && pause_cursor_selection > 0) {
         pause_cursor_selection--;
         pausemenu_dirty = TRUE;
+    }
+
+    if (key_hit(KEY_A)) {        
+        switch (pause_cursor_selection) {
+            case 0: pause_menu_back_selected(); break;
+            case 2: pause_menu_quit_selected(); break;
+        }
     }
 }
 
