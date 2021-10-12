@@ -380,10 +380,13 @@ int game_util_whose_turn() {
     return whose_turn;
 }
 
-#define MACRO_CALC_STATS_GROWTH(stat) calc_stats.stat = base.stat + (num_growths * growth.stat)
+// this applies the growth spread out over every 5 levels
+// for example, with an atk growth of 4, it will spread those
+// 4 atk stat boosts over every 5 levels
+#define MACRO_CALC_STATS_GROWTH(stat) calc_stats.stat = base.stat + ((growth.stat * num_growths) / 5)
 
 UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
-    int num_growths = level - 1;
+    int num_growths = (level - 1);
     UnitDataStats base = class_data->base_stats;
     UnitDataStats growth = class_data->stat_growths;
 
