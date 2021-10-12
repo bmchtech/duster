@@ -4,3 +4,6 @@
 [submodule "lib/ccoll"]
 	path = lib/ccoll
 	url = https://github.com/redthing1/gba_ccoll
+[submodule "src/TestMaps/raylib"]
+	path = src/TestMaps/raylib
+	url = https://github.com/raysan5/raylib.git
