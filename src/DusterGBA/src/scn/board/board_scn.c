@@ -23,6 +23,8 @@ BOOL request_step = FALSE;
 BOOL pawn_move_range_dirty = TRUE;
 BoardScenePage board_scene_page = BOARDSCN_BOARD;
 BOOL pausemenu_dirty = TRUE;
+int board_scroll_x = 0;
+int board_scroll_y = 0;
 
 int cursor_last_moved_frame = 0;
 

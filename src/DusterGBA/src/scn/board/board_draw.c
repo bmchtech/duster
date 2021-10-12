@@ -1,5 +1,7 @@
 #include "board_scn.h"
 
+// the largest square able to be visible
+
 VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     VPos16 ret;
     ret.x = board_offset.x + (tx << 3);
@@ -14,9 +16,9 @@ VPos16 board_vpos_to_pix_pos(int tx, int ty) {
 void draw_board_outline() {
     // draw the board outline
     int x1 = (board_offset.x);
-    int x2 = (board_offset.x) + (game_state.board_size * 8);
+    int x2 = (board_offset.x) + (BOARD_SCROLL_WINDOW * 8);
     int y1 = (board_offset.y);
-    int y2 = (board_offset.y) + (game_state.board_size * 8);
+    int y2 = (board_offset.y) + (BOARD_SCROLL_WINDOW * 8);
 
     schr4c_hline(&bg0_srf, x1 - 1, y1 - 1, x2, 1);
     schr4c_vline(&bg0_srf, x1 - 1, y1 - 1, y2, 1);
@@ -168,10 +170,19 @@ void draw_board() {
 
     cc_hashtable_remove_all(pawn2sprite);
 
+    // get board window pos
+    int bwy = board_scroll_y;
+    int bwx = board_scroll_x;
+
     // go through all tiles
-    for (int by = 0; by < game_state.board_size; by++) {
-        for (int bx = 0; bx < game_state.board_size; bx++) {
-            BoardTile* tile = &game_state.board.tiles[BOARD_POS(bx, by)];
+    // brx and bry mean "board real x"
+    for (int bry = bwy; bry < bwy + BOARD_SCROLL_WINDOW; bry++) {
+        for (int brx = bwx; brx < bwx + BOARD_SCROLL_WINDOW; brx++) {
+            // get "draw cooardinate" x and y, which subtracts the window offset
+            int bdx = brx - bwx;
+            int bdy = bry - bwy;
+
+            BoardTile* tile = &game_state.board.tiles[BOARD_POS(brx, bry)];
             if (tile->pawn_gid >= 0) {
                 // this is a pawn
                 // look up the pawn
@@ -191,8 +202,8 @@ void draw_board() {
                 // assign a sprite to drawing this pawn
                 dusk_sprites_make(pawn_sprite_id, 8, 8,
                                   (Sprite){
-                                      .x = board_offset.x + (bx << 3),
-                                      .y = board_offset.y + (by << 3),
+                                      .x = board_offset.x + (bdx << 3),
+                                      .y = board_offset.y + (bdy << 3),
                                       .base_tid = pawn->unit_class + (team_ix * NUM_UNIT_CLASSES),
                                   });
 
@@ -201,7 +212,7 @@ void draw_board() {
             if (tile->terrain > 0) {
                 switch (tile->terrain) {
                 case TERRAIN_BLOCKED:
-                    draw_blocked_tile(bx, by, BLOCKED_PATTERN_STRIPE);
+                    draw_blocked_tile(bdx, bdy, BLOCKED_PATTERN_STRIPE);
                 default:
                     break;
                 }
