@@ -169,3 +169,24 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         set_ui_dirty();
     }
 }
+
+void on_try_move_cursor(int mx, int my) {
+    // move cursor
+    cursor_pos.x += mx;
+    cursor_pos.y += my;
+
+    // ensure cursor position is clamped
+    if (cursor_pos.x < 0)
+        cursor_pos.x = game_state.board_size - 1;
+    if (cursor_pos.x >= game_state.board_size)
+        cursor_pos.x = 0;
+    if (cursor_pos.y < 0)
+        cursor_pos.y = game_state.board_size - 1;
+    if (cursor_pos.y >= game_state.board_size)
+        cursor_pos.y = 0;
+
+    // cursor_click = FALSE;
+
+    // need to redraw bg
+    set_ui_dirty();
+}

@@ -116,26 +116,11 @@ void boardscn_input() {
 
     if (cursor_shown && (arrows_touched || cursor_last_moved_frame < (frame_count - 6)) &&
         (x_move != 0 || y_move != 0)) {
-        // move cursor
-        cursor_pos.x += x_move;
-        cursor_pos.y += y_move;
 
-        // ensure cursor position is clamped
-        if (cursor_pos.x < 0)
-            cursor_pos.x = game_state.board_size - 1;
-        if (cursor_pos.x >= game_state.board_size)
-            cursor_pos.x = 0;
-        if (cursor_pos.y < 0)
-            cursor_pos.y = game_state.board_size - 1;
-        if (cursor_pos.y >= game_state.board_size)
-            cursor_pos.y = 0;
-
+        // store cursor last move frame
         cursor_last_moved_frame = frame_count;
 
-        // cursor_click = FALSE;
-
-        // need to redraw bg
-        set_ui_dirty();
+        on_try_move_cursor(x_move, y_move);
     }
 
     if (key_hit(KEY_SELECT)) {
