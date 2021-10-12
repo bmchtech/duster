@@ -71,15 +71,10 @@ void boardscn_start() {
     u32 test1_gmp_len;
     const void* test1_gmp = dusk_load_raw("test1.gmp.bin", &test1_gmp_len);
 
-    // copy the data
-    void* test1_gmp_copy = malloc(test1_gmp_len);
-    memcpy(test1_gmp_copy, test1_gmp, test1_gmp_len);
-
-    mgba_printf(MGBA_LOG_ERROR, "trying to load tmx from data (%d)", test1_gmp_len);
+    mgba_printf(MGBA_LOG_ERROR, "loaded tmx data (%d)", test1_gmp_len);
 
     mgba_printf(MGBA_LOG_ERROR, "trying to init gamemap");
-    BOOL load_success = game_load_gamemap(test1_gmp_copy, test1_gmp_len);
-    free(test1_gmp_copy);
+    BOOL load_success = game_load_gamemap((void*)test1_gmp, test1_gmp_len);
 
     // game_init_board(16);
     // game_init_team(0, "player");
