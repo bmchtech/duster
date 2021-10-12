@@ -26,7 +26,7 @@ typedef struct {
 } GameBoard;
 
 typedef struct {
-    u8 atk, def, hp;
+    u8 atk, def, hp, spd;
 } UnitDataStats;
 
 typedef struct {

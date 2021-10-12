@@ -397,6 +397,7 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
     MACRO_CALC_STATS_GROWTH(atk);
     MACRO_CALC_STATS_GROWTH(def);
     MACRO_CALC_STATS_GROWTH(hp);
+    MACRO_CALC_STATS_GROWTH(spd);
 
     return calc_stats;
 }
