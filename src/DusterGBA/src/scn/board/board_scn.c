@@ -77,7 +77,7 @@ void boardscn_start() {
 
     mgba_printf(MGBA_LOG_ERROR, "trying to load tmx from data (%d)", test1_gmp_len);
 
-    GameMap game_map = load_game_map(test1_gmp_copy, test1_gmp_len);
+    GameMap game_map = game_load_gamemap(test1_gmp_copy, test1_gmp_len);
     free(test1_gmp_copy);
 
     mgba_printf(MGBA_LOG_ERROR, "trying to initialize board");

@@ -132,4 +132,4 @@ BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2);
 BOOL game_util_is_my_turn(pawn_gid_t pawn_gid);
 
 // MAP
-GameMap load_game_map(void* data, u32 len);
+GameMap game_load_gamemap(void* data, u32 len);

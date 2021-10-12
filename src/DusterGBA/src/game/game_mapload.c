@@ -3,7 +3,7 @@
 #include "string.h"
 #include "contrib/mgba.h"
 
-GameMap load_game_map(void* data, u32 len) {
+GameMap game_load_gamemap(void* data, u32 len) {
     cute_tiled_map_t* map = cute_tiled_load_map_from_memory(data, len, NULL);
 
     GameMap ret;
@@ -30,6 +30,13 @@ GameMap load_game_map(void* data, u32 len) {
             terrain_layer_found = TRUE;
 
             // copy tile data from terrain layer
+            for (int i = 0; i < data_count; i++) {
+                int tile = data[i];
+                int tx = i % map->width;
+                int ty = i / map->width;
+
+                Terrain terrain = (Terrain)(tile - 1);   
+            }
         }
 
         // spawn points

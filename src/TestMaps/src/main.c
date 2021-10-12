@@ -46,6 +46,18 @@ int main(void)
             terrain_layer_found = true;
 
             // copy tile data from terrain layer
+            for (int i = 0; i < data_count; i++)
+            {
+                int tile = data[i];
+                int tx = i % map->width;
+                int ty = i / map->width;
+
+                if (tile == 2)
+                {
+                    // obstacle
+                    printf("obstacle tile (%d,%d): %d \n", tx, ty, tile);
+                }
+            }
         }
 
         // spawn points
