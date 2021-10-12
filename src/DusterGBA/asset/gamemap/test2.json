@@ -18,11 +18,6 @@
                          "value":1
                         }, 
                         {
-                         "name":"pawn",
-                         "type":"int",
-                         "value":0
-                        }, 
-                        {
                          "name":"team",
                          "type":"int",
                          "value":0
@@ -43,11 +38,6 @@
                          "name":"class",
                          "type":"int",
                          "value":2
-                        }, 
-                        {
-                         "name":"pawn",
-                         "type":"int",
-                         "value":1
                         }, 
                         {
                          "name":"team",
@@ -72,11 +62,6 @@
                          "value":0
                         }, 
                         {
-                         "name":"pawn",
-                         "type":"int",
-                         "value":0
-                        }, 
-                        {
                          "name":"team",
                          "type":"int",
                          "value":1
@@ -95,11 +80,6 @@
                  "properties":[
                         {
                          "name":"class",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"pawn",
                          "type":"int",
                          "value":1
                         }, 
@@ -134,7 +114,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":6,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.2",

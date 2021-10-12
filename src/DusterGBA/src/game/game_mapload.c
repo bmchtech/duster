@@ -46,20 +46,20 @@ BOOL game_load_gamemap(void* data, u32 len) {
         if ((strcmp(layer->name.ptr, "pawns") == 0) && layer->objects) {
             pawns_layer_found = TRUE;
 
+            // array of pawn count for each team
+            int team_pawn_count[NUM_TEAMS];
+            memset(&team_pawn_count, 0, sizeof(team_pawn_count));
+
             cute_tiled_object_t* obj = layer->objects;
             while (obj) {
                 // check if spawn
                 if ((strcmp(obj->type.ptr, "pawn") == 0) && obj->property_count > 0) {
                     // add to spawn
-                    int pawn_ix = -1;
                     int team_ix = -1;
                     int pawn_class = 0;
 
                     for (int i = 0; i < obj->property_count; i++) {
                         cute_tiled_property_t* prop = &obj->properties[i];
-                        if (strcmp(prop->name.ptr, "pawn") == 0) {
-                            pawn_ix = prop->data.integer;
-                        }
                         if (strcmp(prop->name.ptr, "team") == 0) {
                             team_ix = prop->data.integer;
                         }
@@ -68,10 +68,14 @@ BOOL game_load_gamemap(void* data, u32 len) {
                         }
                     }
 
-                    if (pawn_ix >= 0 && team_ix >= 0) {
+                    if (team_ix >= 0) {
                         VPos16 spawn_pos = (VPos16){.x = obj->x / 8, .y = obj->y / 8};
 
+                        // get next open pawn slot using team counts
+                        int pawn_ix = team_pawn_count[team_ix];
                         team_set_pawn(team_ix, pawn_ix, pawn_class);
+                        // increment pawn slot number
+                        team_pawn_count[team_ix]++;
 
                         board_set_pawn(BOARD_POS(spawn_pos.x, spawn_pos.y), PAWN_GID(team_ix, pawn_ix));
 
