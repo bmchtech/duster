@@ -57,6 +57,7 @@ BOOL game_load_gamemap(void* data, u32 len) {
                     // add to spawn
                     int team_ix = -1;
                     int pawn_class = 0;
+                    int pawn_level = 1;
 
                     for (int i = 0; i < obj->property_count; i++) {
                         cute_tiled_property_t* prop = &obj->properties[i];
@@ -66,6 +67,9 @@ BOOL game_load_gamemap(void* data, u32 len) {
                         if (strcmp(prop->name.ptr, "class") == 0) {
                             pawn_class = prop->data.integer;
                         }
+                        if (strcmp(prop->name.ptr, "level") == 0) {
+                            pawn_level = prop->data.integer;
+                        }
                     }
 
                     if (team_ix >= 0) {
@@ -74,6 +78,10 @@ BOOL game_load_gamemap(void* data, u32 len) {
                         // get next open pawn slot using team counts
                         int pawn_ix = team_pawn_count[team_ix];
                         team_set_pawn(team_ix, pawn_ix, pawn_class);
+                        // set level
+                        Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(team_ix, pawn_ix));
+                        pawn->unit_data.level = pawn_level;
+                        team_pawn_recalculate(team_ix, pawn_ix);
                         // increment pawn slot number
                         team_pawn_count[team_ix]++;
 

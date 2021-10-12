@@ -379,3 +379,17 @@ int game_util_whose_turn() {
     int whose_turn = game_state.turns % NUM_TEAMS;
     return whose_turn;
 }
+
+UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
+    int boosts = level - 1;
+    UnitDataStats base = class_data->base_stats;
+
+    UnitDataStats calc_stats = base;
+
+    // compute additional stats based on adding to base stats
+    calc_stats.atk = base.atk + boosts;
+    calc_stats.def = base.def + boosts;
+    calc_stats.hp = base.hp + boosts;
+
+    return calc_stats;
+}

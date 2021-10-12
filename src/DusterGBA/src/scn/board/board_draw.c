@@ -252,7 +252,7 @@ void draw_sidebar() {
         ClassData* class_data = &game_data.class_data[pawn->unit_class];
         UnitData* unit_data = &pawn->unit_data;
 
-        tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
+        tte_printf("#{P:142,6}#{ci:1}class: %s L%d", class_data->name, unit_data->level);
         tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
         tte_printf("#{P:142,22}#{ci:1}stats: %d | %d | %d", unit_data->stats.atk, unit_data->stats.def,
                    unit_data->stats.hp);

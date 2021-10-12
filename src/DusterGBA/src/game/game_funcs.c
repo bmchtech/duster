@@ -114,8 +114,8 @@ void team_set_pawn_t(Team* team, int pawn_id, int class) {
     // initialize pawn
     // set class
     pw.unit_class = class;
-    // set stats to base
-    pw.unit_data.stats = class_data->base_stats;
+    // set stats to stats of level 1 (base stats)
+    pw.unit_data.stats = pawn_util_calc_stats(class_data, 1);
     // set initial hp
     pw.unit_data.hitpoints = pw.unit_data.stats.hp;
 
@@ -130,6 +130,18 @@ pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class) {
     Team* team = game_get_team(team_id);
     team_set_pawn_t(team, pawn_id, class);
     return PAWN_GID(team_id, pawn_id);
+}
+
+void team_pawn_recalculate(int team_id, int pawn_id) {
+    // recalculate values for this pawn
+    Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(team_id, pawn_id));
+    ClassData* class_data = &game_data.class_data[pawn->unit_class];
+
+    // update stats
+    pawn->unit_data.stats = pawn_util_calc_stats(class_data, pawn->unit_data.level);
+
+    // update hp to max
+    pawn->unit_data.hitpoints = pawn->unit_data.stats.hp;
 }
 
 int board_dist(int tx1, int ty1, int tx2, int ty2) { return ABS(tx2 - tx1) + ABS(ty2 - ty1); }

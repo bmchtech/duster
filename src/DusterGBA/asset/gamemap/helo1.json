@@ -18,6 +18,11 @@
                          "value":1
                         }, 
                         {
+                         "name":"level",
+                         "type":"int",
+                         "value":6
+                        }, 
+                        {
                          "name":"team",
                          "type":"int",
                          "value":0
