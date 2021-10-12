@@ -77,32 +77,9 @@ void boardscn_start() {
 
     mgba_printf(MGBA_LOG_ERROR, "trying to load tmx from data (%d)", test1_gmp_len);
 
-    GameMap game_map = game_load_gamemap(test1_gmp_copy, test1_gmp_len);
+    mgba_printf(MGBA_LOG_ERROR, "trying to init gamemap");
+    BOOL load_success = game_load_gamemap(test1_gmp_copy, test1_gmp_len);
     free(test1_gmp_copy);
-
-    mgba_printf(MGBA_LOG_ERROR, "trying to initialize board");
-
-    game_init_board(game_map.board_size);
-    game_init_team(0, "player");
-    game_init_team(1, "enmy");
-
-    for (int team_ix = 0; team_ix < NUM_TEAMS; team_ix++) {
-        int team_base = team_ix * TEAM_MAX_PAWNS;
-        for (int pawn_ix = 0; pawn_ix < TEAM_MAX_PAWNS; pawn_ix++) {
-            int spawn_pawn_ix = team_base + pawn_ix;
-            PawnSpawnPoint* spawn_point = &game_map.pawn_spawn[spawn_pawn_ix];
-
-            if (!spawn_point->valid) continue;
-
-            team_set_pawn(team_ix, pawn_ix, 0);
-
-            // board_set_terrain(BOARD_POS(spawn_point->pos.x, spawn_point->pos.y), TERRAIN_GROUND);
-
-            board_set_pawn(BOARD_POS(spawn_point->pos.x, spawn_point->pos.y), PAWN_GID(team_ix, pawn_ix));
-            mgba_printf(MGBA_LOG_ERROR, "spawned pawn (team: %d, pawn: %d) at pos (%d, %d)", team_ix, pawn_ix,
-                        spawn_point->pos.x, spawn_point->pos.y);
-        }
-    }
 
     // game_init_board(16);
     // game_init_team(0, "player");

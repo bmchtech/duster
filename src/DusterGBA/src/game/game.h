@@ -76,12 +76,6 @@ typedef struct {
     u32 pawn;
 } PawnSpawnPoint;
 
-typedef struct {
-    BOOL valid;
-    u8 board_size;
-    PawnSpawnPoint pawn_spawn[NUM_TEAMS * TEAM_MAX_PAWNS];
-} GameMap;
-
 extern GameState game_state;
 extern GameColdData game_data;
 
@@ -132,4 +126,4 @@ BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2);
 BOOL game_util_is_my_turn(pawn_gid_t pawn_gid);
 
 // MAP
-GameMap game_load_gamemap(void* data, u32 len);
+BOOL game_load_gamemap(void* data, u32 len);

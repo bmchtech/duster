@@ -3,17 +3,18 @@
 #include "string.h"
 #include "contrib/mgba.h"
 
-GameMap game_load_gamemap(void* data, u32 len) {
+BOOL game_load_gamemap(void* data, u32 len) {
     cute_tiled_map_t* map = cute_tiled_load_map_from_memory(data, len, NULL);
 
-    GameMap ret;
-    // reset
-    memset(&ret, 0, sizeof(GameMap));
-
-    ret.valid = TRUE;
-
     // set board size from width
-    ret.board_size = map->width;
+    int board_size = map->width;
+
+    // initialize board
+    game_init_board(board_size);
+
+    // init default teams
+    game_init_team(0, "player");
+    game_init_team(1, "enmy");
 
     BOOL terrain_layer_found = FALSE;
     BOOL pawns_layer_found = FALSE;
@@ -35,7 +36,9 @@ GameMap game_load_gamemap(void* data, u32 len) {
                 int tx = i % map->width;
                 int ty = i / map->width;
 
-                Terrain terrain = (Terrain)(tile - 1);   
+                Terrain terrain = (Terrain)(tile - 1);
+
+                board_set_terrain(BOARD_POS(tx, ty), terrain);
             }
         }
 
@@ -62,15 +65,14 @@ GameMap game_load_gamemap(void* data, u32 len) {
                     }
 
                     if (pawn_ix >= 0 && team_ix >= 0) {
-                        PawnSpawnPoint* spawn = &ret.pawn_spawn[PAWN_GID(team_ix, pawn_ix)];
-                        spawn->valid = TRUE;
+                        VPos16 spawn_pos = (VPos16){.x = obj->x / 8, .y = obj->y / 8};
 
-                        spawn->pos = (VPos16){.x = obj->x / 8, .y = obj->y / 8};
-                        spawn->team = team_ix;
-                        spawn->pawn = pawn_ix;
+                        team_set_pawn(team_ix, pawn_ix, 0);
 
-                        mgba_printf(MGBA_LOG_ERROR, "spawn: pos: (%d, %d), team: %d, pawn: %d\n", (int)spawn->pos.x,
-                                    (int)spawn->pos.y, team_ix, pawn_ix);
+                        board_set_pawn(BOARD_POS(spawn_pos.x, spawn_pos.y), PAWN_GID(team_ix, pawn_ix));
+
+                        mgba_printf(MGBA_LOG_ERROR, "spawned pawn (team: %d, pawn: %d) at pos (%d, %d)", team_ix,
+                                    pawn_ix, spawn_pos.x, spawn_pos.y);
                     }
                 }
 
@@ -81,11 +83,14 @@ GameMap game_load_gamemap(void* data, u32 len) {
         layer = layer->next;
     }
 
-    if (!(terrain_layer_found && pawns_layer_found)) {
-        ret.valid = FALSE;
-    }
-
+    // clean up map
     cute_tiled_free_map(map);
 
-    return ret;
+    BOOL valid = TRUE;
+
+    if (!(terrain_layer_found && pawns_layer_found)) {
+        valid = FALSE;
+    }
+
+    return valid;
 }
