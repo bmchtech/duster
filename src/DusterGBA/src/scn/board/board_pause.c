@@ -45,7 +45,7 @@ void update_pause_ui() {
 }
 
 int get_pause_cursor_y() {
-    return PAUSE_MENU_OFFSET_Y + pause_cursor_selection * PAUSE_MENU_INCREMENT_Y + PAUSE_MENU_INCREMENT_Y / 2;
+    return PAUSE_MENU_OFFSET_Y + pause_cursor_selection * PAUSE_MENU_INCREMENT_Y + PAUSE_MENU_INCREMENT_Y / 2 - 1;
 }
 
 void draw_pause_ui() {
@@ -73,7 +73,10 @@ void draw_pause_ui() {
     // box
 
     // for now just draw something
-    schr4c_hline(&bg0_srf, 50, get_pause_cursor_y(), 55, 1);
+    int cursor_y = get_pause_cursor_y();
+    schr4c_hline(&bg0_srf, 5, cursor_y,     8,  1);
+    schr4c_hline(&bg0_srf, 5, cursor_y + 2, 10, 1);
+    schr4c_hline(&bg0_srf, 5, cursor_y + 4, 8,  1);
 
     // todo
 }
