@@ -71,7 +71,7 @@ void boardscn_start() {
     mgba_printf(MGBA_LOG_ERROR, "trying to load map data");
 
     u32 test1_gmp_len;
-    const void* test1_gmp = dusk_load_raw("test3.gmp.bin", &test1_gmp_len);
+    const void* test1_gmp = dusk_load_raw("helo1.gmp.bin", &test1_gmp_len);
 
     mgba_printf(MGBA_LOG_ERROR, "loaded tmx data (%d)", test1_gmp_len);
 
