@@ -53,6 +53,7 @@ BOOL game_load_gamemap(void* data, u32 len) {
                     // add to spawn
                     int pawn_ix = -1;
                     int team_ix = -1;
+                    int pawn_class = 0;
 
                     for (int i = 0; i < obj->property_count; i++) {
                         cute_tiled_property_t* prop = &obj->properties[i];
@@ -62,12 +63,15 @@ BOOL game_load_gamemap(void* data, u32 len) {
                         if (strcmp(prop->name.ptr, "team") == 0) {
                             team_ix = prop->data.integer;
                         }
+                        if (strcmp(prop->name.ptr, "class") == 0) {
+                            pawn_class = prop->data.integer;
+                        }
                     }
 
                     if (pawn_ix >= 0 && team_ix >= 0) {
                         VPos16 spawn_pos = (VPos16){.x = obj->x / 8, .y = obj->y / 8};
 
-                        team_set_pawn(team_ix, pawn_ix, 0);
+                        team_set_pawn(team_ix, pawn_ix, pawn_class);
 
                         board_set_pawn(BOARD_POS(spawn_pos.x, spawn_pos.y), PAWN_GID(team_ix, pawn_ix));
 
