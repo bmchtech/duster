@@ -70,6 +70,7 @@ typedef struct {
 } tile_neighbors_t;
 
 typedef struct {
+    BOOL valid;
     u8 board_size;
 } GameMap;
 

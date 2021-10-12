@@ -32,6 +32,8 @@ int main(void)
     // get map width and height
     int w = map->width;
     int h = map->height;
+    
+    printf("bap: %d\n", map->width);
 
     // loop over the map's layers
     cute_tiled_layer_t *layer = map->layers;
