@@ -4,24 +4,29 @@
 VPos pause_cursor_pos;
 int pause_cursor_selection = 0;
 
-void pause_menu_back_selected() { board_scene_page = BOARDSCN_BOARD; }
+void pause_menu_back_selected() {
+    // set scene back to board
+    board_scene_page = BOARDSCN_BOARD;
+}
 
-void pause_menu_quit_selected() { dusk_scene_set(logo_scene); }
+void pause_menu_quit_selected() {
+    // set scene back to board
+    board_scene_page = BOARDSCN_BOARD;
 
+    // restart game
+    dusk_scene_set(logo_scene);
+}
 typedef struct PauseMenuItem {
     char* display_name;
     void (*action)();
 } PauseMenuItem_t;
 
 PauseMenuItem_t pause_menu_items[3] = {
-    {"back", pause_menu_back_selected},
-    {"save", pause_menu_back_selected},
-    {"quit", pause_menu_quit_selected}
-};
+    {"back", pause_menu_back_selected}, {"save", pause_menu_back_selected}, {"quit", pause_menu_quit_selected}};
 
-#define NUM_PAUSE_SELECTIONS   (sizeof(pause_menu_items) / sizeof(PauseMenuItem_t))
-#define PAUSE_MENU_OFFSET_X    16
-#define PAUSE_MENU_OFFSET_Y    22
+#define NUM_PAUSE_SELECTIONS (sizeof(pause_menu_items) / sizeof(PauseMenuItem_t))
+#define PAUSE_MENU_OFFSET_X 16
+#define PAUSE_MENU_OFFSET_Y 22
 #define PAUSE_MENU_INCREMENT_Y 12
 
 void update_pause_ui() {
@@ -35,8 +40,14 @@ void update_pause_ui() {
         pausemenu_dirty = TRUE;
     }
 
-    if (key_hit(KEY_A)) {        
-        pause_menu_items[pause_cursor_selection].action();
+    if (key_hit(KEY_A)) {
+        // an item is selected
+
+        int sel_item = pause_cursor_selection;
+        pause_cursor_selection = 0; // reset item selection index
+
+        // call the action
+        pause_menu_items[sel_item].action();
     }
 }
 
@@ -66,18 +77,16 @@ void draw_pause_ui() {
 
     // menu
     for (int i = 0; i < NUM_PAUSE_SELECTIONS; i++)
-        tte_printf("#{P:%d,%d}#{ci:1}%s", 
-                   PAUSE_MENU_OFFSET_X, 
-                   PAUSE_MENU_OFFSET_Y + i * PAUSE_MENU_INCREMENT_Y, 
+        tte_printf("#{P:%d,%d}#{ci:1}%s", PAUSE_MENU_OFFSET_X, PAUSE_MENU_OFFSET_Y + i * PAUSE_MENU_INCREMENT_Y,
                    pause_menu_items[i].display_name);
 
     // box
 
     // for now just draw something
     int cursor_y = get_pause_cursor_y();
-    schr4c_hline(&bg0_srf, 5, cursor_y,     8,  1);
+    schr4c_hline(&bg0_srf, 5, cursor_y, 8, 1);
     schr4c_hline(&bg0_srf, 5, cursor_y + 2, 10, 1);
-    schr4c_hline(&bg0_srf, 5, cursor_y + 4, 8,  1);
+    schr4c_hline(&bg0_srf, 5, cursor_y + 4, 8, 1);
 
     // todo
 }
