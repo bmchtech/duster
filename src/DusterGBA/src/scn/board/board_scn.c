@@ -69,11 +69,16 @@ void boardscn_start() {
     mgba_printf(MGBA_LOG_ERROR, "trying to load map data");
 
     u32 test1_gmp_len;
-    u8* test1_gmp = (u8*)dusk_load_raw("test1.gmp.bin", &test1_gmp_len);
+    const void* test1_gmp = dusk_load_raw("test1.gmp.bin", &test1_gmp_len);
+
+    // copy the data
+    void* test1_gmp_copy = malloc(test1_gmp_len);
+    memcpy(test1_gmp_copy, test1_gmp, test1_gmp_len);
 
     mgba_printf(MGBA_LOG_ERROR, "trying to load tmx from data (%d)", test1_gmp_len);
 
-    GameMap game_map = load_game_map(test1_gmp, test1_gmp_len);
+    GameMap game_map = load_game_map(test1_gmp_copy, test1_gmp_len);
+    free(test1_gmp_copy);
 
     mgba_printf(MGBA_LOG_ERROR, "trying to initialize board");
 
@@ -86,6 +91,8 @@ void boardscn_start() {
         for (int pawn_ix = 0; pawn_ix < TEAM_MAX_PAWNS; pawn_ix++) {
             int spawn_pawn_ix = team_base + pawn_ix;
             PawnSpawnPoint* spawn_point = &game_map.pawn_spawn[spawn_pawn_ix];
+
+            if (!spawn_point->valid) continue;
 
             team_set_pawn(team_ix, pawn_ix, 0);
 

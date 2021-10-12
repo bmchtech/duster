@@ -641,9 +641,9 @@ strpool_embedded_config_t const strpool_embedded_default_config =
     /* ignore_case    = */ 0,
     /* counter_bits   = */ 32,
     /* index_bits     = */ 32,
-    /* entry_capacity = */ 4096,
+    /* entry_capacity = */ 128,
     /* block_capacity = */ 32,
-    /* block_size     = */ 256 * 1024,
+    /* block_size     = */ 4 * 1024,
     /* min_length     = */ 23,
     };
 

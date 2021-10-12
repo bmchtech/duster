@@ -1,8 +1,9 @@
 #include "game.h"
 #include "../util/cute_tiled.h"
 #include "string.h"
+#include "contrib/mgba.h"
 
-GameMap load_game_map(u8* data, u32 len) {
+GameMap load_game_map(void* data, u32 len) {
     cute_tiled_map_t* map = cute_tiled_load_map_from_memory(data, len, NULL);
 
     GameMap ret;
@@ -56,9 +57,13 @@ GameMap load_game_map(u8* data, u32 len) {
                     if (pawn_ix >= 0 && team_ix >= 0) {
                         PawnSpawnPoint* spawn = &ret.pawn_spawn[PAWN_GID(team_ix, pawn_ix)];
                         spawn->valid = TRUE;
-                        spawn->pos = (VPos16){.x = obj->x, .y = obj->y};
+
+                        spawn->pos = (VPos16){.x = obj->x / 8, .y = obj->y / 8};
                         spawn->team = team_ix;
                         spawn->pawn = pawn_ix;
+
+                        mgba_printf(MGBA_LOG_ERROR, "spawn: pos: (%d, %d), team: %d, pawn: %d\n", (int)spawn->pos.x,
+                                    (int)spawn->pos.y, team_ix, pawn_ix);
                     }
                 }
 
