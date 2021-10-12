@@ -4,13 +4,9 @@
 VPos pause_cursor_pos;
 int pause_cursor_selection = 0;
 
-void pause_menu_back_selected() {
-    board_scene_page = BOARDSCN_BOARD;
-}
+void pause_menu_back_selected() { board_scene_page = BOARDSCN_BOARD; }
 
-void pause_menu_quit_selected() {
-    dusk_scene_set(logo_scene);
-}
+void pause_menu_quit_selected() { dusk_scene_set(logo_scene); }
 
 typedef struct PauseMenuItem {
     char* display_name;
@@ -55,6 +51,11 @@ void draw_pause_ui() {
 
     // clear sprite oam
     memset32(oam_mem, 0, OAM_SIZE / 4);
+
+    // hide all sprites from M to NUM_SPRITES
+    for (int i = 0; i < NUM_SPRITES; i++) {
+        obj_hide(&obj_mem[i]);
+    }
 
     // clear tte and bg layers
     draw_clear_text_surface();
