@@ -64,7 +64,7 @@ void boardscn_start() {
     // load gamemap
     u32 test1_gmp_len;
     const void* test1_gmp = dusk_load_raw("helo1.gmp.bin", &test1_gmp_len);
-    mgba_printf(MGBA_LOG_INFO, "loading gamemap from tmx data[%d]", test1_gmp_len);
+    mgba_printf(MGBA_LOG_ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
     BOOL load_success = game_load_gamemap((void*)test1_gmp, test1_gmp_len);
 
     if (!load_success) {

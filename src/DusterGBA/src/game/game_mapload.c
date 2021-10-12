@@ -87,8 +87,8 @@ BOOL game_load_gamemap(void* data, u32 len) {
 
                         board_set_pawn(BOARD_POS(spawn_pos.x, spawn_pos.y), PAWN_GID(team_ix, pawn_ix));
 
-                        mgba_printf(MGBA_LOG_ERROR, "spawned pawn (team: %d, pawn: %d) at pos (%d, %d)", team_ix,
-                                    pawn_ix, spawn_pos.x, spawn_pos.y);
+                        mgba_printf(MGBA_LOG_ERROR, "spawned pawn (team: %d, pawn: %d, c: %d, l: %d) at pos (%d, %d)",
+                                    team_ix, pawn_ix, pawn_class, pawn_level, spawn_pos.x, spawn_pos.y);
                     }
                 }
 
