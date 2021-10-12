@@ -52,6 +52,8 @@ void update_pawn_move_tween() {
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
         tween->pawn_gid = -1;
 
+        set_ui_dirty(); // ui dirty
+
         return;
     }
 
@@ -112,6 +114,8 @@ void update_pawn_flash_tween() {
         // clear tween info
         memset(tween, 0, sizeof(PawnFlashTweenInfo));
         tween->pawn_gid = -1;
+
+        set_ui_dirty(); // ui dirty
 
         return;
     }
