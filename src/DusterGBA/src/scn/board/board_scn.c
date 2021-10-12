@@ -76,29 +76,9 @@ void boardscn_start() {
     mgba_printf(MGBA_LOG_ERROR, "trying to init gamemap");
     BOOL load_success = game_load_gamemap((void*)test1_gmp, test1_gmp_len);
 
-    // game_init_board(16);
-    // game_init_team(0, "player");
-    // game_init_team(1, "enmy");
-
-    // Team* team0 = &game_state.teams[0];
-    // team_set_pawn_t(team0, 0, 0); // first unit is soldier
-    // team_set_pawn_t(team0, 1, 1); // second unit is horse
-    // team_set_pawn_t(team0, 2, 3); // third unit is mage
-
-    // Team* team1 = &game_state.teams[1];
-    // team_set_pawn_t(team1, 0, 1);
-    // team_set_pawn_t(team1, 1, 2);
-
-    // board_set_pawn(BOARD_POS(0, 0), PAWN_GID(0, 0)); // pawn #0
-    // board_set_pawn(BOARD_POS(3, 2), PAWN_GID(0, 1)); // pawn #1
-    // board_set_pawn(BOARD_POS(2, 4), PAWN_GID(0, 2)); // pawn #2
-
-    // board_set_pawn(BOARD_POS(2, 9), PAWN_GID(1, 0));
-    // board_set_pawn(BOARD_POS(3, 8), PAWN_GID(1, 1));
-
-    // board_set_terrain(BOARD_POS(1, 3), TERRAIN_BLOCKED);
-    // board_set_terrain(BOARD_POS(2, 3), TERRAIN_BLOCKED);
-    // board_set_terrain(BOARD_POS(3, 3), TERRAIN_BLOCKED);
+    if (!load_success) {
+        mgba_printf(MGBA_LOG_ERROR, "gamemap load failed");
+    }
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
