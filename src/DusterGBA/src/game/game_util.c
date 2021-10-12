@@ -370,7 +370,12 @@ BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2) {
 
 BOOL game_util_is_my_turn(pawn_gid_t pawn_gid) {
     int my_team = PAWN_WHICH_TEAM(pawn_gid);
-    int whose_turn = game_state.turns % NUM_TEAMS;
+    int whose_turn = game_util_whose_turn();
 
     return my_team == whose_turn;
+}
+
+int game_util_whose_turn() {
+    int whose_turn = game_state.turns % NUM_TEAMS;
+    return whose_turn;
 }

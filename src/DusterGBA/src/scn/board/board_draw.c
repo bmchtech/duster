@@ -239,7 +239,8 @@ void draw_sidebar() {
     draw_clear_text_surface();
 
     // turn indicator
-    tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
+    int turn = game_util_whose_turn();
+    tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[turn].name);
 
     // show info on currently hovered pawn
     Pawn* pawn = get_cursor_pawn();

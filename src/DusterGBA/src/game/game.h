@@ -125,6 +125,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
 BOOL pawn_util_on_same_team(pawn_gid_t pawn1, pawn_gid_t pawn2);
 BOOL game_util_is_my_turn(pawn_gid_t pawn_gid);
+int game_util_whose_turn();
 
 // MAP
 BOOL game_load_gamemap(void* data, u32 len);

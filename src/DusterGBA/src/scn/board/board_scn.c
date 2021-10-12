@@ -8,7 +8,6 @@ int bg1_tte_sbb = 28;
 VPos board_offset;
 BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
-int game_turn = 0;
 VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;

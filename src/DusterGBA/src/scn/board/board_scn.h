@@ -45,7 +45,6 @@ extern int bg1_tte_sbb;
 extern VPos board_offset;
 extern BOOL board_ui_dirty;
 extern BOOL sidebar_dirty;
-extern int game_turn;
 extern VPos16 cursor_pos;
 extern BOOL cursor_shown;
 extern BOOL cursor_click;
