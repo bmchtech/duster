@@ -61,6 +61,7 @@ typedef struct {
     u8 move;
     u8 interact_range;
     UnitDataStats base_stats;
+    UnitDataStats stat_growths;
 } ClassData;
 
 typedef struct {

@@ -380,16 +380,23 @@ int game_util_whose_turn() {
     return whose_turn;
 }
 
+#define MACRO_CALC_STATS_GROWTH(stat) calc_stats.stat = base.stat + (num_growths * growth.stat)
+
 UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
-    int boosts = level - 1;
+    int num_growths = level - 1;
     UnitDataStats base = class_data->base_stats;
+    UnitDataStats growth = class_data->stat_growths;
 
     UnitDataStats calc_stats = base;
 
     // compute additional stats based on adding to base stats
-    calc_stats.atk = base.atk + boosts;
-    calc_stats.def = base.def + boosts;
-    calc_stats.hp = base.hp + boosts;
+    // calc_stats.atk = base.atk + (num_growths * growth.atk);
+    // calc_stats.def = base.def + (num_growths * growth.def);
+    // calc_stats.hp = base.hp + (num_growths * growth.hp);
+
+    MACRO_CALC_STATS_GROWTH(atk);
+    MACRO_CALC_STATS_GROWTH(def);
+    MACRO_CALC_STATS_GROWTH(hp);
 
     return calc_stats;
 }
