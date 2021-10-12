@@ -1,4 +1,38 @@
 #include "board_scn.h"
+#include "scenes.h"
+
+#define NUM_PAUSE_SELECTIONS 3
+VPos pause_cursor_pos;
+int pause_cursor_selection = 0;
+
+void pause_menu_back_selected() { board_scene_page = BOARDSCN_BOARD; }
+
+void pause_menu_quit_selected() { dusk_scene_set(logo_scene); }
+
+void update_pause_ui() {
+    if (key_hit(KEY_DOWN) && pause_cursor_selection < (NUM_PAUSE_SELECTIONS - 1)) {
+        pause_cursor_selection++;
+        pausemenu_dirty = TRUE;
+    }
+
+    if (key_hit(KEY_UP) && pause_cursor_selection > 0) {
+        pause_cursor_selection--;
+        pausemenu_dirty = TRUE;
+    }
+
+    if (key_hit(KEY_A)) {
+        switch (pause_cursor_selection) {
+        case 0:
+            pause_menu_back_selected();
+            break;
+        case 2:
+            pause_menu_quit_selected();
+            break;
+        }
+    }
+}
+
+int get_pause_cursor_y() { return 22 + pause_cursor_selection * 12 + 6; }
 
 void draw_pause_ui() {
     if (!pausemenu_dirty)
@@ -7,6 +41,11 @@ void draw_pause_ui() {
 
     // clear sprite oam
     memset32(oam_mem, 0, OAM_SIZE / 4);
+
+    // hide all sprites from M to NUM_SPRITES
+    for (int i = 0; i < NUM_SPRITES; i++) {
+        obj_hide(&obj_mem[i]);
+    }
 
     // clear tte and bg layers
     draw_clear_text_surface();
@@ -21,5 +60,9 @@ void draw_pause_ui() {
     tte_printf("#{P:16,46}#{ci:1}quit");
 
     // box
+
+    // for now just draw something
+    schr4c_hline(&bg0_srf, 50, get_pause_cursor_y(), 55, 1);
+
     // todo
 }

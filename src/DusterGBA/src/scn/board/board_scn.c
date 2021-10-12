@@ -175,6 +175,7 @@ void boardscn_update() {
 
         break;
     case BOARDSCN_PAUSEMENU:
+        update_pause_ui();
         draw_pause_ui();
 
         break;
