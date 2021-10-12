@@ -241,25 +241,19 @@ void draw_sidebar() {
     // turn indicator
     tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[game_turn].name);
 
-    // currently hovered pawn
-    Pawn* clicked_pawn = get_clicked_pawn();
-    pawn_gid_t clicked_pawn_gid = get_clicked_pawn_gid();
+    // show info on currently hovered pawn
+    Pawn* pawn = get_cursor_pawn();
+    int pawn_gid = game_state.board.tiles[BOARD_POS(cursor_pos.x, cursor_pos.y)].pawn_gid;
+    int hover_tid = POS_TO_TID(cursor_pos);
 
-    if (cursor_click && clicked_pawn) {
+    if (pawn) {
         // show pawn info
-        ClassData* class_data = &game_data.class_data[clicked_pawn->unit_class];
-        UnitData* unit_data = &clicked_pawn->unit_data;
-
-        int pawn_team_ix = clicked_pawn_gid / TEAM_MAX_PAWNS;
+        ClassData* class_data = &game_data.class_data[pawn->unit_class];
+        UnitData* unit_data = &pawn->unit_data;
 
         tte_printf("#{P:142,6}#{ci:1}class: %s", class_data->name);
         tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
         tte_printf("#{P:142,22}#{ci:1}stats: %d | %d | %d", unit_data->stats.atk, unit_data->stats.def,
                    unit_data->stats.hp);
-    } else {
-        int hover_tid = POS_TO_TID(cursor_pos);
-        tte_printf("#{P:142,6}#{ci:1}tid: %d", hover_tid);
-        BoardTile* tile = board_get_tile(hover_tid);
-        tte_printf("#{P:142,14}#{ci:1}pawn: %d", tile->pawn_gid);
     }
 }
