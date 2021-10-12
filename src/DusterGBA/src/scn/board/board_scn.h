@@ -61,7 +61,7 @@ extern BOOL request_step;
 extern BOOL pawn_move_range_dirty;
 extern BoardScenePage board_scene_page;
 extern BOOL pausemenu_dirty;
-#define BOARD_SCROLL_WINDOW 8
+#define BOARD_SCROLL_WINDOW 16
 extern int board_scroll_x;
 extern int board_scroll_y;
 

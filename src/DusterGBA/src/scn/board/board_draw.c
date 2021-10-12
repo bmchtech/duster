@@ -4,8 +4,8 @@
 
 VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     VPos16 ret;
-    ret.x = board_offset.x + (tx << 3);
-    ret.y = board_offset.y + (ty << 3);
+    ret.x = board_offset.x + ((tx - board_scroll_x) << 3);
+    ret.y = board_offset.y + ((ty - board_scroll_y) << 3);
     return ret;
 }
 
@@ -27,9 +27,9 @@ void draw_board_outline() {
 }
 
 void draw_board_cursor() {
-    int x1 = (board_offset.x) + (cursor_pos.x * 8);
+    int x1 = (board_offset.x) + ((cursor_pos.x - board_scroll_x) * 8);
     int x2 = x1 + 7;
-    int y1 = (board_offset.y) + (cursor_pos.y * 8);
+    int y1 = (board_offset.y) + ((cursor_pos.y - board_scroll_y) * 8);
     int y2 = y1 + 7;
 
     if (cursor_click) {
@@ -135,9 +135,9 @@ void draw_clicked_pawn_graphics() {
                 VPos16 fs_pos = cache_range_buf[i];
                 if (board_get_pawn(BOARD_POS(fs_pos.x, fs_pos.y))) {
                     // there is a pawn
-                    draw_square1(fs_pos.x, fs_pos.y, 2);
+                    draw_square1(fs_pos.x - board_scroll_x, fs_pos.y - board_scroll_y, 2);
                 } else {
-                    draw_footstep(fs_pos.x, fs_pos.y);
+                    draw_footstep(fs_pos.x - board_scroll_x, fs_pos.y - board_scroll_y);
                 }
             }
         }

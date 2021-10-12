@@ -176,14 +176,44 @@ void on_try_move_cursor(int mx, int my) {
     cursor_pos.y += my;
 
     // ensure cursor position is clamped
-    if (cursor_pos.x < 0)
+    // if we go out of range, we have to both clamp and adjust window
+    int board_scroll_max = game_state.board_size - BOARD_SCROLL_WINDOW;
+
+    // scroll window along with cursor
+    int cursor_vx = cursor_pos.x - board_scroll_x;
+    int cursor_vy = cursor_pos.y - board_scroll_y;
+
+    if (cursor_vx < 0) {
+        board_scroll_x -= 1;
+    }
+    if (cursor_vx >= BOARD_SCROLL_WINDOW) {
+        board_scroll_x += 1;
+    }
+    if (cursor_vy < 0) {
+        board_scroll_y -= 1;
+    }
+    if (cursor_vy >= BOARD_SCROLL_WINDOW) {
+        board_scroll_y += 1;
+    }
+
+    // global clamping
+
+    if (cursor_pos.x < 0) {
         cursor_pos.x = game_state.board_size - 1;
-    if (cursor_pos.x >= game_state.board_size)
+        board_scroll_x = board_scroll_max;
+    }
+    if (cursor_pos.x >= game_state.board_size) {
         cursor_pos.x = 0;
-    if (cursor_pos.y < 0)
+        board_scroll_x = 0;
+    }
+    if (cursor_pos.y < 0) {
         cursor_pos.y = game_state.board_size - 1;
-    if (cursor_pos.y >= game_state.board_size)
+        board_scroll_y = board_scroll_max;
+    }
+    if (cursor_pos.y >= game_state.board_size) {
         cursor_pos.y = 0;
+        board_scroll_y = 0;
+    }
 
     // cursor_click = FALSE;
 
