@@ -65,29 +65,61 @@ void boardscn_start() {
     // set up new game
     game_load_cold_data();
     game_init();
-    game_init_board(16);
+
+    mgba_printf(MGBA_LOG_ERROR, "trying to load map data");
+
+    u32 test1_gmp_len;
+    u8* test1_gmp = (u8*)dusk_load_raw("test1.gmp.bin", &test1_gmp_len);
+
+    mgba_printf(MGBA_LOG_ERROR, "trying to load tmx from data (%d)", test1_gmp_len);
+
+    GameMap game_map = load_game_map(test1_gmp, test1_gmp_len);
+
+    mgba_printf(MGBA_LOG_ERROR, "trying to initialize board");
+
+    game_init_board(game_map.board_size);
     game_init_team(0, "player");
     game_init_team(1, "enmy");
 
-    Team* team0 = &game_state.teams[0];
-    team_set_pawn_t(team0, 0, 0); // first unit is soldier
-    team_set_pawn_t(team0, 1, 1); // second unit is horse
-    team_set_pawn_t(team0, 2, 3); // third unit is mage
+    for (int team_ix = 0; team_ix < NUM_TEAMS; team_ix++) {
+        int team_base = team_ix * TEAM_MAX_PAWNS;
+        for (int pawn_ix = 0; pawn_ix < TEAM_MAX_PAWNS; pawn_ix++) {
+            int spawn_pawn_ix = team_base + pawn_ix;
+            PawnSpawnPoint* spawn_point = &game_map.pawn_spawn[spawn_pawn_ix];
 
-    Team* team1 = &game_state.teams[1];
-    team_set_pawn_t(team1, 0, 1);
-    team_set_pawn_t(team1, 1, 2);
+            team_set_pawn(team_ix, pawn_ix, 0);
 
-    board_set_pawn(BOARD_POS(0, 0), PAWN_GID(0, 0)); // pawn #0
-    board_set_pawn(BOARD_POS(3, 2), PAWN_GID(0, 1)); // pawn #1
-    board_set_pawn(BOARD_POS(2, 4), PAWN_GID(0, 2)); // pawn #2
+            // board_set_terrain(BOARD_POS(spawn_point->pos.x, spawn_point->pos.y), TERRAIN_GROUND);
 
-    board_set_pawn(BOARD_POS(2, 9), PAWN_GID(1, 0));
-    board_set_pawn(BOARD_POS(3, 8), PAWN_GID(1, 1));
+            board_set_pawn(BOARD_POS(spawn_point->pos.x, spawn_point->pos.y), PAWN_GID(team_ix, pawn_ix));
+            mgba_printf(MGBA_LOG_ERROR, "spawned pawn (team: %d, pawn: %d) at pos (%d, %d)", team_ix, pawn_ix,
+                        spawn_point->pos.x, spawn_point->pos.y);
+        }
+    }
 
-    board_set_terrain(BOARD_POS(1, 3), TERRAIN_BLOCKED);
-    board_set_terrain(BOARD_POS(2, 3), TERRAIN_BLOCKED);
-    board_set_terrain(BOARD_POS(3, 3), TERRAIN_BLOCKED);
+    // game_init_board(16);
+    // game_init_team(0, "player");
+    // game_init_team(1, "enmy");
+
+    // Team* team0 = &game_state.teams[0];
+    // team_set_pawn_t(team0, 0, 0); // first unit is soldier
+    // team_set_pawn_t(team0, 1, 1); // second unit is horse
+    // team_set_pawn_t(team0, 2, 3); // third unit is mage
+
+    // Team* team1 = &game_state.teams[1];
+    // team_set_pawn_t(team1, 0, 1);
+    // team_set_pawn_t(team1, 1, 2);
+
+    // board_set_pawn(BOARD_POS(0, 0), PAWN_GID(0, 0)); // pawn #0
+    // board_set_pawn(BOARD_POS(3, 2), PAWN_GID(0, 1)); // pawn #1
+    // board_set_pawn(BOARD_POS(2, 4), PAWN_GID(0, 2)); // pawn #2
+
+    // board_set_pawn(BOARD_POS(2, 9), PAWN_GID(1, 0));
+    // board_set_pawn(BOARD_POS(3, 8), PAWN_GID(1, 1));
+
+    // board_set_terrain(BOARD_POS(1, 3), TERRAIN_BLOCKED);
+    // board_set_terrain(BOARD_POS(2, 3), TERRAIN_BLOCKED);
+    // board_set_terrain(BOARD_POS(3, 3), TERRAIN_BLOCKED);
 
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
