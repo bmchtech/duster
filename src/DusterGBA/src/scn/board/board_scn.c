@@ -53,29 +53,19 @@ void boardscn_start() {
     pal_bg_mem[1] = RES_PAL[0]; // draw col 1
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
-    // test loading data
-    // u32 d_class_len;
-    // u8* d_class = (u8*) dusk_load_raw("d_class.bin", &d_class_len);
-    // dusk_load_raw("d_class.bin", &d_class_len);
-
     // pawn spritesheet
     SpriteAtlas atlas = dusk_load_atlas("a_pawn");
     dusk_sprites_upload_atlas(&atlas);
 
-    game_clear_state(); // reset game state
-
-    // set up new game
+    // initialize game
+    game_clear_state();
     game_load_cold_data();
     game_init();
 
-    mgba_printf(MGBA_LOG_ERROR, "trying to load map data");
-
+    // load gamemap
     u32 test1_gmp_len;
     const void* test1_gmp = dusk_load_raw("helo1.gmp.bin", &test1_gmp_len);
-
-    mgba_printf(MGBA_LOG_ERROR, "loaded tmx data (%d)", test1_gmp_len);
-
-    mgba_printf(MGBA_LOG_ERROR, "trying to init gamemap");
+    mgba_printf(MGBA_LOG_INFO, "loading gamemap from tmx data[%d]", test1_gmp_len);
     BOOL load_success = game_load_gamemap((void*)test1_gmp, test1_gmp_len);
 
     if (!load_success) {
@@ -96,10 +86,6 @@ void boardscn_start() {
     pawn2sprite_conf.hash = GENERAL_HASH;
     pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
-
-    // set test tween
-    // animate_pawn_move(PAWN_GID(0, 0), (VPos){.x = 0, .y = 0}, (VPos){.x = 10, .y = 10});
-    // animate_pawn_flash(PAWN_GID(0, 0));
 }
 
 void set_ui_dirty() {
