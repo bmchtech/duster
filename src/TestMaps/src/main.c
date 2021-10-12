@@ -14,7 +14,7 @@
 int main(void)
 {
     // open TMX
-    const char *tmx_file = "../../DusterGBA/asset/tmx/test1.json";
+    const char *tmx_file = "../../DusterGBA/asset/gamemap/test1.json";
     FILE *inf_fp = fopen(tmx_file, "rb");
     if (inf_fp == NULL)
     {
