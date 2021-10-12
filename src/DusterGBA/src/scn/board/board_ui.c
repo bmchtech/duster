@@ -157,10 +157,15 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // check if this pawn is valid to be selected
         BoardTile* tile = board_get_tile(BOARD_POS(cursor_pos.x, cursor_pos.y));
         int hover_pawn_gid = tile->pawn_gid;
+        Pawn* hover_pawn = get_cursor_pawn();
 
         // // ensure it is our turn
         // if (!game_util_is_my_turn(hover_pawn_gid))
         //     return;
+
+        // ensure the pawn has not already moved this turn
+        if (game_state.turns <= hover_pawn->last_moved_turn)
+            return;
 
         // set that pawn as clicked
         cursor_click = TRUE;

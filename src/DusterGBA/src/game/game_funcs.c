@@ -92,7 +92,10 @@ void board_move_pawn(pawn_gid_t pawn_gid, int start_tile_id, int end_tile_id) {
     // set end tile
     board_set_pawn(end_tile_id, pawn_gid);
 
-    game_get_pawn_by_gid(pawn_gid)->last_moved_step = game_state.steps;
+    // set last moved
+    Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
+    pawn->last_moved_step = game_state.steps;
+    pawn->last_moved_turn = game_state.turns;
 }
 
 void board_set_terrain(int tile_id, Terrain terrain) {
@@ -115,6 +118,10 @@ void team_set_pawn_t(Team* team, int pawn_id, int class) {
     pw.unit_data.stats = class_data->base_stats;
     // set initial hp
     pw.unit_data.hitpoints = pw.unit_data.stats.hp;
+
+    // set initial turn
+    pw.last_moved_step = -1;
+    pw.last_moved_turn = -1;
 
     team->pawns[pawn_id] = pw;
 }

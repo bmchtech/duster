@@ -39,6 +39,7 @@ typedef struct {
     u8 unit_class;
     UnitData unit_data;
     int last_moved_step;
+    int last_moved_turn;
 } Pawn;
 
 typedef struct {
