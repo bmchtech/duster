@@ -71,7 +71,15 @@ typedef struct {
 
 typedef struct {
     BOOL valid;
+    VPos16 pos;
+    u32 team;
+    u32 pawn;
+} PawnSpawnPoint;
+
+typedef struct {
+    BOOL valid;
     u8 board_size;
+    PawnSpawnPoint pawn_spawn[NUM_TEAMS * TEAM_MAX_PAWNS];
 } GameMap;
 
 extern GameState game_state;
