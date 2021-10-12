@@ -24,6 +24,7 @@ BoardScenePage board_scene_page = BOARDSCN_BOARD;
 BOOL pausemenu_dirty = TRUE;
 int board_scroll_x = 0;
 int board_scroll_y = 0;
+int sidebar_page = 0;
 
 int cursor_last_moved_frame = 0;
 
@@ -123,6 +124,11 @@ void boardscn_input() {
             board_scene_page = BOARDSCN_BOARD;
 
         pausemenu_dirty = TRUE;
+        set_ui_dirty();
+    }
+
+    if (key_hit(KEY_L)) {
+        sidebar_page = (sidebar_page + 1) % NUM_SIDEBAR_PAGES;
         set_ui_dirty();
     }
 

@@ -252,9 +252,21 @@ void draw_sidebar() {
         ClassData* class_data = &game_data.class_data[pawn->unit_class];
         UnitData* unit_data = &pawn->unit_data;
 
-        tte_printf("#{P:142,6}#{ci:1}cl: %s L%d", class_data->name, unit_data->level);
-        tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
-        tte_printf("#{P:142,22}#{ci:1}st: %d|%d|%d|%d", unit_data->stats.atk, unit_data->stats.def,
-                   unit_data->stats.hp, unit_data->stats.spd);
+        int page = sidebar_page % NUM_SIDEBAR_PAGES;
+
+        switch (page) {
+        case 0:
+            tte_printf("#{P:142,6}#{ci:1}cl: %s L%d", class_data->name, unit_data->level);
+            tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
+            tte_printf("#{P:142,22}#{ci:1}st: %d|%d|%d|%d", unit_data->stats.atk, unit_data->stats.def,
+                       unit_data->stats.hp, unit_data->stats.spd);
+            break;
+        case 1:
+            tte_printf("#{P:142,6}#{ci:1}gid: %d", pawn_gid);
+            tte_printf("#{P:142,14}#{ci:1}tid: %d", hover_tid);
+            break;
+        default:
+            break;
+        }
     }
 }

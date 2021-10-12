@@ -64,6 +64,8 @@ extern BOOL pausemenu_dirty;
 extern int board_scroll_x;
 extern int board_scroll_y;
 extern int pause_cursor_selection;
+#define NUM_SIDEBAR_PAGES 2
+extern int sidebar_page;
 
 void set_ui_dirty();
 

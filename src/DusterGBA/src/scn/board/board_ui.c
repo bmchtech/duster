@@ -222,6 +222,7 @@ void on_try_move_cursor(int mx, int my) {
 
     // cursor_click = FALSE;
 
-    // need to redraw bg
+    // set ui fields to dirty/reset
     set_ui_dirty();
+    sidebar_page = 0;
 }
