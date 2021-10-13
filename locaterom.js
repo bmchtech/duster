@@ -19,5 +19,8 @@ window.addEventListener('load', function () {
         var script = document.createElement('script');
         script.src = 'data/loader.js';
         document.body.appendChild(script);
+
+        document.getElementById('loader-buttons').hidden = true;
+        document.getElementById('instructions').hidden = true;
     }
 })

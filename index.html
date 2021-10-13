@@ -38,24 +38,27 @@
             <div class="title">
                 <h1>WebGBA</h1>
             </div>
-            <p>WebGBA is set up to be able to play Duster in the browser.</p>
-
-            <h2>Instructions</h2>
-            <ol>
-                <li>Click "download rom" to download the latest Duster GBA rom.</li>
-                <li>Use the file upload to upload the rom you just downloaded.</li>
-                <li>Click "Play Now" in the emulator window that pops up.</li>
-            </ol>
+            <div id="instructions">
+                <p>WebGBA is set up to be able to play Duster in the browser.</p>
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Click "download rom" to download the latest Duster GBA rom.</li>
+                    <li>Use the file upload to upload the rom you just downloaded.</li>
+                    <li>Click "Play Now" in the emulator window that pops up.</li>
+                </ol>
+            </div>
         </section>
         <section class="container">
             <div style="width:640px;height:480px;max-width:100%">
                 <div id="game"></div>
-                <div>
-                    <a onclick="on_get_rom_click()" target="_blank" class="btn
-      btn-default ripple">download rom</a>
-                </div>
-                <div>
-                    upload rom here <input type="file" id="file">
+                <div id="loader-buttons">
+                    <div>
+                        <a onclick="on_get_rom_click()" target="_blank" class="btn
+          btn-default ripple">download rom</a>
+                    </div>
+                    <div>
+                        upload rom here <input type="file" id="file">
+                    </div>
                 </div>
             </div>
             <script type="text/javascript">
