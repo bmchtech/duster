@@ -72,10 +72,7 @@ void draw_canmove_indicator(int tx, int ty) {
     int x1 = (board_offset.x) + (tx * 8);
     int y1 = (board_offset.y) + (ty * 8);
 
-    schr4c_plot(&bg0_srf, x1 + 2, y1 + 2, 2);
-    schr4c_plot(&bg0_srf, x1 + 2, y1 + 5, 2);
-    schr4c_plot(&bg0_srf, x1 + 5, y1 + 5, 2);
-    schr4c_plot(&bg0_srf, x1 + 5, y1 + 2, 2);
+    schr4c_hline(&bg0_srf, x1 + 1, y1 + 7, x1 + 6, 2);
 }
 
 typedef enum {
