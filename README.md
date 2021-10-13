@@ -18,7 +18,7 @@ a sleek strategy game for the gba
 go to `src/DusterGBA`
 ```sh
 git submodule update --init --recursive
-make build
+make build DEBUG=1
 ```
 
 this will output `Duster.gba`
