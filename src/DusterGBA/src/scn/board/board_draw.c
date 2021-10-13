@@ -242,28 +242,50 @@ void draw_sidebar() {
     int turn = game_util_whose_turn();
     tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[turn].name);
 
-    // show info on currently hovered pawn
-    Pawn* pawn = get_cursor_pawn();
-    int pawn_gid = game_state.board.tiles[BOARD_POS(cursor_pos.x, cursor_pos.y)].pawn_gid;
+    // sidebar pawn info
+    int page = sidebar_page % NUM_SIDEBAR_PAGES;
+    Pawn* click_pawn = get_clicked_pawn();
+    Pawn* hover_pawn = get_cursor_pawn();
+    int hover_pawn_gid = game_state.board.tiles[BOARD_POS(cursor_pos.x, cursor_pos.y)].pawn_gid;
     int hover_tid = POS_TO_TID(cursor_pos);
 
-    if (pawn) {
-        // show pawn info
-        ClassData* class_data = &game_data.class_data[pawn->unit_class];
-        UnitData* unit_data = &pawn->unit_data;
-
-        int page = sidebar_page % NUM_SIDEBAR_PAGES;
+    if (click_pawn) {
+        // show click pawn info
+        ClassData* class_data = &game_data.class_data[click_pawn->unit_class];
+        UnitData* unit_data = &click_pawn->unit_data;
 
         switch (page) {
         case 0:
-            tte_printf("#{P:142,6}#{ci:1}cl: %s L%d", class_data->name, unit_data->level);
+            tte_printf("#{P:142,06}#{ci:1}cl: %s L%d", class_data->name, unit_data->level);
             tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data->hitpoints);
             tte_printf("#{P:142,22}#{ci:1}st: %d|%d|%d|%d", unit_data->stats.atk, unit_data->stats.def,
                        unit_data->stats.hp, unit_data->stats.spd);
             break;
+        default:
+            break;
+        }
+    }
+
+    if (hover_pawn && (hover_pawn != click_pawn)) {
+        // show hover pawn info
+        ClassData* class_data = &game_data.class_data[hover_pawn->unit_class];
+        UnitData* unit_data = &hover_pawn->unit_data;
+
+        switch (page) {
+        case 0:
+            tte_printf("#{P:142,96}#{ci:1}look");
+            tte_printf("#{P:142,104}#{ci:1}cl: %s L%d", class_data->name, unit_data->level);
+            tte_printf("#{P:142,112}#{ci:1}hp: %d", unit_data->hitpoints);
+            tte_printf("#{P:142,120}#{ci:1}st: %d|%d|%d|%d", unit_data->stats.atk, unit_data->stats.def,
+                       unit_data->stats.hp, unit_data->stats.spd);
+            break;
         case 1:
-            tte_printf("#{P:142,6}#{ci:1}gid: %d", pawn_gid);
-            tte_printf("#{P:142,14}#{ci:1}tid: %d", hover_tid);
+            if (click_pawn && hover_pawn) {
+                // attack simulation damage prediction
+                HostileUnitDuel duel = game_logic_calc_hostile_damage(click_pawn, hover_pawn);
+                tte_printf("#{P:142,96}#{ci:1}dmg: %d", duel.main_dmg);
+                tte_printf("#{P:142,104}#{ci:1}ctr: %d", duel.counter_dmg);
+            }
             break;
         default:
             break;
