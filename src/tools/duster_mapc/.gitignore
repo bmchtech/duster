@@ -1,3 +1,6 @@
+*.bin
+*.gmp.bin
+
 .dub
 docs.json
 __dummy.html
@@ -13,3 +16,4 @@ duster_mapc-test-*
 *.o
 *.obj
 *.lst
+*.a

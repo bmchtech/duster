@@ -3,3 +3,7 @@ description "Duster Tiled map compiler"
 authors "redthing1"
 copyright "Copyright © 2021, redthing1"
 license "proprietary"
+
+lflags "$PACKAGE_DIR/cute_tiled/libcute_tiled.a"
+
+preGenerateCommands "cd cute_tiled && make"
