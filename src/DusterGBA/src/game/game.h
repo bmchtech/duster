@@ -41,6 +41,7 @@ typedef struct {
     UnitData unit_data;
     int last_moved_step;
     int last_moved_turn;
+    BOOL alive;
 } Pawn;
 
 typedef struct {

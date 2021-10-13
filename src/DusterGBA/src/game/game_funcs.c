@@ -112,6 +112,7 @@ void team_set_pawn_t(Team* team, int pawn_id, int class) {
     ClassData* class_data = &game_data.class_data[class];
 
     // initialize pawn
+    pw.alive = TRUE;
     // set class
     pw.unit_class = class;
     // set stats to stats of level 1 (base stats)

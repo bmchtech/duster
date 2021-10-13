@@ -8,6 +8,23 @@ void game_logic_step() {
     game_state.steps++; // counter
 
     mgba_printf(MGBA_LOG_ERROR, "logic step (%d)", game_state.steps);
+
+    int turn_team = game_util_whose_turn();
+    // check if all pawns on the current team have moved
+    BOOL all_moved = TRUE;
+    for (int i = 0; i < TEAM_MAX_PAWNS; i++) {
+        Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(turn_team, i));
+        if (pawn->alive) {
+            if (pawn->last_moved_turn < game_state.turns) {
+                all_moved = FALSE;
+            }
+        }
+    }
+
+    if (all_moved) {
+        // all have moved, advance turn
+        game_state.turns++;
+    }
 }
 
 void game_logic_kill_if_dead(pawn_gid_t pawn_gid) {
@@ -15,6 +32,7 @@ void game_logic_kill_if_dead(pawn_gid_t pawn_gid) {
 
     if (pawn->unit_data.hitpoints <= 0) {
         // dead
+        pawn->alive = FALSE;
         int pawn_tile = board_find_pawn_tile(pawn_gid);
         board_set_pawn(pawn_tile, -1);
         mgba_printf(MGBA_LOG_ERROR, "pawn died: %d", pawn_gid);
