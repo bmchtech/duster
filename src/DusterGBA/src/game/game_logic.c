@@ -1,7 +1,7 @@
 #include "game.h"
 #include <stdio.h>
 #include <memory.h>
-#include <tonc.h>
+#include <tonc_types.h>
 #include "contrib/mgba.h"
 
 void game_logic_step() {
