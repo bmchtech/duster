@@ -15,7 +15,7 @@ void game_logic_step() {
     for (int i = 0; i < TEAM_MAX_PAWNS; i++) {
         Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(turn_team, i));
         if (pawn->alive) {
-            if (pawn->last_moved_turn < game_state.turns) {
+            if (!pawn_util_moved_this_turn(pawn)) {
                 all_moved = FALSE;
             }
         }

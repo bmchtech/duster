@@ -164,7 +164,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         //     return;
 
         // ensure the pawn has not already moved this turn
-        if (game_state.turns <= hover_pawn->last_moved_turn)
+        if (pawn_util_moved_this_turn(hover_pawn))
             return;
 
         // set that pawn as clicked

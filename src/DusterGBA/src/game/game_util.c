@@ -380,6 +380,12 @@ int game_util_whose_turn() {
     return whose_turn;
 }
 
+BOOL pawn_util_moved_this_turn(Pawn* pawn) {
+    if (pawn->last_moved_turn >= game_state.turns)
+        return TRUE;
+    return FALSE;
+}
+
 // this applies the growth spread out over every 5 levels
 // for example, with an atk growth of 4, it will spread those
 // 4 atk stat boosts over every 5 levels

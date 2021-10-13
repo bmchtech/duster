@@ -68,6 +68,16 @@ void draw_square1(int tx, int ty, int square_sz) {
     schr4c_vline(&bg0_srf, x2, y1 + sq1, y2, 2);
 }
 
+void draw_canmove_indicator(int tx, int ty) {
+    int x1 = (board_offset.x) + (tx * 8);
+    int y1 = (board_offset.y) + (ty * 8);
+
+    schr4c_plot(&bg0_srf, x1 + 2, y1 + 2, 2);
+    schr4c_plot(&bg0_srf, x1 + 2, y1 + 5, 2);
+    schr4c_plot(&bg0_srf, x1 + 5, y1 + 5, 2);
+    schr4c_plot(&bg0_srf, x1 + 5, y1 + 2, 2);
+}
+
 typedef enum {
     BLOCKED_PATTERN_SOLID,
     BLOCKED_PATTERN_STRIPE,
@@ -173,6 +183,7 @@ void draw_board() {
     // get board window pos
     int bwy = board_scroll_y;
     int bwx = board_scroll_x;
+    int whose_turn = game_util_whose_turn();
 
     // go through all tiles
     // brx and bry mean "board real x"
@@ -183,17 +194,18 @@ void draw_board() {
             int bdy = bry - bwy;
 
             BoardTile* tile = &game_state.board.tiles[BOARD_POS(brx, bry)];
-            if (tile->pawn_gid >= 0) {
+            pawn_gid_t pawn_gid = tile->pawn_gid;
+            if (pawn_gid >= 0) {
                 // this is a pawn
                 // look up the pawn
-                Pawn* pawn = game_get_pawn_by_gid(tile->pawn_gid);
+                Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
 
-                int team_ix = tile->pawn_gid / TEAM_MAX_PAWNS;
+                int team_ix = PAWN_WHICH_TEAM(pawn_gid);
 
                 int pawn_sprite_id = pawn_sprite_ix;
 
                 SpritePawnPair* pair = &sprite_pawn_pairs[pawn_sprite_id];
-                *pair = (SpritePawnPair){.pawn_gid = tile->pawn_gid, .sprite = pawn_sprite_id};
+                *pair = (SpritePawnPair){.pawn_gid = pawn_gid, .sprite = pawn_sprite_id};
 
                 cc_hashtable_add(pawn2sprite, &pair->pawn_gid, &pair->sprite);
 
@@ -208,6 +220,12 @@ void draw_board() {
                                   });
 
                 pawn_sprite_ix++;
+
+                // if it's this pawn's turn, and it's able to move
+                if (whose_turn == team_ix && !pawn_util_moved_this_turn(pawn)) {
+                    // draw a "ready" indicator
+                    draw_canmove_indicator(bdx, bdy);
+                }
             }
             if (tile->terrain > 0) {
                 switch (tile->terrain) {
