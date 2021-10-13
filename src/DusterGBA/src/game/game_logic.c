@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <tonc_types.h>
+#include <tonc_math.h>
 #include "contrib/mgba.h"
 
 void game_logic_step() {

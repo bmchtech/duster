@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <tonc_types.h>
+#include <tonc_math.h>
 #include "cold_data.h"
 
 EWRAM_DATA GameState game_state;
