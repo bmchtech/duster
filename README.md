@@ -5,8 +5,6 @@
 
 a sleek strategy game for the gba
 
-<!-- <img src="media/test6_retro.webp" width="512"> -->
-
 ## build
 
 ### deps
@@ -24,3 +22,7 @@ make build DEBUG=1
 ```
 
 this will output `Duster.gba`
+
+## preview
+
+<img src="media/test6_retro.webp" width="512">
