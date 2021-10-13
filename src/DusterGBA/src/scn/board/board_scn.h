@@ -69,6 +69,7 @@ extern int sidebar_page;
 extern int movequeue_length;
 extern QueuedMove movequeue_queue[TEAM_MAX_PAWNS + 1];
 extern int movequeue_progress;
+extern int movequeue_delay_timer;
 
 void set_ui_dirty();
 

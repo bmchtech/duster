@@ -29,6 +29,7 @@ int sidebar_page = 0;
 int movequeue_length = 0;
 QueuedMove movequeue_queue[TEAM_MAX_PAWNS + 1];
 int movequeue_progress = 0;
+int movequeue_delay_timer = 0;
 
 void boardscn_start() {
     // init
@@ -93,7 +94,11 @@ void boardscn_start() {
     memset(&movequeue_queue[0], 0, sizeof(QueuedMove)); // leave a blank
     movequeue_queue[1] =
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 0), .start_pos = {1, 1}, .end_pos = {8, 8}};
-    movequeue_length = 1 + 1; // blank plus items
+    movequeue_queue[2] =
+        (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 1), .start_pos = {2, 2}, .end_pos = {9, 8}};
+    movequeue_queue[3] =
+        (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 2), .start_pos = {3, 3}, .end_pos = {10, 8}};
+    movequeue_length = 1 + 3; // blank plus items
     movequeue_progress = 0;
 }
 

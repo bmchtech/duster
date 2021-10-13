@@ -184,7 +184,7 @@ int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
         curr_step++;
         // check if we are at end
         if (curr_step >= length) {
-            return length - 1;
+            return length;
         }
 
         // start the next
@@ -210,6 +210,14 @@ int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
 }
 
 void update_queued_moves() {
-    int new_progress = step_running_queued_moves(movequeue_queue, movequeue_length, movequeue_progress);
-    movequeue_progress = new_progress;
+    if (movequeue_progress >= movequeue_length) {
+        return; // all done for now
+    }
+
+    if (frame_count > movequeue_delay_timer) {
+        movequeue_delay_timer = frame_count + 20; // schedule next run
+
+        int new_progress = step_running_queued_moves(movequeue_queue, movequeue_length, movequeue_progress);
+        movequeue_progress = new_progress;
+    }
 }
