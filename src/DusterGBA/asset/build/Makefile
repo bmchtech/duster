@@ -58,10 +58,6 @@ a_%_: ../img/%
 $(ATLS_PNG): $(ATLS_OUT)
 	@true
 
-# rule for building tmx maps
-%.bin: ../map/%.tmx
-	Tiled2GBA -b $< $@
-
 # rule for building raw maps
 %.bin: ../rawmap/%.png
 	grit "$<" -p -m -g -gB 8 -gu32 -pu32 -ftb -o "$@"
