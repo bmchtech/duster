@@ -1,0 +1,5 @@
+name "duster_mapc"
+description "Duster Tiled map compiler"
+authors "redthing1"
+copyright "Copyright © 2021, redthing1"
+license "proprietary"

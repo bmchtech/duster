@@ -7,3 +7,6 @@
 [submodule "src/TestMaps/raylib"]
 	path = src/TestMaps/raylib
 	url = https://github.com/raysan5/raylib.git
+[submodule "src/tools/crunch"]
+	path = src/tools/crunch
+	url = https://github.com/xdrie/crunch.git
