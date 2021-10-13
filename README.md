@@ -1,9 +1,11 @@
 
 # duster
 
+<img src="media/bannerw.png" width="256">
+
 a sleek strategy game for the gba
 
-<img src="media/test6_retro.webp" width="512">
+<!-- <img src="media/test6_retro.webp" width="512"> -->
 
 ## build
 
