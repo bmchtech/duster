@@ -159,6 +159,12 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         int hover_pawn_gid = tile->pawn_gid;
         Pawn* hover_pawn = get_cursor_pawn();
 
+        #ifndef DEBUG
+        // we can only move if the turn is 0
+        if (game_util_whose_turn() != 0)
+            return;
+        #endif
+
         // ensure it is our turn
         if (!game_util_is_my_turn(hover_pawn_gid))
             return;
