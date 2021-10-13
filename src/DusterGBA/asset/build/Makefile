@@ -1,5 +1,7 @@
 .PHONY: clean atlas
 
+TOOLS_DIR ?= ../../../tools
+
 IMGS_DIR := ../img
 MAPS_DIR := ../map
 RAWMAPS_DIR := ../rawmap
@@ -53,14 +55,10 @@ include custom.mk
 # rule for building atlas pngs from sprite dirs
 # build a_thing_
 a_%_: ../img/%
-	crunch_gen "$@" "$<" $(CRUNCH_FLAGS)
+	$(TOOLS_DIR)/bin/crunch_gen "$@" "$<" $(CRUNCH_FLAGS)
 # convert a_thing_ to a_thing_0.png (fake recipe)
 $(ATLS_PNG): $(ATLS_OUT)
 	@true
-
-# rule for building tmx maps
-%.bin: ../map/%.tmx
-	Tiled2GBA -b $< $@
 
 # rule for building raw maps
 %.bin: ../rawmap/%.png

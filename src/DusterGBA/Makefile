@@ -5,8 +5,9 @@ TITLE		:= Duster
 #  Project settings
 
 NAME		:= $(TITLE)
-SOURCE_DIR := src
-LIB_DIR    := lib
+SOURCE_DIR 	:= src
+LIB_DIR    	:= lib
+TOOLS_DIR	:= ../tools
 DUSK_DIR   := ../../lib/dusk/src/dusk
 CCOLL_DIR   := ../../lib/ccoll
 DATA_DIR   := asset/build
@@ -28,7 +29,7 @@ ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
 
-ASSET_MKFLAGS :=
+ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
 
 ifeq ($(DEBUG),1)
@@ -53,7 +54,7 @@ APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S)
 
 # Build commands and dependencies
 
-.PHONY: libs assets
+.PHONY: libs assets tools
 
 build: assets libs $(NAME).gba
 
@@ -63,8 +64,16 @@ libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
 	cd $(CCOLL_DIR) && make
 
-assets:
+tools: $(TOOLS_DIR)/bin/crunch_gen
+
+assets: tools
 	cd asset/build && make $(ASSET_MKFLAGS)
+
+# Tools build
+$(TOOLS_DIR)/bin/crunch_gen:
+	cd $(TOOLS_DIR)/crunch && mkdir -p build && cd build && cmake .. && make && ln -rsf crunch_gen ../../bin
+
+# GBA ROM Build
 
 $(NAME).gba : $(NAME)-code.gba $(NAME).gbfs
 	cat $^ > $(NAME).gba
