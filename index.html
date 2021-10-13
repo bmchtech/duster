@@ -5,8 +5,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <link href="./page.css" rel="stylesheet">
     <link href="./ihui.css" rel="stylesheet">
+    <link href="./page.css" rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#2f2732" />
@@ -35,21 +35,38 @@
     </header>
     <main>
         <section class="container">
-            <p>GBA Emulation</p>
+            <div class="title">
+                <h1>WebGBA</h1>
+            </div>
+            <p>WebGBA is set up to be able to play Duster in the browser.</p>
+
+            <h2>Instructions</h2>
+            <ol>
+                <li>Click "download rom" to download the latest Duster GBA rom.</li>
+                <li>Use the file upload to upload the rom you just downloaded.</li>
+                <li>Click "Play Now" in the emulator window that pops up.</li>
+            </ol>
         </section>
         <section class="container">
             <div style="width:640px;height:480px;max-width:100%">
                 <div id="game"></div>
+                <div>
+                    <a onclick="on_get_rom_click()" target="_blank" class="btn
+      btn-default ripple">download rom</a>
+                </div>
+                <div>
+                    upload rom here <input type="file" id="file">
+                </div>
             </div>
             <script type="text/javascript">
                 EJS_player = '#game';
                 // EJS_biosUrl = './gba_bios.bin';
-                console.log('EJS using rom from:', DUSTER_ROM_LOC);
-                EJS_gameUrl = DUSTER_ROM_LOC;
+                // EJS_gameUrl = './Duster.gba';
+                // console.log('loading rom:', EJS_gameUrl);
                 EJS_core = 'gba';
                 EJS_pathtodata = 'data/';
             </script>
-            <script src="data/loader.js"></script>
+            <!-- <script src="data/loader.js"></script> -->
         </section>
     </main>
 </body>
