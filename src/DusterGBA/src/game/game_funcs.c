@@ -28,6 +28,7 @@ void game_init_board(u8 board_size) {
 void game_init_team(u8 team_id, const char* name) {
     Team* team = &game_state.teams[team_id];
     sprintf(team->name, "%s", name);
+    team->alive = TRUE;
 
     // set all pawns to empty
     memset32(team->pawns, 0, sizeof(team->pawns) / 4);

@@ -22,8 +22,19 @@ void game_logic_step() {
     }
 
     if (all_moved) {
-        // all have moved, advance turn
-        game_state.turns++;
+        // all have moved, advance turn to next alive team
+        int next_turn = game_state.turns + 1;
+        for (int i = 0; i < NUM_TEAMS; i++) {
+            int check_team = next_turn + i;
+            if (!game_state.teams[check_team % NUM_TEAMS].alive) {
+                // this team isn't alive, so we skip
+                continue;
+            }
+            // we are all good
+            next_turn = check_team;
+            break;
+        }
+        game_state.turns = next_turn;
     }
 }
 

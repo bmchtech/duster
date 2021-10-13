@@ -47,6 +47,7 @@ typedef struct {
 typedef struct {
     char name[16];
     Pawn pawns[TEAM_MAX_PAWNS];
+    BOOL alive;
 } Team;
 
 typedef struct {
