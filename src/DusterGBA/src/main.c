@@ -4,6 +4,8 @@
 #include "contrib/mgba.h"
 #include "maxmod.h"
 
+__attribute__((used)) const char* GAME_VERSION = "$DUSTER v0.2";
+
 void maxmod_audio_init() {
     // irq setup for maxmod dma
     irq_init(NULL);

@@ -23,6 +23,8 @@ make build DEBUG=1
 
 this will output `Duster.gba`
 
+to check the `GAME_VERSION` of a built rom, run: `strings Duster.gba | grep '$DUSTER'`.
+
 ## preview
 
 <img src="media/test6_retro.webp" width="512">
