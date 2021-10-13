@@ -8,6 +8,7 @@ int bg1_tte_sbb = 28;
 VPos board_offset;
 BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
+int cursor_last_moved_frame = 0;
 VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
@@ -25,8 +26,9 @@ BOOL pausemenu_dirty = TRUE;
 int board_scroll_x = 0;
 int board_scroll_y = 0;
 int sidebar_page = 0;
-
-int cursor_last_moved_frame = 0;
+int movequeue_length = 0;
+QueuedMove movequeue_queue[TEAM_MAX_PAWNS + 1];
+int movequeue_progress = 0;
 
 void boardscn_start() {
     // init
@@ -86,6 +88,13 @@ void boardscn_start() {
     pawn2sprite_conf.hash = GENERAL_HASH;
     pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
+
+    // queued moves
+    memset(&movequeue_queue[0], 0, sizeof(QueuedMove)); // leave a blank
+    movequeue_queue[1] =
+        (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 0), .start_pos = {1, 1}, .end_pos = {8, 8}};
+    movequeue_length = 1 + 1; // blank plus items
+    movequeue_progress = 0;
 }
 
 void set_ui_dirty() {
@@ -160,6 +169,9 @@ void boardscn_update() {
 
         // tween updates are last
         update_pawn_tweens();
+
+        // step queued
+        update_queued_moves();
 
         // update sprites
         dusk_sprites_update();

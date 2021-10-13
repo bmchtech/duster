@@ -164,3 +164,52 @@ void update_pawn_tweens() {
     update_pawn_move_tween();
     update_pawn_flash_tween();
 }
+
+int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
+    int curr_step = progress;
+    QueuedMove* curr_move = &moves[curr_step];
+
+    // check if last one is done
+    BOOL move_done = FALSE;
+    if (curr_move->type == QUEUEDMOVE_MOVE) {
+        if (pawn_move_tween.pawn_gid == -1)
+            move_done = TRUE;
+    }
+    if (curr_move->type == QUEUEDMOVE_INTERACT) {
+        if (pawn_flash_tween.pawn_gid == -1 && pawn_move_tween.pawn_gid == -1)
+            move_done = TRUE;
+    }
+
+    if (move_done) {
+        curr_step++;
+        // check if we are at end
+        if (curr_step >= length) {
+            return length - 1;
+        }
+
+        // start the next
+        QueuedMove* next_move = &moves[curr_step];
+
+        switch (next_move->type) {
+        case QUEUEDMOVE_MOVE:
+            animate_pawn_move(next_move->pawn0, next_move->start_pos, next_move->end_pos);
+            break;
+        case QUEUEDMOVE_INTERACT:
+            animate_pawn_move(next_move->pawn0, next_move->start_pos, next_move->end_pos);
+            animate_pawn_flash(next_move->pawn1, next_move->pawn0,
+                               pawn_util_on_same_team(next_move->pawn1, next_move->pawn0));
+            break;
+        default:
+            break;
+        }
+    }
+
+    // we are not at end
+
+    return curr_step;
+}
+
+void update_queued_moves() {
+    int new_progress = step_running_queued_moves(movequeue_queue, movequeue_length, movequeue_progress);
+    movequeue_progress = new_progress;
+}

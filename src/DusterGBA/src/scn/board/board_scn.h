@@ -66,6 +66,9 @@ extern int board_scroll_y;
 extern int pause_cursor_selection;
 #define NUM_SIDEBAR_PAGES 2
 extern int sidebar_page;
+extern int movequeue_length;
+extern QueuedMove movequeue_queue[TEAM_MAX_PAWNS + 1];
+extern int movequeue_progress;
 
 void set_ui_dirty();
 
@@ -86,6 +89,8 @@ void on_try_move_cursor(int mx, int my);
 void animate_pawn_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
 void animate_pawn_flash(pawn_gid_t pawn_gid, pawn_gid_t initiator_gid, BOOL flash_color);
 void update_pawn_tweens();
+int step_running_queued_moves(QueuedMove* moves, int length, int progress);
+void update_queued_moves();
 
 void update_pause_ui();
 void draw_pause_ui();

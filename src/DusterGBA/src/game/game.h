@@ -86,6 +86,19 @@ typedef struct {
     int counter_dmg;
 } HostileUnitDuel;
 
+typedef enum {
+    QUEUEDMOVE_MOVE,
+    QUEUEDMOVE_INTERACT,
+} QueuedMoveType;
+
+typedef struct {
+    QueuedMoveType type;
+    pawn_gid_t pawn0;
+    pawn_gid_t pawn1;
+    VPos16 start_pos;
+    VPos16 end_pos;
+} QueuedMove;
+
 extern GameState game_state;
 extern GameColdData game_data;
 
