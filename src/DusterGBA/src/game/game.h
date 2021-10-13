@@ -79,6 +79,11 @@ typedef struct {
     u32 pawn;
 } PawnSpawnPoint;
 
+typedef struct {
+    int main_dmg;
+    int counter_dmg;
+} HostileUnitDuel;
+
 extern GameState game_state;
 extern GameColdData game_data;
 
@@ -117,6 +122,7 @@ ClassData* pawn_get_classdata(pawn_gid_t pawn_gid);
 
 void game_logic_step();
 void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver);
+HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* receiver_pawn);
 
 // UTIL
 

@@ -21,11 +21,6 @@ void game_logic_kill_if_dead(pawn_gid_t pawn_gid) {
     }
 }
 
-typedef struct {
-    int main_dmg;
-    int counter_dmg;
-} HostileUnitDuel;
-
 HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* receiver_pawn) {
     UnitDataStats* i_stats = &initiator_pawn->unit_data.stats;
     UnitDataStats* r_stats = &receiver_pawn->unit_data.stats;
@@ -40,7 +35,7 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
 
     // mitigate attack
     int mitigated_atk = atk_strength - def_strength;
-    clamp(mitigated_atk, 0, atk_strength);
+    mitigated_atk = clamp(mitigated_atk, 0, atk_strength);
 
     ret.main_dmg = mitigated_atk;
     ret.counter_dmg = 0;
