@@ -64,7 +64,7 @@ libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
 	cd $(CCOLL_DIR) && make
 
-tools: $(TOOLS_DIR)/bin/crunch_gen
+tools: $(TOOLS_DIR)/bin/crunch_gen $(TOOLS_DIR)/bin/duster_mapc
 
 assets: tools
 	cd asset/build && make $(ASSET_MKFLAGS)
@@ -72,6 +72,8 @@ assets: tools
 # Tools build
 $(TOOLS_DIR)/bin/crunch_gen:
 	cd $(TOOLS_DIR)/crunch && mkdir -p build && cd build && cmake .. && make && ln -rsf crunch_gen ../../bin
+$(TOOLS_DIR)/bin/duster_mapc:
+	cd $(TOOLS_DIR)/duster_mapc && dub build && ln -rsf duster_mapc ../bin
 
 # GBA ROM Build
 

@@ -70,7 +70,7 @@ $(SOUND_BIN) $(SOUND_H): $(SOUND_SRC)
 
 # rule for building game maps
 %.gmp.bin: $(GAMEMAPS_DIR)/%.json
-	cp $< $@
+	$(TOOLS_DIR)/bin/duster_mapc $< $@
 
 # debug:
 #     $(foreach var,$(.VARIABLES),$(info $(var) = $($(var))))
