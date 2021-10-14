@@ -154,7 +154,7 @@ ubyte[] compile_duster_map(DusterMap map) {
     }
 
     // pawn spawn data
-    binmap ~= map.spawns.length.to_le;
+    binmap ~= (cast(int) map.spawns.length).to_le;
     for (int i = 0; i < map.spawns.length; i++) {
         PawnSpawn spawn = map.spawns[i];
 
