@@ -1,6 +1,8 @@
 module dustermap;
 
 import std.stdio;
+import std.conv;
+import std.bitmanip : to_le = nativeToLittleEndian;
 
 import core.stdc.stdio;
 import core.stdc.string;
@@ -73,8 +75,7 @@ DusterMap parse_map_file(string map_file) {
                 //     printf("obstacle tile (%d,%d): %d \n", tx, ty, tile);
                 // }
             }
-
-            writefln("  packed %s tiles", cmap.num_tiles);
+            writefln("  copied %s board tiles", cmap.num_tiles);
         }
 
         // spawn points
@@ -135,6 +136,28 @@ DusterMap parse_map_file(string map_file) {
 
 ubyte[] compile_duster_map(DusterMap map) {
     ubyte[] binmap;
+
+    // magic header
+    binmap ~= [0xD0, 0x57];
+
+    // tile data
+    binmap ~= map.num_tiles.to_le;
+    for (int i = 0; i < map.num_tiles; i++) {
+        binmap ~= map.tiles[i].to_le;
+    }
+
+    // pawn spawn data
+    binmap ~= map.spawns.length.to_le;
+    for (int i = 0; i < map.spawns.length; i++) {
+        PawnSpawn spawn = map.spawns[i];
+
+        binmap ~= spawn.team.to_le;
+        binmap ~= spawn.pawn.to_le;
+        binmap ~= spawn.pclass.to_le;
+        binmap ~= spawn.level.to_le;
+        binmap ~= spawn.tx.to_le;
+        binmap ~= spawn.ty.to_le;
+    }
 
     return binmap;
 }
