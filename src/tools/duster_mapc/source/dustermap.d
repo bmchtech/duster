@@ -28,6 +28,7 @@ struct PawnSpawn {
 }
 
 struct DusterMap {
+    int board_size;
     int num_tiles;
     int[] tiles;
 
@@ -42,6 +43,8 @@ DusterMap parse_map_file(string map_file) {
     writefln("  loaded map: %sx%s", map.width, map.height);
 
     cmap.num_tiles = map.width * map.height;
+    assert(map.width == map.height, "map width and height must match!");
+    cmap.board_size = map.width;
 
     bool terrain_layer_found = false;
     bool pawns_layer_found = false;
@@ -138,7 +141,11 @@ ubyte[] compile_duster_map(DusterMap map) {
     ubyte[] binmap;
 
     // magic header
-    binmap ~= [0xD0, 0x57];
+    uint magic_header = 0xD0570000;
+    binmap ~= magic_header.to_le;
+
+    // board size
+    binmap ~= map.board_size.to_le;
 
     // tile data
     binmap ~= map.num_tiles.to_le;
