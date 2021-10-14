@@ -1,8 +1,7 @@
 import std.stdio;
 import std.file;
 
-import cute_tiled;
-import util;
+import dustermap;
 
 int main(string[] args) {
 	writeln("duster-mapc map compiler");
@@ -14,19 +13,10 @@ int main(string[] args) {
 	string in_fn = args[1];
 	string ou_fn = args[2];
 
-	ubyte[] binmap = compile_map_file(in_fn);
+	DusterMap parsed_map = parse_map_file(in_fn);
+	ubyte[] binmap = compile_duster_map(parsed_map);
 
 	std.file.write(ou_fn, binmap);
 
 	return 0;
-}
-
-ubyte[] compile_map_file(string map_file) {
-	ubyte[] binmap;
-
-	// load map
-	cute_tiled_map_t* map = cute_tiled_load_map_from_file(map_file.c_str(), null);
-	writefln("map size: %sx%s", map.width, map.height);
-
-	return binmap;
 }
