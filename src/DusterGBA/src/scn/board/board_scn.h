@@ -89,3 +89,5 @@ void update_pawn_tweens();
 
 void update_pause_ui();
 void draw_pause_ui();
+
+void boardscn_sfx_play_startchime();
