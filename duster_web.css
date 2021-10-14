@@ -28,6 +28,7 @@
 
 body {
     background-color: #efe1d5;
+    color: #4a4358;
     font-family: 'Spectral';
     max-width: 112rem;
 }
@@ -58,4 +59,24 @@ h1 {
 
 img {
     max-width: 100%;
+}
+
+.hero {
+    margin: 2rem 0;
+}
+
+a.btn {
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border: 1px solid;
+    border-color: #db6a75;
+    border-radius: 2px;
+    color: #4a4358;
+}
+
+a.btn:visited {
+    color: #4a4358;
 }
