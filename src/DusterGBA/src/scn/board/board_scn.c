@@ -1,4 +1,6 @@
 #include "board_scn.h"
+#include "soundbank.h"
+#include "maxmod.h"
 
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
@@ -86,6 +88,16 @@ void boardscn_start() {
     pawn2sprite_conf.hash = GENERAL_HASH;
     pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
+
+    // define sfx
+    mm_sound_effect chime;
+    chime.handle = 0;
+    chime.id = SFX_OBEP2;
+    chime.rate = (int)(1.0f * (1 << 10));
+    chime.volume = 255;
+    chime.panning = 128;
+    // play sound effect
+    mmEffectEx(&chime);
 }
 
 void set_ui_dirty() {
