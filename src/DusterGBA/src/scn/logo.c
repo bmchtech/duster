@@ -29,7 +29,7 @@ void logo_start() {
                              (Sprite){
                                  .x = SCREEN_WIDTH / 2 - 32,
                                  .y = SCREEN_HEIGHT / 2 - 32,
-                                 .base_tid = 64,
+                                 .base_tid = 0,
                              });
 
     // enable blend on this object
@@ -37,12 +37,12 @@ void logo_start() {
     obj_set_attr(logo_attr, logo_attr->attr0 | ATTR0_BLEND, logo_attr->attr1, logo_attr->attr2);
 
     // set up blending registers
-    REG_BLDCNT = BLD_OBJ | BLD_BG0 | BLD_BG1 | BLD_BLACK;
-    REG_BLDY = BLDY_BUILD(16);
+    REG_BLDCNT = BLD_BUILD(BLD_OBJ | BLD_BG1, BLD_BACKDROP, 1);
+    REG_BLDALPHA = BLDA_BUILD(0, 16);
 
     fade_step = FADE_LENGTH / 16;
 
-    // pal_bg_mem[0] = RES_PAL[0]; // bg col
+    pal_bg_mem[0] = RES_PAL[2]; // bg col
 
     // ----------
 
@@ -52,7 +52,7 @@ void logo_start() {
 
     // pal_gradient_ex(pal_bg_mem, 1, 4, 0x6F98, 0x4964);
     pal_bg_mem[2] = RES_PAL[4];
-    pal_bg_mem[3] = RES_PAL[2];
+    pal_bg_mem[3] = RES_PAL[0];
 
     tte_printf("#{P:92,24}#{ci:2}bean machine");
     tte_printf("#{P:100,36}#{ci:3}presents");
@@ -73,12 +73,12 @@ void logo_update() {
     int progress = (frame_count - start_frame);
     if (progress <= FADE_LENGTH) {
         int fade = clamp(progress / fade_step, 0, 16);
-        REG_BLDY = BLDY_BUILD(16 - fade);
+        REG_BLDALPHA = BLDA_BUILD(fade, 16 - fade);
     } else if (progress <= FADE_LENGTH * 2) {
         int fade = clamp((progress - FADE_LENGTH) / fade_step, 0, 16);
-        REG_BLDY = BLDY_BUILD(fade);
+        REG_BLDALPHA = BLDA_BUILD(16 - fade, fade);
     }
-    if (progress > FADE_LENGTH * 2) {
+    if (progress > FADE_LENGTH * 2 + 2) {
         // done
         dusk_scene_set(menu_scene);
     }
