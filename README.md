@@ -11,7 +11,7 @@ a sleek strategy game for the gba
 
 + git
 + devkitarm (packages: `tonc`, `grit`)
-+ [crunch](https://github.com/redthing1/crunch)
++ compilers and build tools: `make`, `cmake`, C compiler, D compiler
 
 ### from source
 
