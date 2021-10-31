@@ -403,6 +403,8 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
     // calc_stats.def = base.def + (num_growths * growth.def);
     // calc_stats.hp = base.hp + (num_growths * growth.hp);
 
+    // use a macro to spread out the growth over every 5 levels
+
     MACRO_CALC_STATS_GROWTH(atk);
     MACRO_CALC_STATS_GROWTH(def);
     MACRO_CALC_STATS_GROWTH(hp);
