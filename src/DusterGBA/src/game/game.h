@@ -130,7 +130,7 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
 
 BOOL board_util_is_on_board(int tx, int ty);
 BOOL board_util_is_walkable(int tx, int ty);
-VPos16 board_util_tile_id_to_pos(int tile_id);
+VPos16 board_util_tid_to_pos(int tile_id);
 tile_neighbors_t board_util_get_neighbors(int tile_id);
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);
 BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);

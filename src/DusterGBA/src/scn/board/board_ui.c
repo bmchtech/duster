@@ -94,7 +94,7 @@ void on_cursor_click_move(VPos16 dest_pos) {
 
         if (interact_itmdt_tid > 0) {
             // we have a valid intermediate
-            VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(interact_itmdt_tid);
+            VPos16 interact_itmdt_pos = board_util_tid_to_pos(interact_itmdt_tid);
 
             // move our pawn to the intermediate
             animate_pawn_move(sel_pawn_gid, cursor_click_pos, interact_itmdt_pos);

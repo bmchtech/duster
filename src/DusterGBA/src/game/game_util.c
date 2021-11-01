@@ -24,17 +24,10 @@ BOOL board_util_is_walkable(int tx, int ty) {
     return FALSE;
 }
 
-VPos16 board_util_tile_id_to_pos(int tile_id) {
-    VPos16 ret;
-    ret.x = tile_id % MAX_BOARD_SIZE;
-    ret.y = tile_id / MAX_BOARD_SIZE;
-    return ret;
-}
-
 tile_neighbors_t board_util_get_neighbors(int tile_id) {
     tile_neighbors_t ret;
 
-    VPos16 tile_pos = board_util_tile_id_to_pos(tile_id);
+    VPos16 tile_pos = board_util_tid_to_pos(tile_id);
 
     // fill the neighbors
     // north, east, south, west
@@ -63,6 +56,22 @@ tile_neighbors_t board_util_get_neighbors(int tile_id) {
     }
 
     return ret;
+}
+
+// check whether a tile id is a neighbor
+BOOL board_util_is_neighbor(int tile_id, int neighbor_id) {
+    tile_neighbors_t neighbors = board_util_get_neighbors(tile_id);
+    return neighbors.neighbors[0] == neighbor_id || neighbors.neighbors[1] == neighbor_id || neighbors.neighbors[2] == neighbor_id || neighbors.neighbors[3] == neighbor_id;
+}
+
+// get tile board position from tid
+VPos16 board_util_tid_to_pos(int tile_id) {
+    return (VPos16) {tile_id % MAX_BOARD_SIZE, tile_id / MAX_BOARD_SIZE};
+}
+
+// get tid from board position
+int board_util_pos_to_tid(VPos16 pos) {
+    return BOARD_POS(pos.x, pos.y);
 }
 
 typedef struct {
@@ -136,7 +145,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
                 continue; // invalid
 
             // calculate scan node values
-            VPos16 scan_node_pos = board_util_tile_id_to_pos(scan_node);
+            VPos16 scan_node_pos = board_util_tid_to_pos(scan_node);
 
             // make sure this tile in range
             if (board_dist(start_tx, start_ty, scan_node_pos.x, scan_node_pos.y) > range)
@@ -223,7 +232,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
         int curr_dist = curr_entry->dist;
 
-        // VPos16 curr_pos = board_util_tile_id_to_pos(tid);
+        // VPos16 curr_pos = board_util_tid_to_pos(tid);
         // mgba_printf(MGBA_LOG_ERROR, "visit: (%d, %d), prio: %d, dist: %d", curr_pos.x, curr_pos.y, current->prio,
         //             curr_dist);
 
@@ -251,7 +260,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             cc_hashtable_get(nodedist, &scan_node, (void**)&nb_entry);
             PQueuePair* nb_pair = &pair_storage[nb_entry->ix];
 
-            // VPos16 scan_pos = board_util_tile_id_to_pos(scan_node);
+            // VPos16 scan_pos = board_util_tid_to_pos(scan_node);
             // mgba_printf(MGBA_LOG_ERROR, "neighbor: (%d, %d), dist: %d", scan_pos.x, scan_pos.y, scan_dist);
 
             // try to set dist
@@ -294,7 +303,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         // mgba_printf(MGBA_LOG_ERROR, "visited iter: %d", iter_val);
 
         int scan_tid = iter_val;
-        VPos16 scan_pos = board_util_tile_id_to_pos(scan_tid);
+        VPos16 scan_pos = board_util_tid_to_pos(scan_tid);
 
         // check the distance using our shortest path
         DijkstraStorage* scan_tile_shortest_entry;
