@@ -1,5 +1,5 @@
 -- `nodecl` is used because this function doesn't need to be declared by Nelua,
 -- as it will be declared in <stdio.h> header
 -- `cinclude` is used to make the compiler include the header when using the function
-global function bap_saysomething(s: cstring <const>): cint <cimport, nodecl, cinclude '"res.h"'>
+global function bap_saysomething(s: cstring <const>): void <cimport, nodecl, cinclude '"res.h"'>
 end
