@@ -20,6 +20,7 @@ AS	:= $(CROSS)as
 CC	:= $(CROSS)gcc
 LD	:= $(CROSS)gcc
 OBJCOPY	:= $(CROSS)objcopy
+NELUA	:= nelua
 
 ARCH	:= -mthumb-interwork -mthumb
 
@@ -28,6 +29,7 @@ LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/l
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
+NELUA_FLAGS := -P noentrypoint -P nogc -P nochecks --release
 
 ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
@@ -50,7 +52,9 @@ APP_SOURCES_C     := $(shell find $(SOURCE_DIR) -name '*.c' ! -name "*main.c"  !
 APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
-APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S)
+APP_SOURCES_NELUA := $(shell find $(SOURCE_DIR) -name '*.lua')
+APP_OBJECTS_NELUA := $(APP_SOURCES_NELUA:%.lua=%.o)
+APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_NELUA)
 
 # Build commands and dependencies
 
@@ -93,6 +97,9 @@ $(APP_OBJECTS_C) : %.o : %.c assets libs
 
 $(APP_OBJECTS_S) : %.o : %.s
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(APP_OBJECTS_NELUA) : %.o : %.lua
+	$(NELUA) -B $(NELUA_FLAGS) --cc $(CC) --cflags="$(CFLAGS)" -o $@ $<
 
 $(APP_MAIN_OBJECT) : $(APP_MAIN_SOURCE)
 	$(CC) $(CFLAGS) -c $< -o $@
