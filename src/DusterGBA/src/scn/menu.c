@@ -3,6 +3,7 @@
 #include <tonc.h>
 #include "res.h"
 #include "scenes.h"
+#include "contrib/mgba.h"
 
 void menu_start() {
     dusk_init_graphics_mode0();
@@ -24,6 +25,10 @@ void menu_start() {
     // draw text
     pal_bg_mem[16] = RES_PAL[0];
     tte_printf("#{P:200,140}#{ci:16}play >");
+
+    // test nelua, asking it to add two numbers
+    int32_t nelua_result = bap_nelua_add(3, 4);
+    mgba_printf(MGBA_LOG_ERROR, "nelua result: %d\n", nelua_result);
 }
 
 void menu_update() {
