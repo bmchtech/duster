@@ -1,4 +1,5 @@
 require 'vector'
+require 'sidebean'
 
 -- `cexport` marks this function to be exported
 -- `codename` fix the generated C code name
@@ -13,5 +14,5 @@ local function bap_nelua_add(a: int32, b: int32): int32 <cexport, codename 'bap_
 
     vec:destroy()
 
-    return t1 + t2
+    return internal_add_numbers(t1, t2)
 end
