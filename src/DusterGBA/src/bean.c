@@ -2,6 +2,8 @@
 #include "dusk.h"
 #include "tonc.h"
 #include "scene.h"
+#include "wasm3.h"
+#include "bean.h"
 
 Sprite* bean;
 const int FADE_LENGTH = 60; // fade length in frames
@@ -22,10 +24,11 @@ void bean_start() {
     pal_gradient_ex(pal_bg_mem, 1, 4, CLR_YELLOW, CLR_ORANGE);
     pal_gradient_ex(pal_bg_mem, 5, 8, CLR_BLACK, CLR_WHITE);
 
-    tte_printf("#{P:12,12}#{ci:4}dusk #{ci:2}demo");
-    tte_printf("#{P:12,24}#{ci:2}¯¯¯¯¯¯¯");
+    tte_printf("#{P:12,0}#{ci:4}Wasm #{ci:2}demo");
+    //tte_printf("#{P:12,24}#{ci:2}bean");
+    //tte_printf("#{P:12,36}#{ci:7}start >");
 
-    tte_printf("#{P:200,140}#{ci:7}start >");
+    run_wasm();
 }
 
 void bean_update() {

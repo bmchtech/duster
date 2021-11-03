@@ -23,7 +23,7 @@ OBJCOPY	:= $(CROSS)objcopy
 
 ARCH	:= -mthumb-interwork -mthumb
 
-INCFLAGS := -I$(DUSK_DIR)/include -I$(CCOLL_DIR)/include -I$(DEVKITPRO)/libtonc/include -I$(DEVKITPRO)/libgba/include -I$(SOURCE_DIR) -I$(DATA_DIR)
+INCFLAGS := -I$(DUSK_DIR)/include -I$(CCOLL_DIR)/include -I$(DEVKITPRO)/libtonc/include -I$(DEVKITPRO)/libgba/include -I$(SOURCE_DIR) -I$(DATA_DIR) -I$(SOURCE_DIR)/arduino/lib/wasm3
 LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/libtonc/lib -ltonc -L$(DEVKITPRO)/libgba/lib -lmm
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
