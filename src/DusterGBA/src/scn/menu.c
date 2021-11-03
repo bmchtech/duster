@@ -4,6 +4,7 @@
 #include "res.h"
 #include "scenes.h"
 #include "contrib/mgba.h"
+#include "lua/bap.h"
 
 void menu_start() {
     dusk_init_graphics_mode0();
