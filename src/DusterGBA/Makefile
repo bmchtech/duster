@@ -52,11 +52,11 @@ APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
 APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S)
 
-# Build commands and dependencies
+# Built commands and dependencies
 
-.PHONY: libs assets tools
+.PHONY: libs
 
-build: assets libs $(NAME).gba
+build: libs $(NAME).gba
 
 no-content: libs $(NAME)-code.gba
 
@@ -64,10 +64,8 @@ libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
 	cd $(CCOLL_DIR) && make
 
-tools: $(TOOLS_DIR)/bin/crunch_gen $(TOOLS_DIR)/bin/duster_mapc
 
-assets: tools
-	cd asset/build && make $(ASSET_MKFLAGS)
+
 
 # Tools build
 $(TOOLS_DIR)/bin/crunch_gen:
@@ -88,7 +86,7 @@ $(NAME)-code.gba : $(NAME).elf
 $(NAME).elf : $(APP_OBJECTS) $(APP_MAIN_OBJECT)
 	$(LD) $^ $(LDFLAGS) -o $@
 
-$(APP_OBJECTS_C) : %.o : %.c assets libs
+$(APP_OBJECTS_C) : %.o : %.c libs
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(APP_OBJECTS_S) : %.o : %.s
@@ -97,8 +95,8 @@ $(APP_OBJECTS_S) : %.o : %.s
 $(APP_MAIN_OBJECT) : $(APP_MAIN_SOURCE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME).gbfs: assets
-	gbfs $@ $(shell find $(DATA_DIR) -name '*.bin')
+$(NAME).gbfs:
+	touch $@ $(shell find $(DATA_DIR) -name '*.bin')
 
 clean:
 	@rm -fv *.gba
