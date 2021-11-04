@@ -28,8 +28,7 @@ m3ApiRawFunction(bean_printi) {
 
 m3ApiRawFunction(bean_keydown) {
     m3ApiReturnType(int32_t);
-    // TODO
-    m3ApiReturn(42);
+    m3ApiReturn(key_is_down(KEY_A) ? 1 : 0);
 }
 
 
