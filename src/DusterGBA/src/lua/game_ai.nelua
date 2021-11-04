@@ -2,17 +2,8 @@ require 'ldusk'
 require 'lduster'
 require 'vector'
 
-global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len: cint): cint
-    -- plan moves for a particular team
-
-    local moves: *[0]QueuedMove = move_buf
-    local move_ix = 0
-
-    -- -- for now, fill it up with placeholder moves
-    -- moves[0] = {type = QUEUEDMOVE_MOVE, pawn0 = LPAWN_GID(team_id, 0), start_pos = (@VPos16){1, 1}, end_pos = (@VPos16){8, 8}}
-    -- moves[1] = {type = QUEUEDMOVE_MOVE, pawn0 = LPAWN_GID(team_id, 1), start_pos = (@VPos16){1, 1}, end_pos = (@VPos16){9, 8}}
-    -- moves[2] = {type = QUEUEDMOVE_MOVE, pawn0 = LPAWN_GID(team_id, 2), start_pos = (@VPos16){1, 1}, end_pos = (@VPos16){10, 8}}
-
+-- make a list of all available pawns on this team
+local function ai_scan_pawns(team_id: cint): vector(cshort)
     local my_pawns: vector(cshort) = {}
 
     -- scan all pawns
@@ -25,6 +16,33 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
         end
     end
 
+    return my_pawns
+end
+
+local function ai_can_pawn_move_to(pawn_gid: cshort, pos: VPos16): boolean
+    local tile_check = false
+    -- check tile, empty and walkable
+    if (board_util_is_on_board(pos.x, pos.y) > 0 and board_util_is_walkable(pos.x, pos.y) > 0 and board_get_pawn(LBOARD_POS(pos.x, pos.y)) == nilptr) then
+        tile_check = true
+    end
+
+    local range_check = false
+    -- check range
+    -- calculate range buffer and check
+    -- for now, skip it
+    range_check = true
+
+    return range_check and tile_check
+end
+
+global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len: cint): cint
+    -- plan moves for a particular team
+
+    local moves: *[0]QueuedMove = move_buf
+    local move_ix = 0
+
+    local my_pawns = ai_scan_pawns(team_id)
+
     -- move everyone forward
     for i = 0, my_pawns.size - 1 do
         local pawn_gid = my_pawns[i]
@@ -34,6 +52,12 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
 
         local dest_pos = curr_tile_pos
         dest_pos.y = dest_pos.y + 1
+
+        -- check if we can move there
+        if not ai_can_pawn_move_to(pawn_gid, dest_pos) then
+            -- can't move there
+            continue
+        end
 
         -- add a move for this pawn
         moves[move_ix] = {type = QUEUEDMOVE_MOVE, pawn0 = pawn_gid, start_pos = curr_tile_pos, end_pos = dest_pos}
@@ -46,5 +70,5 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
     my_pawns:destroy()
 
     -- return how many moves were planned
-    return move_ix + 1
+    return move_ix
 end
