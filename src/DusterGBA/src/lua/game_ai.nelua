@@ -1,0 +1,11 @@
+require 'dusk'
+require 'duster'
+
+global function ai_plan_moves(team_id: int32, move_buf: *QueuedMove, move_buf_len: int32): int32
+    -- plan moves for a particular team
+
+    -- for now, fill it up with placeholder moves
+
+    -- return how many moves were planned
+    return 1
+end

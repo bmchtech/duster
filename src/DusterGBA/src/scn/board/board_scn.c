@@ -29,7 +29,7 @@ int board_scroll_x = 0;
 int board_scroll_y = 0;
 int sidebar_page = 0;
 int movequeue_length = 0;
-QueuedMove movequeue_queue[TEAM_MAX_PAWNS + 1];
+QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
 int movequeue_progress = 0;
 int movequeue_delay_timer = 0;
 
@@ -93,6 +93,7 @@ void boardscn_start() {
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
 
     // queued moves
+    memset(movequeue_queue, 0, sizeof(movequeue_queue));
     memset(&movequeue_queue[0], 0, sizeof(QueuedMove)); // leave a blank
     movequeue_queue[1] =
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 0), .start_pos = {1, 1}, .end_pos = {8, 8}};
@@ -102,6 +103,10 @@ void boardscn_start() {
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 2), .start_pos = {3, 3}, .end_pos = {10, 8}};
     movequeue_length = 1 + 3; // blank plus items
     movequeue_progress = 0;
+
+    // test planning moves
+    int32_t val = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);
+    mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", val);
 
     // define sfx
     mm_sound_effect chime;

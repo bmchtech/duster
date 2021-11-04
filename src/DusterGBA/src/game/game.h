@@ -10,6 +10,8 @@
 
 #define NUM_UNIT_CLASSES 4
 
+#define MOVEQUEUE_MAX_SIZE (TEAM_MAX_PAWNS + 1)
+
 typedef s16 pawn_gid_t;
 
 typedef enum {
@@ -157,4 +159,5 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level);
 // MAP
 BOOL game_load_gamemap(void* data, u32 len);
 
+// lua code binding
 int32_t game_gs_ai_plan_moves(int32_t team_id, QueuedMove* move_buf, int32_t move_buf_len);
