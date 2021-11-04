@@ -5,21 +5,44 @@
 //  All rights reserved.
 //
 
+#include "dusk.h"
 #include "wasm3.h"
 
-#include "extra/fib32.wasm.h"
+#include "scn/bean.wasm.h"
+
+int liney = 96;
 
 #define FATAL(func, msg) {           \
-  tte_printf("#{P:12,140}#{ci:7}FATAL: %s", msg); \
+  tte_printf("#{P:12,%d}#{ci:7}FATAL: %s", liney, msg); \
+  liney += 12; \
   return; \
 }
 
-void run_wasm()
-{
-    M3Result result = m3Err_none;
+m3ApiRawFunction(bean_printi) {
+    m3ApiGetArg(int32_t, i);
+    tte_erase_screen();
+    tte_printf("#{P:12,140}#{ci:7}%li", i);
+    m3ApiSuccess();
+}
 
-    uint8_t* wasm = (uint8_t*)fib32_wasm;
-    size_t fsize = fib32_wasm_len;
+
+m3ApiRawFunction(bean_keydown) {
+    m3ApiReturnType(int32_t);
+    // TODO
+    m3ApiReturn(42);
+}
+
+
+IM3Function f_bean_start;
+IM3Function f_bean_update;
+M3Result result;
+
+void wasm_bean_init()
+{
+    result = m3Err_none;
+
+    uint8_t* wasm = (uint8_t*)bean_wasm;
+    size_t fsize = bean_wasm_len;
 
     tte_printf("#{P:12,12}#{ci:7}Loading Wasm");
 
@@ -36,18 +59,35 @@ void run_wasm()
     result = m3_LoadModule (runtime, module);
     if (result) FATAL("m3_LoadModule", result);
 
-    IM3Function f;
-    result = m3_FindFunction (&f, runtime, "fib");
-    if (result) FATAL("m3_FindFunction", result);
+    result = m3_LinkRawFunction(module, "duster", "bean_printi", "v(i)", &bean_printi);
+    if (result) FATAL("couldn't link bean_printi()", result);
+
+    result = m3_LinkRawFunction(module, "duster", "bean_keydown", "i()", &bean_keydown);
+    if (result) FATAL("couldn't link bean_keydown()", result);
+
+    result = m3_FindFunction (&f_bean_start, runtime, "bean_start");
+    if (result) FATAL("couldn't find bean_start()", result);
+
+    result = m3_FindFunction (&f_bean_update, runtime, "bean_update");
+    if (result) FATAL("couldn't find bean_update()", result);
 
     tte_printf("#{P:12,24}#{ci:7}Running");
 
-    result = m3_CallV(f, 24);
+    result = m3_CallV(f_bean_start);
     if (result) FATAL("m3_Call", result);
 
-    uint32_t value = 0;
-    result = m3_GetResultsV (f, &value);
-    if (result) FATAL("m3_GetResults: %s", result);
+    //result = m3_GetResultsV (f, &value);
+    //if (result) FATAL("m3_GetResults: %s", result);
 
-    tte_printf("#{P:12,36}#{ci:7}Result: %lu", value);
+    tte_printf("#{P:12,36}#{ci:7}Finished bean_start()");
+}
+
+void wasm_bean_start() {
+    result = m3_CallV(f_bean_start);
+    if (result) FATAL("m3_Call", result);
+}
+
+void wasm_bean_update() {
+    result = m3_CallV(f_bean_update);
+    if (result) FATAL("m3_Call", result);
 }

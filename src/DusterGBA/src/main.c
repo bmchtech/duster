@@ -5,6 +5,8 @@ __attribute__((used)) const char* GAME_VERSION = "$DUSTER v0.2";
 
 
 int main() {
+    dusk_init_all();
+
     dusk_scene_set(bean_scene);
 
     while (TRUE) {

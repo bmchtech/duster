@@ -28,7 +28,8 @@ void bean_start() {
     //tte_printf("#{P:12,24}#{ci:2}bean");
     //tte_printf("#{P:12,36}#{ci:7}start >");
 
-    run_wasm();
+    wasm_bean_init();
+    wasm_bean_start();
 }
 
 void bean_update() {
@@ -36,6 +37,13 @@ void bean_update() {
 
     // update sprites
     dusk_sprites_update();
+
+    if (key_hit(KEY_A)) {
+        tte_erase_screen();
+        tte_printf("#{P:12,84}#{ci:4}Bean #{ci:2}demo");
+    }
+
+    wasm_bean_update();
 }
 
 void bean_end() {
