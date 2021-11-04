@@ -35,8 +35,13 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, pos: VPos16): boolean
     return range_check and tile_check
 end
 
+-- plan moves for a particular team
 global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len: cint): cint
-    -- plan moves for a particular team
+    local blackboard: *[0]cuchar = &game_ai_blackboard
+
+    -- use blackboard slot as counter
+    local bb_base = team_id * 1024
+    blackboard[bb_base + 0] = blackboard[bb_base + 0] + 1
 
     local moves: *[0]QueuedMove = move_buf
     local move_ix = 0
@@ -51,7 +56,13 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
         local curr_tile_pos = board_util_tid_to_pos(curr_tile)
 
         local dest_pos = curr_tile_pos
-        dest_pos.y = dest_pos.y + 1
+
+        -- alternate march y direction using counter
+        if (blackboard[bb_base + 0] % 2 == 0) then
+            dest_pos.y = dest_pos.y + 1
+        else
+            dest_pos.y = dest_pos.y - 1
+        end
 
         -- check if we can move there
         if not ai_can_pawn_move_to(pawn_gid, dest_pos) then

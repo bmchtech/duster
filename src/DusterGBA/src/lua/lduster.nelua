@@ -96,6 +96,7 @@ global QueuedMove: type <cimport,nodecl> = @record{
 
 global game_state: GameState <cimport,nodecl>
 global game_data: GameColdData <cimport,nodecl>
+global game_ai_blackboard: [4096]cuchar <cimport,nodecl>
 
 global function LBOARD_POS(x: cint, y: cint) return ((y)*MAX_BOARD_SIZE + (x)) end
 global function LPAWN_GID(team: cint, pawn: cint) return ((team)*TEAM_MAX_PAWNS + (pawn)) end

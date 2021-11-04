@@ -8,6 +8,9 @@
 #include "cc_hashset.h"
 #include "contrib/mgba.h"
 
+// blackboard for game ai
+u8 game_ai_blackboard[4096];
+
 BOOL board_util_is_on_board(int tx, int ty) {
     return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
 }

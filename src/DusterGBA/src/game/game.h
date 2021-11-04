@@ -104,6 +104,7 @@ typedef struct {
 
 extern GameState game_state;
 extern GameColdData game_data;
+extern u8 game_ai_blackboard[4096];
 
 #define BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
 #define PAWN_GID(team, pawn) ((team)*TEAM_MAX_PAWNS + (pawn))
