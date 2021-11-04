@@ -53,6 +53,7 @@ APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
 APP_SOURCES_NELUA := $(shell find $(SOURCE_DIR) -name '*.lua')
+APP_NELUA_SCRIPTS := $(shell find $(SOURCE_DIR) -name '*.nelua')
 APP_OBJECTS_NELUA := $(APP_SOURCES_NELUA:%.lua=%.o)
 APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_NELUA)
 
@@ -98,7 +99,7 @@ $(APP_OBJECTS_C) : %.o : %.c assets libs
 $(APP_OBJECTS_S) : %.o : %.s
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(APP_OBJECTS_NELUA) : %.o : %.lua
+$(APP_OBJECTS_NELUA) : %.o : %.lua $(APP_NELUA_SCRIPTS)
 	$(NELUA) -B $(NELUA_FLAGS) --cc $(CC) --cflags="$(CFLAGS)" -o $@ $<
 
 $(APP_MAIN_OBJECT) : $(APP_MAIN_SOURCE)

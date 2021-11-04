@@ -1,6 +1,13 @@
 ## cinclude "game/game.h"
 
+global MAX_BOARD_SIZE: cint <cimport,nodecl>
+global NUM_TEAMS: cint <cimport,nodecl>
+global TEAM_MAX_PAWNS: cint <cimport,nodecl>
+global NUM_UNIT_CLASSES: cint <cimport,nodecl>
+
 global CSTR: type = @cstring
+
+-- note: these are all based on comptime values, need to keep in sync with game.h
 global VPos: type <cimport,nodecl> = @record{
   x: cuchar,
   y: cuchar
@@ -9,15 +16,6 @@ global VPos16: type <cimport,nodecl> = @record{
   x: cshort,
   y: cshort
 }
-global function vpos_zero(): VPos <cimport,nodecl> end
-global function vpos_one(): VPos <cimport,nodecl> end
-global function vpos_add(p1: VPos, p2: VPos): VPos <cimport,nodecl> end
-global function vpos16_from_vpos(p1: VPos): VPos16 <cimport,nodecl> end
-global function vpos_from_vpos16(p1: VPos16): VPos <cimport,nodecl> end
-global function vpos16_zero(): VPos16 <cimport,nodecl> end
-global function vpos16_one(): VPos16 <cimport,nodecl> end
-global function vpos16_add(p1: VPos16, p2: VPos16): VPos16 <cimport,nodecl> end
-global function vpos16_neg(p1: VPos16): VPos16 <cimport,nodecl> end
 global Terrain: type <cimport,nodecl,using> = @enum(cint){
   TERRAIN_GROUND = 0,
   TERRAIN_BLOCKED = 1
@@ -94,8 +92,17 @@ global QueuedMove: type <cimport,nodecl> = @record{
   start_pos: VPos16,
   end_pos: VPos16
 }
+
+
 global game_state: GameState <cimport,nodecl>
 global game_data: GameColdData <cimport,nodecl>
+
+-- local function BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
+global function LPAWN_GID(team: cint, pawn: cint) return ((team)*TEAM_MAX_PAWNS + (pawn)) end
+-- #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
+-- #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
+-- #define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
+
 global function game_clear_state(): void <cimport,nodecl> end
 global function game_load_cold_data(): void <cimport,nodecl> end
 global function game_init(): void <cimport,nodecl> end

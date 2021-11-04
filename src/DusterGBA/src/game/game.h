@@ -160,4 +160,4 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level);
 BOOL game_load_gamemap(void* data, u32 len);
 
 // lua code binding
-int32_t game_gs_ai_plan_moves(int32_t team_id, QueuedMove* move_buf, int32_t move_buf_len);
+int game_gs_ai_plan_moves(int team_id, QueuedMove* move_buf, int move_buf_len);

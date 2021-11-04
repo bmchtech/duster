@@ -94,18 +94,10 @@ void boardscn_start() {
 
     // queued moves
     memset(movequeue_queue, 0, sizeof(movequeue_queue));
-    movequeue_queue[0] =
-        (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 0), .start_pos = {1, 1}, .end_pos = {8, 8}};
-    movequeue_queue[1] =
-        (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 1), .start_pos = {2, 2}, .end_pos = {9, 8}};
-    movequeue_queue[2] =
-        (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 2), .start_pos = {3, 3}, .end_pos = {10, 8}};
-    movequeue_length = 3;
+    int num_moves_planned = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);
+    mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+    movequeue_length = num_moves_planned;
     movequeue_progress = -1; // indicates ready movequeue
-
-    // test planning moves
-    int32_t val = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);
-    mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", val);
 
     // define sfx
     mm_sound_effect chime;

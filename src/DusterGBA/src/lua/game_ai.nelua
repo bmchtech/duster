@@ -1,11 +1,17 @@
-require 'dusk'
-require 'duster'
+require 'ldusk'
+require 'lduster'
 
-global function ai_plan_moves(team_id: int32, move_buf: *QueuedMove, move_buf_len: int32): int32
+global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len: cint): cint
     -- plan moves for a particular team
 
+    local moves_ptr: *[0]QueuedMove
+    moves_ptr = move_buf
+
     -- for now, fill it up with placeholder moves
+    moves_ptr[0] = {type = QUEUEDMOVE_MOVE, pawn0 = LPAWN_GID(0, 0), start_pos = (@VPos16){1, 1}, end_pos = (@VPos16){8, 8}}
+    moves_ptr[1] = {type = QUEUEDMOVE_MOVE, pawn0 = LPAWN_GID(0, 1), start_pos = (@VPos16){1, 1}, end_pos = (@VPos16){9, 8}}
+    moves_ptr[2] = {type = QUEUEDMOVE_MOVE, pawn0 = LPAWN_GID(0, 2), start_pos = (@VPos16){1, 1}, end_pos = (@VPos16){10, 8}}
 
     -- return how many moves were planned
-    return 1
+    return 3
 end
