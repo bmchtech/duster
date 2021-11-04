@@ -2,6 +2,7 @@
 
 #include <tonc_types.h>
 #include "vpos.h"
+#include <stdint.h>
 
 #define MAX_BOARD_SIZE 64
 #define NUM_TEAMS 4
@@ -155,3 +156,5 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level);
 
 // MAP
 BOOL game_load_gamemap(void* data, u32 len);
+
+int32_t game_gs_ai_plan_moves(int32_t team_id, QueuedMove* move_buf, int32_t move_buf_len);

@@ -83,6 +83,17 @@ global HostileUnitDuel: type <cimport,nodecl> = @record{
   main_dmg: cint,
   counter_dmg: cint
 }
+global QueuedMoveType: type <cimport,nodecl,using> = @enum(cint){
+  QUEUEDMOVE_MOVE = 0,
+  QUEUEDMOVE_INTERACT = 1
+}
+global QueuedMove: type <cimport,nodecl> = @record{
+  type: QueuedMoveType,
+  pawn0: cshort,
+  pawn1: cshort,
+  start_pos: VPos16,
+  end_pos: VPos16
+}
 global game_state: GameState <cimport,nodecl>
 global game_data: GameColdData <cimport,nodecl>
 global function game_clear_state(): void <cimport,nodecl> end
