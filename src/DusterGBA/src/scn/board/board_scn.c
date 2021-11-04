@@ -94,15 +94,14 @@ void boardscn_start() {
 
     // queued moves
     memset(movequeue_queue, 0, sizeof(movequeue_queue));
-    memset(&movequeue_queue[0], 0, sizeof(QueuedMove)); // leave a blank
-    movequeue_queue[1] =
+    movequeue_queue[0] =
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 0), .start_pos = {1, 1}, .end_pos = {8, 8}};
-    movequeue_queue[2] =
+    movequeue_queue[1] =
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 1), .start_pos = {2, 2}, .end_pos = {9, 8}};
-    movequeue_queue[3] =
+    movequeue_queue[2] =
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 2), .start_pos = {3, 3}, .end_pos = {10, 8}};
-    movequeue_length = 1 + 3; // blank plus items
-    movequeue_progress = 0;
+    movequeue_length = 3;
+    movequeue_progress = -1; // indicates ready movequeue
 
     // test planning moves
     int32_t val = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);

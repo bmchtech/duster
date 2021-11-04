@@ -165,8 +165,30 @@ void update_pawn_tweens() {
     update_pawn_flash_tween();
 }
 
+void run_queued_move(QueuedMove* move) {
+    switch (move->type) {
+        case QUEUEDMOVE_MOVE:
+            animate_pawn_move(move->pawn0, move->start_pos, move->end_pos);
+            break;
+        case QUEUEDMOVE_INTERACT:
+            animate_pawn_move(move->pawn0, move->start_pos, move->end_pos);
+            animate_pawn_flash(move->pawn1, move->pawn0,
+                               pawn_util_on_same_team(move->pawn1, move->pawn0));
+            break;
+        default:
+            break;
+        }
+}
+
 int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
     int curr_step = progress;
+
+    // start initial move
+    if (curr_step == -1) {
+        run_queued_move(&moves[0]);
+        curr_step = 0;
+    }
+
     QueuedMove* curr_move = &moves[curr_step];
 
     // check if last one is done
@@ -188,20 +210,8 @@ int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
         }
 
         // start the next
-        QueuedMove* next_move = &moves[curr_step];
-
-        switch (next_move->type) {
-        case QUEUEDMOVE_MOVE:
-            animate_pawn_move(next_move->pawn0, next_move->start_pos, next_move->end_pos);
-            break;
-        case QUEUEDMOVE_INTERACT:
-            animate_pawn_move(next_move->pawn0, next_move->start_pos, next_move->end_pos);
-            animate_pawn_flash(next_move->pawn1, next_move->pawn0,
-                               pawn_util_on_same_team(next_move->pawn1, next_move->pawn0));
-            break;
-        default:
-            break;
-        }
+        QueuedMove* move = &moves[curr_step];
+        run_queued_move(move);        
     }
 
     // we are not at end
