@@ -97,11 +97,11 @@ global QueuedMove: type <cimport,nodecl> = @record{
 global game_state: GameState <cimport,nodecl>
 global game_data: GameColdData <cimport,nodecl>
 
--- local function BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
+global function LBOARD_POS(x, y) return ((y)*MAX_BOARD_SIZE + (x)) end
 global function LPAWN_GID(team: cint, pawn: cint) return ((team)*TEAM_MAX_PAWNS + (pawn)) end
--- #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
--- #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
--- #define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
+global function LPAWN_WHICH_TEAM(gid) return ((gid) / TEAM_MAX_PAWNS) end
+global function LPAWN_NUM_IN_TEAM(gid) return ((gid) % TEAM_MAX_PAWNS) end
+global function LPOS_TO_TID(pos) return (LBOARD_POS((pos).x, (pos).y)) end
 
 global function game_clear_state(): void <cimport,nodecl> end
 global function game_load_cold_data(): void <cimport,nodecl> end

@@ -32,6 +32,7 @@ int movequeue_length = 0;
 QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
 int movequeue_progress = 0;
 int movequeue_delay_timer = 0;
+int ai_played_move = -1;
 
 void boardscn_start() {
     // init
@@ -91,13 +92,6 @@ void boardscn_start() {
     pawn2sprite_conf.hash = GENERAL_HASH;
     pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
-
-    // queued moves
-    memset(movequeue_queue, 0, sizeof(movequeue_queue));
-    int num_moves_planned = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);
-    mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
-    movequeue_length = num_moves_planned;
-    movequeue_progress = -1; // indicates ready movequeue
 
     // define sfx
     mm_sound_effect chime;
@@ -160,6 +154,30 @@ void boardscn_input() {
     }
 }
 
+void update_ai_moveplay() {
+    // play ai moves
+    if (ai_played_move < game_state.turns) {
+        // mark this turn as played
+        ai_played_move = game_state.turns;
+
+        // now check whose move it is
+        int whose_move = game_util_whose_turn();
+
+        // if it is the ai's turn, ask the ai to plan moves
+        if (whose_move != -1) {
+            // initialize the move queue
+            memset(movequeue_queue, 0, sizeof(movequeue_queue));
+            // call the planner to plan moves for this team
+            int num_moves_planned = game_gs_ai_plan_moves(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+            // log planned moves
+            mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+            // set variables for move queue
+            movequeue_length = num_moves_planned;
+            movequeue_progress = -1; // indicates ready movequeue
+        }
+    }
+}
+
 void boardscn_update() {
     dusk_frame();
 
@@ -182,6 +200,9 @@ void boardscn_update() {
 
         // tween updates are last
         update_pawn_tweens();
+
+        // update ai move play
+        update_ai_moveplay();
 
         // step queued
         update_queued_moves();
