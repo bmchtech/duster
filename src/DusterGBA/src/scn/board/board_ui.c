@@ -1,23 +1,28 @@
 #include "board_scn.h"
 
+// get the pawn under the cursor
 Pawn* get_cursor_pawn() {
     if (!cursor_shown)
         return NULL;
     return board_get_pawn(BOARD_POS(cursor_pos.x, cursor_pos.y));
 }
 
+// get the gid of the pawn that is currently selected
 pawn_gid_t get_clicked_pawn_gid() {
     if (!cursor_click)
         return -1;
     return board_get_tile(BOARD_POS(cursor_click_pos.x, cursor_click_pos.y))->pawn_gid;
 }
 
+
+// get the pawn that is currently selected
 Pawn* get_clicked_pawn() {
     if (!cursor_click)
         return NULL;
     return board_get_pawn(BOARD_POS(cursor_click_pos.x, cursor_click_pos.y));
 }
 
+// logic for when the clicked cursor is used to move a pawn
 void on_cursor_click_move(VPos16 dest_pos) {
     // get the already selected pawn
     int sel_pawn_gid = get_clicked_pawn_gid();
@@ -89,7 +94,7 @@ void on_cursor_click_move(VPos16 dest_pos) {
 
         if (interact_itmdt_tid > 0) {
             // we have a valid intermediate
-            VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(interact_itmdt_tid);
+            VPos16 interact_itmdt_pos = board_util_tid_to_pos(interact_itmdt_tid);
 
             // move our pawn to the intermediate
             animate_pawn_move(sel_pawn_gid, cursor_click_pos, interact_itmdt_pos);

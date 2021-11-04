@@ -27,4 +27,4 @@ to check the `GAME_VERSION` of a built rom, run: `strings Duster.gba | grep '$DU
 
 ## preview
 
-<img src="media/test6_retro.webp" width="512">
+<img src="https://raw.githubusercontent.com/wiki/redthing1/duster/duster_test14.webp" width="512">

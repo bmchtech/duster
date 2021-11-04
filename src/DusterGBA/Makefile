@@ -5,8 +5,9 @@ TITLE		:= Duster
 #  Project settings
 
 NAME		:= $(TITLE)
-SOURCE_DIR := src
-LIB_DIR    := lib
+SOURCE_DIR 	:= src
+LIB_DIR    	:= lib
+TOOLS_DIR	:= ../tools
 DUSK_DIR   := ../../lib/dusk/src/dusk
 CCOLL_DIR   := ../../lib/ccoll
 DATA_DIR   := asset/build
@@ -19,6 +20,7 @@ AS	:= $(CROSS)as
 CC	:= $(CROSS)gcc
 LD	:= $(CROSS)gcc
 OBJCOPY	:= $(CROSS)objcopy
+NELUA	:= nelua
 
 ARCH	:= -mthumb-interwork -mthumb
 
@@ -27,8 +29,9 @@ LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/l
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
+NELUA_FLAGS := -P noentrypoint -P nogc -P nochecks --release --add-path $(SOURCE_DIR)/lua
 
-ASSET_MKFLAGS :=
+ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
 
 ifeq ($(DEBUG),1)
@@ -49,11 +52,13 @@ APP_SOURCES_C     := $(shell find $(SOURCE_DIR) -name '*.c' ! -name "*main.c"  !
 APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
-APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S)
+APP_SOURCES_NELUA := $(shell find $(SOURCE_DIR) -name '*.lua')
+APP_OBJECTS_NELUA := $(APP_SOURCES_NELUA:%.lua=%.o)
+APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_NELUA)
 
 # Build commands and dependencies
 
-.PHONY: libs assets
+.PHONY: libs assets tools
 
 build: assets libs $(NAME).gba
 
@@ -63,8 +68,18 @@ libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
 	cd $(CCOLL_DIR) && make
 
-assets:
+tools: $(TOOLS_DIR)/bin/crunch_gen $(TOOLS_DIR)/bin/duster_mapc
+
+assets: tools
 	cd asset/build && make $(ASSET_MKFLAGS)
+
+# Tools build
+$(TOOLS_DIR)/bin/crunch_gen:
+	cd $(TOOLS_DIR)/crunch && mkdir -p build && cd build && cmake .. && make && ln -rsf crunch_gen ../../bin
+$(TOOLS_DIR)/bin/duster_mapc:
+	cd $(TOOLS_DIR)/duster_mapc && dub build && ln -rsf duster_mapc ../bin
+
+# GBA ROM Build
 
 $(NAME).gba : $(NAME)-code.gba $(NAME).gbfs
 	cat $^ > $(NAME).gba
@@ -82,6 +97,9 @@ $(APP_OBJECTS_C) : %.o : %.c assets libs
 
 $(APP_OBJECTS_S) : %.o : %.s
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(APP_OBJECTS_NELUA) : %.o : %.lua
+	$(NELUA) -B $(NELUA_FLAGS) --cc $(CC) --cflags="$(CFLAGS)" -o $@ $<
 
 $(APP_MAIN_OBJECT) : $(APP_MAIN_SOURCE)
 	$(CC) $(CFLAGS) -c $< -o $@

@@ -641,9 +641,9 @@ strpool_embedded_config_t const strpool_embedded_default_config =
     /* ignore_case    = */ 0,
     /* counter_bits   = */ 32,
     /* index_bits     = */ 32,
-    /* entry_capacity = */ 128,
+    /* entry_capacity = */ 4096,
     /* block_capacity = */ 32,
-    /* block_size     = */ 4 * 1024,
+    /* block_size     = */ 256 * 1024,
     /* min_length     = */ 23,
     };
 
@@ -2899,3 +2899,4 @@ void cute_tiled_free_external_tileset(cute_tiled_tileset_t* tileset)
 	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	------------------------------------------------------------------------------
 */
+

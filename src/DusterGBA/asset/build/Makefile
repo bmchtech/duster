@@ -1,5 +1,7 @@
 .PHONY: clean atlas
 
+TOOLS_DIR ?= ../../../tools
+
 IMGS_DIR := ../img
 MAPS_DIR := ../map
 RAWMAPS_DIR := ../rawmap
@@ -53,7 +55,7 @@ include custom.mk
 # rule for building atlas pngs from sprite dirs
 # build a_thing_
 a_%_: ../img/%
-	crunch_gen "$@" "$<" $(CRUNCH_FLAGS)
+	$(TOOLS_DIR)/bin/crunch_gen "$@" "$<" $(CRUNCH_FLAGS)
 # convert a_thing_ to a_thing_0.png (fake recipe)
 $(ATLS_PNG): $(ATLS_OUT)
 	@true
@@ -68,7 +70,7 @@ $(SOUND_BIN) $(SOUND_H): $(SOUND_SRC)
 
 # rule for building game maps
 %.gmp.bin: $(GAMEMAPS_DIR)/%.json
-	cp $< $@
+	$(TOOLS_DIR)/bin/duster_mapc $< $@
 
 # debug:
 #     $(foreach var,$(.VARIABLES),$(info $(var) = $($(var))))

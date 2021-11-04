@@ -1,4 +1,6 @@
 #include "board_scn.h"
+#include "soundbank.h"
+#include "maxmod.h"
 
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
@@ -100,6 +102,16 @@ void boardscn_start() {
         (QueuedMove){.type = QUEUEDMOVE_MOVE, .pawn0 = PAWN_GID(0, 2), .start_pos = {3, 3}, .end_pos = {10, 8}};
     movequeue_length = 1 + 3; // blank plus items
     movequeue_progress = 0;
+
+    // define sfx
+    mm_sound_effect chime;
+    chime.handle = 0;
+    chime.id = SFX_OBEP2;
+    chime.rate = (int)(1.0f * (1 << 10));
+    chime.volume = 255;
+    chime.panning = 128;
+    // play sound effect
+    mmEffectEx(&chime);
 }
 
 void set_ui_dirty() {
