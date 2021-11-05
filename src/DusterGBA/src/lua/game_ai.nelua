@@ -16,7 +16,7 @@ local function ai_scan_pawns(team_id: cint): vector(cshort)
         local pawn_gid = LPAWN_GID(team_id, pawn_ix)
         local pawn: *Pawn = game_get_pawn_by_gid(pawn_gid)
 
-        if pawn.alive then
+        if pawn.alive > 0 then
             my_pawns:push(pawn_gid)
         end
     end
@@ -24,7 +24,7 @@ local function ai_scan_pawns(team_id: cint): vector(cshort)
     return my_pawns
 end
 
-local function ai_can_pawn_move_to(pawn_gid: cshort, pos: VPos16, relocs: Relocs): boolean
+local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos16, relocs: Relocs): boolean
     local tile_check = false
     -- check tile, empty and walkable
     if (board_util_is_on_board(pos.x, pos.y) > 0 and board_util_is_walkable(pos.x, pos.y) > 0) then
@@ -55,8 +55,21 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, pos: VPos16, relocs: Relocs
     local range_check = false
     -- check range
     -- calculate range buffer and check
-    -- for now, skip it
-    range_check = true
+    local class_data = pawn_get_classdata(pawn_gid)
+    local cache_pos_buf_size <comptime> = 64
+    local cache_pos_buf: [cache_pos_buf_size]VPos16 = {}
+    local cache_pos_buf_ptr: *[0]VPos16 = &cache_pos_buf
+    local num_in_range = board_util_calc_rangebuf(from_pos.x, from_pos.y, class_data.move, cache_pos_buf_ptr, cache_pos_buf_size)
+    for i = 0, num_in_range - 1 do
+        local range_pos = cache_pos_buf[i]
+        -- log this tile
+        -- mgba_printf(1, "pawn %d can move to %d,%d", pawn_gid, range_pos.x, range_pos.y)
+        if (range_pos.x == pos.x and range_pos.y == pos.y) then
+            range_check = true
+            -- mgba_printf(1, "pawn %d: YES", pawn_gid)
+            break
+        end
+    end
 
     return range_check and tile_check
 end
@@ -83,7 +96,7 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
     pawn_relocs.map = {}
 
     -- move everyone forward
-    for i = 0, my_pawns.size - 1 do
+    for i = 0, #my_pawns - 1 do
         local pawn_gid = my_pawns[i]
         local pawn: *Pawn = game_get_pawn_by_gid(pawn_gid)
         local curr_tile = board_find_pawn_tile(pawn_gid)
@@ -99,7 +112,7 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
         end
 
         -- check if we can move there
-        if not ai_can_pawn_move_to(pawn_gid, dest_pos, pawn_relocs) then
+        if not ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, pawn_relocs) then
             -- can't move there
             continue
         end
