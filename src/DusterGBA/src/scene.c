@@ -3,7 +3,7 @@
 #include "tonc.h"
 #include "scene.h"
 #include "wasm3.h"
-#include "bean.h"
+#include "wasm_host.h"
 
 Sprite* bean;
 const int FADE_LENGTH = 60; // fade length in frames
