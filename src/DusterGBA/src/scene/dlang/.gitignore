@@ -14,3 +14,6 @@ dlang_test_wasm-test-*
 *.obj
 *.lst
 *.wasm
+
+# Un-ignore D source files
+!*.d
