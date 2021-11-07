@@ -96,3 +96,10 @@ void update_queued_moves();
 
 void update_pause_ui();
 void draw_pause_ui();
+
+void boardscn_sfx_play_startchime();
+void boardscn_sfx_play_scroll();
+void boardscn_sfx_play_click();
+void boardscn_sfx_play_interact();
+void boardscn_sfx_play_move();
+void boardscn_sfx_play_cant();
