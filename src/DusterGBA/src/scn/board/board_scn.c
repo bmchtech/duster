@@ -26,7 +26,7 @@ BOOL pausemenu_dirty = TRUE;
 int board_scroll_x = 0;
 int board_scroll_y = 0;
 int sidebar_page = 0;
-int movequeue_length = -1;
+int movequeue_length = 0;
 QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
 int movequeue_progress = -1;
 int movequeue_delay_timer = 0;
