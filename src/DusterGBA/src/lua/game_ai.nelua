@@ -38,7 +38,7 @@ local function ai_destroy_range_data(range_data_ptr: *[range_data_max_size]VPos1
     default_allocator:delete(range_data_ptr)
 end
 
-local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos16, relocs: Relocs): boolean
+local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos16, relocs: Relocs, range_data_ptr: *[range_data_max_size]VPos16, num_in_range: cint): boolean
     local tile_check = false
     -- check tile, empty and walkable
     if (board_util_is_on_board(pos.x, pos.y) > 0 and board_util_is_walkable(pos.x, pos.y) > 0) then
@@ -67,11 +67,7 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
     end
 
     local range_check = false
-    -- check range
-    local class_data = pawn_get_classdata(pawn_gid)
-    -- calculate range buffer and check that dest pos is in range
-    local range_data_ptr, num_in_range = ai_get_range_data(from_pos, class_data.move)
-    
+    -- check range    
     for i = 0, num_in_range - 1 do
         local range_pos = range_data_ptr[i]
         if (range_pos.x == pos.x and range_pos.y == pos.y) then
@@ -80,16 +76,12 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
         end
     end
 
-    -- clean up range data
-    ai_destroy_range_data(range_data_ptr)
-
     return range_check and tile_check
 end
 
 -- get the closest tile in range to the destination
-local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, relocs: Relocs): VPos16
+local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, relocs: Relocs, range_data_ptr: *[range_data_max_size]VPos16, num_in_range: cint): VPos16
     local class_data = pawn_get_classdata(pawn_gid)
-    local range_data_ptr, num_in_range = ai_get_range_data(from_pos, class_data.move)
 
     -- find the closest tile in range
     local closest_tile = from_pos
@@ -99,7 +91,7 @@ local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, 
         local dist = board_dist(range_pos.x, range_pos.y, to_pos.x, to_pos.y)
 
         -- ensure that we are able to move there
-        if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, relocs) then
+        if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, relocs, range_data_ptr, num_in_range) then
             continue
         end
 
@@ -108,9 +100,6 @@ local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, 
             closest_dist = dist
         end
     end
-
-    -- clean up range data
-    ai_destroy_range_data(range_data_ptr)
 
     return closest_tile
 end
@@ -152,15 +141,24 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
         
         local enemy_target_ix = blackboard[bb_base + 0]
         local enemy_target = enemy_pawns[enemy_target_ix]
+
+        -- calc range data
+        local class_data = pawn_get_classdata(pawn_gid)
+        local range_data_ptr, num_in_range = ai_get_range_data(curr_tile_pos, class_data.move)
+
+        -- set range data to be cleaned up
+        defer
+            ai_destroy_range_data(range_data_ptr)
+        end
         
         -- plan a move towards the enemy target
         local enemy_target_tile = board_find_pawn_tile(enemy_target)
         local enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile)
-        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, pawn_relocs)
+        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, pawn_relocs, range_data_ptr, num_in_range)
         dest_pos = pos_closer_to_enemy
 
         -- check if we can move there
-        if not ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, pawn_relocs) then
+        if not ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, pawn_relocs, range_data_ptr, num_in_range) then
             -- can't move there
             continue
         end
