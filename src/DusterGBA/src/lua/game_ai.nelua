@@ -8,6 +8,11 @@ local range_data_max_size <comptime> = 128
 local Relocs = @record{
     map: hashmap(VPos16, cshort)
 }
+local PawnMoveCache = @record{
+    relocs: *Relocs,
+    range_data: *[range_data_max_size]VPos16,
+    range_data_count: cint
+}
 
 -- make a list of all available pawns on this team
 local function ai_scan_pawns(team_id: cint): vector(cshort)
@@ -28,27 +33,27 @@ local function ai_scan_pawns(team_id: cint): vector(cshort)
 end
 
 local function ai_get_range_data(pos: VPos16, move: cint)
-    local range_data_ptr: *[range_data_max_size]VPos16 = default_allocator:new(@[range_data_max_size]VPos16)
-    local num_in_range = board_util_calc_rangebuf(pos.x, pos.y, move, range_data_ptr, range_data_max_size)
+    local range_data: *[range_data_max_size]VPos16 = default_allocator:new(@[range_data_max_size]VPos16)
+    local range_data_count = board_util_calc_rangebuf(pos.x, pos.y, move, range_data, range_data_max_size)
 
-    return range_data_ptr, num_in_range
+    return range_data, range_data_count
 end
 
-local function ai_destroy_range_data(range_data_ptr: *[range_data_max_size]VPos16)
-    default_allocator:delete(range_data_ptr)
+local function ai_destroy_range_data(range_data: *[range_data_max_size]VPos16)
+    default_allocator:delete(range_data)
 end
 
-local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos16, relocs: Relocs, range_data_ptr: *[range_data_max_size]VPos16, num_in_range: cint): boolean
+local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos16, move_cache: PawnMoveCache): boolean
     local tile_check = false
     -- check tile, empty and walkable
     if (board_util_is_on_board(pos.x, pos.y) > 0 and board_util_is_walkable(pos.x, pos.y) > 0) then
         -- valid tile, check if occupied
         local is_occupied_before = board_get_pawn(LBOARD_POS(pos.x, pos.y)) ~= nilptr
-        local is_reloc = relocs.map:peek(pos) ~= nilptr
+        local is_reloc = move_cache.relocs.map:peek(pos) ~= nilptr
 
         -- double check using relocs to see if pawn is already planned to move there
         if is_reloc then
-            local reloc_pawn_gid: cshort = relocs.map[pos]
+            local reloc_pawn_gid: cshort = move_cache.relocs.map[pos]
             mgba_printf(1, "pawn %d is already planned to move to %d,%d", reloc_pawn_gid, pos.x, pos.y)
             if ((not is_occupied_before) and reloc_pawn_gid >= 0) then
                 -- someone else is already there
@@ -68,8 +73,8 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
 
     local range_check = false
     -- check range    
-    for i = 0, num_in_range - 1 do
-        local range_pos = range_data_ptr[i]
+    for i = 0, move_cache.range_data_count - 1 do
+        local range_pos = ($move_cache.range_data)[i]
         if (range_pos.x == pos.x and range_pos.y == pos.y) then
             range_check = true
             break
@@ -80,18 +85,18 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
 end
 
 -- get the closest tile in range to the destination
-local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, relocs: Relocs, range_data_ptr: *[range_data_max_size]VPos16, num_in_range: cint): VPos16
+local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, move_cache: PawnMoveCache): VPos16
     local class_data = pawn_get_classdata(pawn_gid)
 
     -- find the closest tile in range
     local closest_tile = from_pos
     local closest_dist = 999999
-    for i = 0, num_in_range - 1 do
-        local range_pos = range_data_ptr[i]
+    for i = 0, move_cache.range_data_count - 1 do
+        local range_pos = ($move_cache.range_data)[i]
         local dist = board_dist(range_pos.x, range_pos.y, to_pos.x, to_pos.y)
 
         -- ensure that we are able to move there
-        if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, relocs, range_data_ptr, num_in_range) then
+        if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, move_cache) then
             continue
         end
 
@@ -144,21 +149,26 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
 
         -- calc range data
         local class_data = pawn_get_classdata(pawn_gid)
-        local range_data_ptr, num_in_range = ai_get_range_data(curr_tile_pos, class_data.move)
+        local range_data, range_data_count = ai_get_range_data(curr_tile_pos, class_data.move)
+        local move_cache: PawnMoveCache = {
+            relocs = &pawn_relocs,
+            range_data = range_data,
+            range_data_count = range_data_count
+        }
 
         -- set range data to be cleaned up
         defer
-            ai_destroy_range_data(range_data_ptr)
+            ai_destroy_range_data(range_data)
         end
         
         -- plan a move towards the enemy target
         local enemy_target_tile = board_find_pawn_tile(enemy_target)
         local enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile)
-        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, pawn_relocs, range_data_ptr, num_in_range)
+        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, move_cache)
         dest_pos = pos_closer_to_enemy
 
         -- check if we can move there
-        if not ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, pawn_relocs, range_data_ptr, num_in_range) then
+        if not ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, move_cache) then
             -- can't move there
             continue
         end
