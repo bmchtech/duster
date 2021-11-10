@@ -137,5 +137,6 @@ global function game_util_is_my_turn(pawn_gid: cshort): cuchar <cimport,nodecl> 
 global function game_util_whose_turn(): cint <cimport,nodecl> end
 global function pawn_util_moved_this_turn(pawn: *Pawn): cuchar <cimport,nodecl> end
 global function pawn_util_calc_stats(class_data: *ClassData, level: cint): UnitDataStats <cimport,nodecl> end
+global function game_util_randint(): cint <cimport,nodecl> end
 global function game_load_gamemap(data: pointer, len: cuint): cuchar <cimport,nodecl> end
 

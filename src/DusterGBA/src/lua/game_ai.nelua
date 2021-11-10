@@ -54,7 +54,7 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
         -- double check using relocs to see if pawn is already planned to move there
         if is_reloc then
             local reloc_pawn_gid: cshort = move_cache.relocs.map[pos]
-            mgba_printf(1, "pawn %d is already planned to move to %d,%d", reloc_pawn_gid, pos.x, pos.y)
+            -- mgba_printf(1, "pawn %d is already planned to move to %d,%d", reloc_pawn_gid, pos.x, pos.y)
             if ((not is_occupied_before) and reloc_pawn_gid >= 0) then
                 -- someone else is already there
                 tile_check = false
@@ -115,8 +115,6 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
 
     -- pick blackboard base slot based on team id
     local bb_base = team_id * 1024
-    -- set first blackboard slot
-    blackboard[bb_base + 0] = 0
 
     local moves: *[0]QueuedMove = move_buf
     local move_ix = 0
@@ -129,6 +127,21 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
     -- map of locations and their future pawns
     local pawn_relocs: Relocs
     pawn_relocs.map = {}
+
+    -- mgba_printf(1, "random int: %d", game_util_randint())
+
+    -- make plan, assigning random targets to each pawn
+    if blackboard[bb_base + 0] == 0 then
+        -- set first blackboard slot as plan set flag
+        blackboard[bb_base + 0] = 1
+
+        -- pick random target for each pawn
+        for i = 0, #my_pawns - 1 do
+            local rand = game_util_randint() >> 16
+            local target_enemy_pawn: cint = rand % (#enemy_pawns)
+            blackboard[bb_base + i + 1] = target_enemy_pawn
+        end    
+    end
 
     -- move everyone forward
     for i = 0, #my_pawns - 1 do
@@ -144,7 +157,8 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
             break
         end
         
-        local enemy_target_ix = blackboard[bb_base + 0]
+        -- get assigned target
+        local enemy_target_ix = blackboard[bb_base + i + 1]
         local enemy_target = enemy_pawns[enemy_target_ix]
 
         -- calc range data
@@ -177,7 +191,7 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
         moves[move_ix] = {type = QUEUEDMOVE_MOVE, pawn0 = pawn_gid, start_pos = curr_tile_pos, end_pos = dest_pos}
 
         -- log that we are moving to this tile
-        mgba_printf(1, "pawn %d is moving to %d,%d", pawn_gid, dest_pos.x, dest_pos.y)
+        -- mgba_printf(1, "pawn %d is moving to %d,%d", pawn_gid, dest_pos.x, dest_pos.y)
 
         -- update relocs, setting previously occupied tile and new tile
         pawn_relocs.map[curr_tile_pos] = -1

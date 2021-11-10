@@ -39,6 +39,9 @@ void boardscn_start() {
     dusk_sprites_init();
     dusk_sprites_configure(FALSE);
 
+    // init rng
+    sqran(frame_count ^ 0xBEEF1234);
+
     // main bg
     REG_DISPCNT |= DCNT_BG0;
     REG_BG0CNT = BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb) | BG_PRIO(0);

@@ -156,6 +156,7 @@ BOOL game_util_is_my_turn(pawn_gid_t pawn_gid);
 int game_util_whose_turn();
 BOOL pawn_util_moved_this_turn(Pawn* pawn);
 UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level);
+int game_util_randint();
 
 // MAP
 BOOL game_load_gamemap(void* data, u32 len);

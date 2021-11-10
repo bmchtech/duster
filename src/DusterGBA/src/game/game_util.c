@@ -424,3 +424,14 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
 
     return calc_stats;
 }
+
+int game_util_randint() {
+    // each random call is only up to 32768
+    int r1 = qran();
+    int r2 = qran();
+    int r3 = qran();
+    int r4 = qran();
+    // we want to combine them to a single number, using masked 8 bits from each
+    int r = (r1 & 0xFF) | ((r2 & 0xFF) << 8) | ((r3 & 0xFF) << 16) | ((r4 & 0xFF) << 24);
+    return r;
+}
