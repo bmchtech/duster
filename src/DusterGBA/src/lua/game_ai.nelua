@@ -84,29 +84,55 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
     return range_check and tile_check
 end
 
+local ProximityType = @enum{
+    NEAR = 0,
+    FAR
+}
+
 -- get the closest tile in range to the destination
-local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, move_cache: PawnMoveCache): VPos16
+local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, move_cache: PawnMoveCache, proximity_type: ProximityType): VPos16
     local class_data = pawn_get_classdata(pawn_gid)
 
     -- find the closest tile in range
-    local closest_tile = from_pos
-    local closest_dist = 999999
-    for i = 0, move_cache.range_data_count - 1 do
-        local range_pos = ($move_cache.range_data)[i]
-        local dist = board_dist(range_pos.x, range_pos.y, to_pos.x, to_pos.y)
+    local target_tile = from_pos
 
-        -- ensure that we are able to move there
-        if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, move_cache) then
-            continue
-        end
+    switch proximity_type
+    case ProximityType.NEAR then
+        local target_dist = 999999
+        for i = 0, move_cache.range_data_count - 1 do
+            local range_pos = ($move_cache.range_data)[i]
+            local dist = board_dist(range_pos.x, range_pos.y, to_pos.x, to_pos.y)
 
-        if dist < closest_dist then
-            closest_tile = range_pos
-            closest_dist = dist
+            -- ensure that we are able to move there
+            if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, move_cache) then
+                continue
+            end
+
+            if dist < target_dist then
+                target_tile = range_pos
+                target_dist = dist
+            end
         end
+    case ProximityType.FAR then
+        local target_dist = 0
+        for i = 0, move_cache.range_data_count - 1 do
+            local range_pos = ($move_cache.range_data)[i]
+            local dist = board_dist(range_pos.x, range_pos.y, to_pos.x, to_pos.y)
+
+            -- ensure that we are able to move there
+            if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, move_cache) then
+                continue
+            end
+
+            if dist > target_dist then
+                target_tile = range_pos
+                target_dist = dist
+            end
+        end
+    else
     end
 
-    return closest_tile
+    return target_tile
 end
 
 global function ai_plan_moves_variant_1(team_id: cint, move_buf: *QueuedMove, move_buf_len: cint): cint
@@ -177,7 +203,7 @@ global function ai_plan_moves_variant_1(team_id: cint, move_buf: *QueuedMove, mo
         -- plan a move towards the enemy target
         local enemy_target_tile = board_find_pawn_tile(enemy_target)
         local enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile)
-        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, move_cache)
+        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, move_cache, ProximityType.FAR)
         dest_pos = pos_closer_to_enemy
 
         -- check if we can move there
@@ -200,7 +226,7 @@ global function ai_plan_moves_variant_1(team_id: cint, move_buf: *QueuedMove, mo
         move_ix = move_ix + 1
     end
 
-    -- clean up
+    -- clean up 
     my_pawns:destroy()
     enemy_pawns:destroy()
     pawn_relocs.map:destroy()
@@ -277,7 +303,7 @@ global function ai_plan_moves_variant_2(team_id: cint, move_buf: *QueuedMove, mo
         -- plan a move towards the enemy target
         local enemy_target_tile = board_find_pawn_tile(enemy_target)
         local enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile)
-        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, move_cache)
+        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, move_cache, ProximityType.NEAR)
         dest_pos = pos_closer_to_enemy
 
         -- check if we can move there
