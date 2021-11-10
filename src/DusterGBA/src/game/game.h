@@ -162,4 +162,5 @@ int game_util_randint();
 BOOL game_load_gamemap(void* data, u32 len);
 
 // lua code binding
-int game_gs_ai_plan_moves(int team_id, QueuedMove* move_buf, int move_buf_len);
+int game_gs_ai_plan_moves_variant_1(int team_id, QueuedMove* move_buf, int move_buf_len);
+int game_gs_ai_plan_moves_variant_2(int team_id, QueuedMove* move_buf, int move_buf_len);

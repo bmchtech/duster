@@ -173,8 +173,16 @@ void update_ai_moveplay() {
     if (whose_move != human_player_team) {
         // initialize the move queue
         memset(movequeue_queue, 0, sizeof(movequeue_queue));
+
         // call the planner to plan moves for this team
-        int num_moves_planned = game_gs_ai_plan_moves(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        int num_moves_planned = 0;
+        if (whose_move == 0) {
+            num_moves_planned = game_gs_ai_plan_moves_variant_1(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        }
+        if (whose_move == 1) {
+            num_moves_planned = game_gs_ai_plan_moves_variant_2(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        }
+
         // log planned moves
         mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
         // set variables for move queue
