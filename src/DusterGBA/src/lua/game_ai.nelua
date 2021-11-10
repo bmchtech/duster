@@ -4,7 +4,7 @@ require 'vector'
 require 'hashmap'
 require 'allocators.general'
 
-local range_data_max_size <comptime> = 64
+local range_data_max_size <comptime> = 128
 local Relocs = @record{
     map: hashmap(VPos16, cshort)
 }
@@ -86,14 +86,43 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
     return range_check and tile_check
 end
 
+-- get the closest tile in range to the destination
+local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, relocs: Relocs): VPos16
+    local class_data = pawn_get_classdata(pawn_gid)
+    local range_data_ptr, num_in_range = ai_get_range_data(from_pos, class_data.move)
+
+    -- find the closest tile in range
+    local closest_tile = from_pos
+    local closest_dist = 999999
+    for i = 0, num_in_range - 1 do
+        local range_pos = range_data_ptr[i]
+        local dist = board_dist(range_pos.x, range_pos.y, to_pos.x, to_pos.y)
+
+        -- ensure that we are able to move there
+        if not ai_can_pawn_move_to(pawn_gid, from_pos, range_pos, relocs) then
+            continue
+        end
+
+        if dist < closest_dist then
+            closest_tile = range_pos
+            closest_dist = dist
+        end
+    end
+
+    -- clean up range data
+    ai_destroy_range_data(range_data_ptr)
+
+    return closest_tile
+end
+
 -- plan moves for a particular team
 global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len: cint): cint
     local blackboard: *[0]cuchar = &game_ai_blackboard
 
     -- pick blackboard base slot based on team id
     local bb_base = team_id * 1024
-    -- use blackboard slot as counter
-    blackboard[bb_base + 0] = blackboard[bb_base + 0] + 1
+    -- set first blackboard slot
+    blackboard[bb_base + 0] = 0
 
     local moves: *[0]QueuedMove = move_buf
     local move_ix = 0
@@ -116,12 +145,19 @@ global function ai_plan_moves(team_id: cint, move_buf: *QueuedMove, move_buf_len
 
         local dest_pos = curr_tile_pos
 
-        -- alternate march y direction using counter
-        if (blackboard[bb_base + 0] % 2 == 0) then
-            dest_pos.y = dest_pos.y + 1
-        else
-            dest_pos.y = dest_pos.y - 1
+        -- ensure there are enemy pawns available
+        if #enemy_pawns <= 0 then
+            break
         end
+        
+        local enemy_target_ix = blackboard[bb_base + 0]
+        local enemy_target = enemy_pawns[enemy_target_ix]
+        
+        -- plan a move towards the enemy target
+        local enemy_target_tile = board_find_pawn_tile(enemy_target)
+        local enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile)
+        local pos_closer_to_enemy = ai_get_closest_tile_in_range(pawn_gid, curr_tile_pos, enemy_target_tile_pos, pawn_relocs)
+        dest_pos = pos_closer_to_enemy
 
         -- check if we can move there
         if not ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, pawn_relocs) then
