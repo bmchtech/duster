@@ -2,7 +2,9 @@ require 'ldusk'
 require 'lduster'
 require 'vector'
 require 'hashmap'
+require 'allocators.general'
 
+local range_data_max_size <comptime> = 64
 local Relocs = @record{
     map: hashmap(VPos16, cshort)
 }
@@ -11,7 +13,8 @@ local Relocs = @record{
 local function ai_scan_pawns(team_id: cint): vector(cshort)
     local my_pawns: vector(cshort) = {}
 
-    -- scan all pawns
+    -- scan through all pawn slots
+    -- add all that are alive to a list
     for pawn_ix = 0, TEAM_MAX_PAWNS - 1 do
         local pawn_gid = LPAWN_GID(team_id, pawn_ix)
         local pawn: *Pawn = game_get_pawn_by_gid(pawn_gid)
@@ -22,6 +25,17 @@ local function ai_scan_pawns(team_id: cint): vector(cshort)
     end
 
     return my_pawns
+end
+
+local function ai_get_range_data(pos: VPos16, move: cint)
+    local range_data_ptr: *[range_data_max_size]VPos16 = default_allocator:new(@[range_data_max_size]VPos16)
+    local num_in_range = board_util_calc_rangebuf(pos.x, pos.y, move, range_data_ptr, range_data_max_size)
+
+    return range_data_ptr, num_in_range
+end
+
+local function ai_destroy_range_data(range_data_ptr: *[range_data_max_size]VPos16)
+    default_allocator:delete(range_data_ptr)
 end
 
 local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos16, relocs: Relocs): boolean
@@ -54,22 +68,20 @@ local function ai_can_pawn_move_to(pawn_gid: cshort, from_pos: VPos16, pos: VPos
 
     local range_check = false
     -- check range
-    -- calculate range buffer and check
     local class_data = pawn_get_classdata(pawn_gid)
-    local cache_pos_buf_size <comptime> = 64
-    local cache_pos_buf: [cache_pos_buf_size]VPos16 = {}
-    local cache_pos_buf_ptr: *[0]VPos16 = &cache_pos_buf
-    local num_in_range = board_util_calc_rangebuf(from_pos.x, from_pos.y, class_data.move, cache_pos_buf_ptr, cache_pos_buf_size)
+    -- calculate range buffer and check that dest pos is in range
+    local range_data_ptr, num_in_range = ai_get_range_data(from_pos, class_data.move)
+    
     for i = 0, num_in_range - 1 do
-        local range_pos = cache_pos_buf[i]
-        -- log this tile
-        -- mgba_printf(1, "pawn %d can move to %d,%d", pawn_gid, range_pos.x, range_pos.y)
+        local range_pos = range_data_ptr[i]
         if (range_pos.x == pos.x and range_pos.y == pos.y) then
             range_check = true
-            -- mgba_printf(1, "pawn %d: YES", pawn_gid)
             break
         end
     end
+
+    -- clean up range data
+    ai_destroy_range_data(range_data_ptr)
 
     return range_check and tile_check
 end
