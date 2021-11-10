@@ -31,6 +31,7 @@ QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
 int movequeue_progress = -1;
 int movequeue_delay_timer = 0;
 int ai_played_move = -1;
+int ai_wait_timer = AI_WAIT_TIME;
 
 void boardscn_start() {
     // init
@@ -146,26 +147,36 @@ void boardscn_input() {
 }
 
 void update_ai_moveplay() {
-    // play ai moves
-    if (ai_played_move < game_state.turns) {
-        // mark this turn as played
-        ai_played_move = game_state.turns;
+    // ensure move not already played
+    if (ai_played_move >= game_state.turns) {
+        return;
+    }
 
-        // now check whose move it is
-        int whose_move = game_util_whose_turn();
+    // wait for timer
+    if (ai_wait_timer > 0) {
+        ai_wait_timer--;
+        return;
+    }
 
-        // if it is the ai's turn, ask the ai to plan moves
-        if (whose_move != -1) {
-            // initialize the move queue
-            memset(movequeue_queue, 0, sizeof(movequeue_queue));
-            // call the planner to plan moves for this team
-            int num_moves_planned = game_gs_ai_plan_moves(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
-            // log planned moves
-            mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
-            // set variables for move queue
-            movequeue_length = num_moves_planned;
-            movequeue_progress = -1; // indicates ready movequeue
-        }
+    // mark this turn as played, and reset timer
+    ai_played_move = game_state.turns;
+    ai_wait_timer = AI_WAIT_TIME;
+
+    // now check whose move it is
+    int whose_move = game_util_whose_turn();
+
+    // if it is the ai's turn, ask the ai to plan moves
+    int human_player_team = -1;
+    if (whose_move != human_player_team) {
+        // initialize the move queue
+        memset(movequeue_queue, 0, sizeof(movequeue_queue));
+        // call the planner to plan moves for this team
+        int num_moves_planned = game_gs_ai_plan_moves(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        // log planned moves
+        mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+        // set variables for move queue
+        movequeue_length = num_moves_planned;
+        movequeue_progress = -1; // indicates ready movequeue
     }
 }
 

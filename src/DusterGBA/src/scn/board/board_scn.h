@@ -71,6 +71,8 @@ extern QueuedMove movequeue_queue[TEAM_MAX_PAWNS + 1];
 extern int movequeue_progress;
 extern int movequeue_delay_timer;
 extern int ai_played_move;
+#define AI_WAIT_TIME 30
+extern int ai_wait_timer;
 
 void set_ui_dirty();
 
