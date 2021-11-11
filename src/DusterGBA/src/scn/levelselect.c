@@ -42,12 +42,28 @@ void levelselect_start() {
     LevelInfo* lev0 = &level_infos[0];
     sprintf(lev0->name, "helo1 demo");
     sprintf(lev0->map_file, "helo1");
-    sprintf(lev0->description[0], "%s", "It is a long established fact that a reader will");
-    sprintf(lev0->description[1], "%s", "be distracted by the readable content of a");
-    sprintf(lev0->description[2], "%s", "page when looking at its layout.");
+    sprintf(lev0->description[0], "%s", "The testing demo used for main game tests.");
+    sprintf(lev0->description[1], "%s", "This is a simple map.");
+    sprintf(lev0->description[2], "%s", "Bean.");
     lev0->description_lines = 3;
 
-    level_infos_count = 1;
+    LevelInfo* lev1 = &level_infos[1];
+    sprintf(lev1->name, "test3 demo");
+    sprintf(lev1->map_file, "test3");
+    sprintf(lev1->description[0], "%s", "The secondary testing map.");
+    sprintf(lev1->description[1], "%s", "Auxiliary");
+    sprintf(lev1->description[2], "%s", "page when looking at its layout.");
+    lev1->description_lines = 3;
+
+    LevelInfo* lev2 = &level_infos[2];
+    sprintf(lev2->name, "underground");
+    sprintf(lev2->map_file, "underground");
+    sprintf(lev2->description[0], "%s", "A shitty clone of a Fire Emblem Three Houses");
+    sprintf(lev2->description[1], "%s", "Map. It is not very good.");
+    sprintf(lev2->description[2], "%s", "Cheesy crispy.");
+    lev2->description_lines = 3;
+
+    level_infos_count = 3;
 }
 
 void draw_levelselect_ui() {
@@ -80,6 +96,14 @@ void levelselect_update() {
 
         // switch to scene
         dusk_scene_set(board_scene);
+    }
+
+    int lr_touched = key_transit(KEY_LEFT | KEY_RIGHT);
+    int lr_input = key_tri_horz();
+    if (lr_input != 0 && lr_touched) {
+        // change selected item
+        levelselect_selected = (levelselect_selected + lr_input + level_infos_count) % level_infos_count;
+        levelselect_dirty = TRUE;
     }
 
     if (level_infos_count > 0 && levelselect_dirty) {
