@@ -10,6 +10,7 @@ int levelselect_selected = 0;
 
 typedef struct {
     char name[32];
+    char map_file[32];
     char description[4][128];
     int description_lines;
 } LevelInfo;
@@ -39,7 +40,8 @@ void levelselect_start() {
     memset(level_infos, 0, sizeof(level_infos));
 
     LevelInfo* lev0 = &level_infos[0];
-    sprintf(lev0->name, "test_demo3");
+    sprintf(lev0->name, "helo1 demo");
+    sprintf(lev0->map_file, "helo1");
     sprintf(lev0->description[0], "%s", "It is a long established fact that a reader will");
     sprintf(lev0->description[1], "%s", "be distracted by the readable content of a");
     sprintf(lev0->description[2], "%s", "page when looking at its layout.");
@@ -73,6 +75,10 @@ void levelselect_update() {
     dusk_frame();
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
+        // selected, copy data
+        strcpy(selected_map_file, level_infos[levelselect_selected].map_file);
+
+        // switch to scene
         dusk_scene_set(board_scene);
     }
 
