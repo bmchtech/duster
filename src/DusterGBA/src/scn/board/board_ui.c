@@ -158,7 +158,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // unclick
         cursor_click = FALSE;
         set_ui_dirty();
-        boardscn_sfx_play_cant()l
+        boardscn_sfx_play_cant();
     } else if (get_cursor_pawn()) {
         // nothing is currently selected, but our cursor is over a pawn
 
