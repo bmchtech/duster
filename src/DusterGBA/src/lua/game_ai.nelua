@@ -90,13 +90,10 @@ local ProximityType = @enum{
 }
 
 local function ai_get_nearest_enemy_pawn(pos: VPos16, enemy_pawns: *vector(cshort))
-    local test = &enemy_pawns
-    local pp   = $test
-    
-    local closest_pawn = bs[0]
+    local closest_pawn = enemy_pawns[0]
     local closest_dist = 99999
 
-    for pawn in enemy_pawns do
+    for i, pawn in ipairs(enemy_pawns) do
         local pawn_tile = board_find_pawn_tile(pawn)
         local pawn_pos  = board_util_tid_to_pos(pawn_tile)
         local pawn_dist = board_dist(pos.x, pos.y, pawn_pos.x, pawn_pos.y)
