@@ -89,7 +89,28 @@ local ProximityType = @enum{
     FAR
 }
 
--- get the closest tile in range to the destination
+local function ai_get_nearest_enemy_pawn(pos: VPos16, enemy_pawns: *vector(cshort))
+    local test = &enemy_pawns
+    local pp   = $test
+    
+    local closest_pawn = bs[0]
+    local closest_dist = 99999
+
+    for pawn in enemy_pawns do
+        local pawn_tile = board_find_pawn_tile(pawn)
+        local pawn_pos  = board_util_tid_to_pos(pawn_tile)
+        local pawn_dist = board_dist(pos.x, pos.y, pawn_pos.x, pawn_pos.y)
+
+        if (pawn_dist < closest_dist) then
+            closest_dist = pawn_dist
+            closest_pawn = pawn
+        end
+    end
+
+    return closest_pawn
+end
+
+    -- get the closest tile in range to the destination
 local function ai_get_closest_tile_in_range(pawn_gid: cshort, from_pos: VPos16, to_pos: VPos16, move_cache: PawnMoveCache, proximity_type: ProximityType): VPos16
     local class_data = pawn_get_classdata(pawn_gid)
 
@@ -184,7 +205,7 @@ global function ai_plan_moves_variant_1(team_id: cint, move_buf: *QueuedMove, mo
         
         -- get assigned target
         local enemy_target_ix = blackboard[bb_base + i + 1]
-        local enemy_target = enemy_pawns[enemy_target_ix]
+        local enemy_target = ai_get_nearest_enemy_pawn(curr_tile_pos, &enemy_pawns)
 
         -- calc range data
         local class_data = pawn_get_classdata(pawn_gid)
