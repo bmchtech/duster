@@ -202,6 +202,7 @@ global function ai_plan_moves_variant_1(team_id: cint, move_buf: *QueuedMove, mo
         
         -- get assigned target
         local enemy_target_ix = blackboard[bb_base + i + 1]
+        -- local enemy_target = enemy_pawns[enemy_target_ix]
         local enemy_target = ai_get_nearest_enemy_pawn(curr_tile_pos, &enemy_pawns)
 
         -- calc range data
