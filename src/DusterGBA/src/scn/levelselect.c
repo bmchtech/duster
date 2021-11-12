@@ -8,15 +8,36 @@
 BOOL levelselect_dirty = TRUE;
 int levelselect_selected = 0;
 
+#define NUM_LEVEL_INFOS 2
+#define LEVELINFO_DESCRIPTION_LINES 4
+
 typedef struct {
     char name[32];
     char map_file[32];
-    char description[4][128];
-    int description_lines;
+    char description[LEVELINFO_DESCRIPTION_LINES][128];
 } LevelInfo;
 
-EWRAM_DATA LevelInfo level_infos[16];
-int level_infos_count = 0;
+const LevelInfo level_infos[NUM_LEVEL_INFOS] = {
+    (LevelInfo){
+        .name = "helo demo",
+        .map_file = "helo1",
+        .description = {
+            "The testing demo used for main game tests.",
+            "",
+            "",
+            "",
+        }
+    },
+    (LevelInfo){
+        .name = "underground",
+        .map_file = "underground",
+        .description = {
+            "A shitty clone of a Fire Emblem Three Houses",
+            "Map. It is not very good.",
+            "Cheesy crispy.",
+        }
+    },
+};
 
 void levelselect_start() {
     dusk_init_graphics_mode0();
@@ -35,41 +56,12 @@ void levelselect_start() {
 
     // draw text
     pal_bg_mem[1] = RES_PAL[0];
-
-    // default levelinfo
-    memset(level_infos, 0, sizeof(level_infos));
-
-    LevelInfo* lev0 = &level_infos[0];
-    sprintf(lev0->name, "helo1 demo");
-    sprintf(lev0->map_file, "helo1");
-    sprintf(lev0->description[0], "%s", "The testing demo used for main game tests.");
-    sprintf(lev0->description[1], "%s", "This is a simple map.");
-    sprintf(lev0->description[2], "%s", "Bean.");
-    lev0->description_lines = 3;
-
-    LevelInfo* lev1 = &level_infos[1];
-    sprintf(lev1->name, "test3 demo");
-    sprintf(lev1->map_file, "test3");
-    sprintf(lev1->description[0], "%s", "The secondary testing map.");
-    sprintf(lev1->description[1], "%s", "Auxiliary");
-    sprintf(lev1->description[2], "%s", "page when looking at its layout.");
-    lev1->description_lines = 3;
-
-    LevelInfo* lev2 = &level_infos[2];
-    sprintf(lev2->name, "underground");
-    sprintf(lev2->map_file, "underground");
-    sprintf(lev2->description[0], "%s", "A shitty clone of a Fire Emblem Three Houses");
-    sprintf(lev2->description[1], "%s", "Map. It is not very good.");
-    sprintf(lev2->description[2], "%s", "Cheesy crispy.");
-    lev2->description_lines = 3;
-
-    level_infos_count = 3;
 }
 
 void draw_levelselect_ui() {
     tte_erase_screen();
 
-    LevelInfo *info = &level_infos[levelselect_selected];
+    const LevelInfo *info = &level_infos[levelselect_selected];
 
     // draw level name
     tte_printf("#{P:8,8}#{ci:1}map selection");
@@ -79,7 +71,7 @@ void draw_levelselect_ui() {
     tte_printf("#{P:8,36}#{ci:1}description");
     // tte_printf("#{P:16,48}#{ci:1}It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.");
     // draw line by line
-    for (int i = 0; i < info->description_lines; i++) {
+    for (int i = 0; i < LEVELINFO_DESCRIPTION_LINES; i++) {
         int descline_y = 48 + (i * 12);
         tte_printf("#{P:16,%d}#{ci:1}%s", descline_y, info->description[i]);
     }
@@ -102,11 +94,11 @@ void levelselect_update() {
     int lr_input = key_tri_horz();
     if (lr_input != 0 && lr_touched) {
         // change selected item
-        levelselect_selected = (levelselect_selected + lr_input + level_infos_count) % level_infos_count;
+        levelselect_selected = (levelselect_selected + lr_input + NUM_LEVEL_INFOS) % NUM_LEVEL_INFOS;
         levelselect_dirty = TRUE;
     }
 
-    if (level_infos_count > 0 && levelselect_dirty) {
+    if (NUM_LEVEL_INFOS > 0 && levelselect_dirty) {
         levelselect_dirty = FALSE;
 
         draw_levelselect_ui();
