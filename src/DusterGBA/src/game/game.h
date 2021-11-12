@@ -2,12 +2,15 @@
 
 #include <tonc_types.h>
 #include "vpos.h"
+#include <stdint.h>
 
 #define MAX_BOARD_SIZE 64
 #define NUM_TEAMS 4
 #define TEAM_MAX_PAWNS 32
 
 #define NUM_UNIT_CLASSES 4
+
+#define MOVEQUEUE_MAX_SIZE (TEAM_MAX_PAWNS + 1)
 
 typedef s16 pawn_gid_t;
 
@@ -86,6 +89,19 @@ typedef struct {
     int counter_dmg;
 } HostileUnitDuel;
 
+typedef enum {
+    QUEUEDMOVE_MOVE,
+    QUEUEDMOVE_INTERACT,
+} QueuedMoveType;
+
+typedef struct {
+    QueuedMoveType type;
+    pawn_gid_t pawn0;
+    pawn_gid_t pawn1;
+    VPos16 start_pos;
+    VPos16 end_pos;
+} QueuedMove;
+
 extern GameState game_state;
 extern GameColdData game_data;
 
@@ -130,7 +146,7 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
 
 BOOL board_util_is_on_board(int tx, int ty);
 BOOL board_util_is_walkable(int tx, int ty);
-VPos16 board_util_tile_id_to_pos(int tile_id);
+VPos16 board_util_tid_to_pos(int tile_id);
 tile_neighbors_t board_util_get_neighbors(int tile_id);
 int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len);
 BOOL pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos);
@@ -142,3 +158,6 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level);
 
 // MAP
 BOOL game_load_gamemap(void* data, u32 len);
+
+// lua code binding
+int game_gs_ai_plan_moves(int team_id, QueuedMove* move_buf, int move_buf_len);

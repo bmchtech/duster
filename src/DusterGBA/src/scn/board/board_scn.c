@@ -1,6 +1,4 @@
 #include "board_scn.h"
-#include "soundbank.h"
-#include "maxmod.h"
 
 TSurface bg0_srf;
 int bg0_srf_cbb = 0;
@@ -10,6 +8,7 @@ int bg1_tte_sbb = 28;
 VPos board_offset;
 BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
+int cursor_last_moved_frame = 0;
 VPos16 cursor_pos;
 BOOL cursor_shown = TRUE;
 BOOL cursor_click = FALSE;
@@ -27,8 +26,10 @@ BOOL pausemenu_dirty = TRUE;
 int board_scroll_x = 0;
 int board_scroll_y = 0;
 int sidebar_page = 0;
-
-int cursor_last_moved_frame = 0;
+int movequeue_length = 0;
+QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
+int movequeue_progress = 0;
+int movequeue_delay_timer = 0;
 
 void boardscn_start() {
     // init
@@ -66,7 +67,9 @@ void boardscn_start() {
 
     // load gamemap
     u32 test1_gmp_len;
-    const void* test1_gmp = dusk_load_raw("helo1.gmp.bin", &test1_gmp_len);
+    char gamemap_file_name[48];
+    sprintf(gamemap_file_name, "%s.gmp.bin", selected_map_file);
+    const void* test1_gmp = dusk_load_raw(gamemap_file_name, &test1_gmp_len);
     mgba_printf(MGBA_LOG_ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
     BOOL load_success = game_load_gamemap((void*)test1_gmp, test1_gmp_len);
 
@@ -89,15 +92,15 @@ void boardscn_start() {
     pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
 
-    // define sfx
-    mm_sound_effect chime;
-    chime.handle = 0;
-    chime.id = SFX_OBEP2;
-    chime.rate = (int)(1.0f * (1 << 10));
-    chime.volume = 255;
-    chime.panning = 128;
-    // play sound effect
-    mmEffectEx(&chime);
+    // queued moves
+    memset(movequeue_queue, 0, sizeof(movequeue_queue));
+    int num_moves_planned = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);
+    mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+    movequeue_length = num_moves_planned;
+    movequeue_progress = -1; // indicates ready movequeue
+
+    // play start game sfx
+    boardscn_sfx_play_startchime();
 }
 
 void set_ui_dirty() {
@@ -172,6 +175,9 @@ void boardscn_update() {
 
         // tween updates are last
         update_pawn_tweens();
+
+        // step queued
+        update_queued_moves();
 
         // update sprites
         dusk_sprites_update();

@@ -1,23 +1,28 @@
 #include "board_scn.h"
 
+// get the pawn under the cursor
 Pawn* get_cursor_pawn() {
     if (!cursor_shown)
         return NULL;
     return board_get_pawn(BOARD_POS(cursor_pos.x, cursor_pos.y));
 }
 
+// get the gid of the pawn that is currently selected
 pawn_gid_t get_clicked_pawn_gid() {
     if (!cursor_click)
         return -1;
     return board_get_tile(BOARD_POS(cursor_click_pos.x, cursor_click_pos.y))->pawn_gid;
 }
 
+
+// get the pawn that is currently selected
 Pawn* get_clicked_pawn() {
     if (!cursor_click)
         return NULL;
     return board_get_pawn(BOARD_POS(cursor_click_pos.x, cursor_click_pos.y));
 }
 
+// logic for when the clicked cursor is used to move a pawn
 void on_cursor_click_move(VPos16 dest_pos) {
     // get the already selected pawn
     int sel_pawn_gid = get_clicked_pawn_gid();
@@ -89,13 +94,15 @@ void on_cursor_click_move(VPos16 dest_pos) {
 
         if (interact_itmdt_tid > 0) {
             // we have a valid intermediate
-            VPos16 interact_itmdt_pos = board_util_tile_id_to_pos(interact_itmdt_tid);
+            VPos16 interact_itmdt_pos = board_util_tid_to_pos(interact_itmdt_tid);
 
             // move our pawn to the intermediate
             animate_pawn_move(sel_pawn_gid, cursor_click_pos, interact_itmdt_pos);
             // flash the dest pawn
             BOOL is_same_team = pawn_util_on_same_team(sel_pawn_gid, dest_pawn_gid);
             animate_pawn_flash(dest_pawn_gid, sel_pawn_gid, is_same_team);
+
+            boardscn_sfx_play_interact();
 
             // interact with the pawn
             mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile->pawn_gid);
@@ -151,6 +158,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         // unclick
         cursor_click = FALSE;
         set_ui_dirty();
+        boardscn_sfx_play_cant();
     } else if (get_cursor_pawn()) {
         // nothing is currently selected, but our cursor is over a pawn
 
@@ -159,11 +167,11 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         int hover_pawn_gid = tile->pawn_gid;
         Pawn* hover_pawn = get_cursor_pawn();
 
-        #ifndef DEBUG
+#ifndef DEBUG
         // we can only move if the turn is 0
         if (game_util_whose_turn() != 0)
             return;
-        #endif
+#endif
 
         // ensure it is our turn
         if (!game_util_is_my_turn(hover_pawn_gid))
@@ -178,6 +186,8 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         cursor_click_pos = try_click_pos;
         pawn_move_range_dirty = TRUE;
         set_ui_dirty();
+
+        boardscn_sfx_play_click();
     }
 }
 
@@ -231,4 +241,6 @@ void on_try_move_cursor(int mx, int my) {
     // set ui fields to dirty/reset
     set_ui_dirty();
     sidebar_page = 0;
+
+    boardscn_sfx_play_scroll();
 }

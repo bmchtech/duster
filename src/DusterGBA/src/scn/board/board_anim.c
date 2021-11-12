@@ -164,3 +164,70 @@ void update_pawn_tweens() {
     update_pawn_move_tween();
     update_pawn_flash_tween();
 }
+
+void run_queued_move(QueuedMove* move) {
+    switch (move->type) {
+        case QUEUEDMOVE_MOVE:
+            animate_pawn_move(move->pawn0, move->start_pos, move->end_pos);
+            break;
+        case QUEUEDMOVE_INTERACT:
+            animate_pawn_move(move->pawn0, move->start_pos, move->end_pos);
+            animate_pawn_flash(move->pawn1, move->pawn0,
+                               pawn_util_on_same_team(move->pawn1, move->pawn0));
+            break;
+        default:
+            break;
+        }
+}
+
+int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
+    int curr_step = progress;
+
+    // start initial move
+    if (curr_step == -1) {
+        run_queued_move(&moves[0]);
+        curr_step = 0;
+    }
+
+    QueuedMove* curr_move = &moves[curr_step];
+
+    // check if last one is done
+    BOOL move_done = FALSE;
+    if (curr_move->type == QUEUEDMOVE_MOVE) {
+        if (pawn_move_tween.pawn_gid == -1)
+            move_done = TRUE;
+    }
+    if (curr_move->type == QUEUEDMOVE_INTERACT) {
+        if (pawn_flash_tween.pawn_gid == -1 && pawn_move_tween.pawn_gid == -1)
+            move_done = TRUE;
+    }
+
+    if (move_done) {
+        curr_step++;
+        // check if we are at end
+        if (curr_step >= length) {
+            return length;
+        }
+
+        // start the next
+        QueuedMove* move = &moves[curr_step];
+        run_queued_move(move);        
+    }
+
+    // we are not at end
+
+    return curr_step;
+}
+
+void update_queued_moves() {
+    if (movequeue_progress >= movequeue_length) {
+        return; // all done for now
+    }
+
+    if (frame_count > movequeue_delay_timer) {
+        movequeue_delay_timer = frame_count + 20; // schedule next run
+
+        int new_progress = step_running_queued_moves(movequeue_queue, movequeue_length, movequeue_progress);
+        movequeue_progress = new_progress;
+    }
+}

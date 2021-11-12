@@ -9,9 +9,10 @@ a sleek strategy game for the gba
 
 ### deps
 
-+ git
-+ devkitarm (packages: `tonc`, `grit`)
-+ compilers and build tools: `make`, `cmake`, C compiler, D compiler
++ [git](https://git-scm.com/)
++ [devkitarm](https://devkitpro.org/wiki/Getting_Started) (packages: `tonc`, `grit`)
++ [nelua](https://github.com/edubart/nelua-lang/)
++ [crunch](https://github.com/redthing1/crunch)
 
 ### from source
 

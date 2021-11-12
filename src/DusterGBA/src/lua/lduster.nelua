@@ -1,0 +1,140 @@
+## cinclude "game/game.h"
+
+global MAX_BOARD_SIZE: cint <cimport,nodecl>
+global NUM_TEAMS: cint <cimport,nodecl>
+global TEAM_MAX_PAWNS: cint <cimport,nodecl>
+global NUM_UNIT_CLASSES: cint <cimport,nodecl>
+
+global CSTR: type = @cstring
+
+-- note: these are all based on comptime values, need to keep in sync with game.h
+global VPos: type <cimport,nodecl> = @record{
+  x: cuchar,
+  y: cuchar
+}
+global VPos16: type <cimport,nodecl> = @record{
+  x: cshort,
+  y: cshort
+}
+global Terrain: type <cimport,nodecl,using> = @enum(cint){
+  TERRAIN_GROUND = 0,
+  TERRAIN_BLOCKED = 1
+}
+global BoardTile: type <cimport,nodecl> = @record{
+  pawn_gid: cshort,
+  terrain: Terrain
+}
+global GameBoard: type <cimport,nodecl> = @record{
+  tiles: [4096]BoardTile
+}
+global UnitDataStats: type <cimport,nodecl> = @record{
+  atk: cuchar,
+  def: cuchar,
+  hp: cuchar,
+  spd: cuchar
+}
+global UnitData: type <cimport,nodecl> = @record{
+  hitpoints: cshort,
+  item: cshort,
+  level: cushort,
+  stats: UnitDataStats
+}
+global Pawn: type <cimport,nodecl> = @record{
+  unit_class: cuchar,
+  unit_data: UnitData,
+  last_moved_step: cint,
+  last_moved_turn: cint,
+  alive: cuchar
+}
+global Team: type <cimport,nodecl> = @record{
+  name: [16]cchar,
+  pawns: [32]Pawn,
+  alive: cuchar
+}
+global GameState: type <cimport,nodecl> = @record{
+  board: GameBoard,
+  board_size: cuchar,
+  teams: [4]Team,
+  steps: cint,
+  turns: cint
+}
+global ClassData: type <cimport,nodecl> = @record{
+  name: [16]cchar,
+  move: cuchar,
+  interact_range: cuchar,
+  base_stats: UnitDataStats,
+  stat_growths: UnitDataStats
+}
+global GameColdData: type <cimport,nodecl> = @record{
+  class_data: *ClassData
+}
+global tile_neighbors_t: type <cimport,nodecl> = @record{
+  neighbors: [4]cint
+}
+global PawnSpawnPoint: type <cimport,nodecl> = @record{
+  valid: cuchar,
+  pos: VPos16,
+  team: cuint,
+  pawn: cuint
+}
+global HostileUnitDuel: type <cimport,nodecl> = @record{
+  main_dmg: cint,
+  counter_dmg: cint
+}
+global QueuedMoveType: type <cimport,nodecl,using> = @enum(cint){
+  QUEUEDMOVE_MOVE = 0,
+  QUEUEDMOVE_INTERACT = 1
+}
+global QueuedMove: type <cimport,nodecl> = @record{
+  type: QueuedMoveType,
+  pawn0: cshort,
+  pawn1: cshort,
+  start_pos: VPos16,
+  end_pos: VPos16
+}
+
+
+global game_state: GameState <cimport,nodecl>
+global game_data: GameColdData <cimport,nodecl>
+
+-- local function BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
+global function LPAWN_GID(team: cint, pawn: cint) return ((team)*TEAM_MAX_PAWNS + (pawn)) end
+-- #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
+-- #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
+-- #define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
+
+global function game_clear_state(): void <cimport,nodecl> end
+global function game_load_cold_data(): void <cimport,nodecl> end
+global function game_init(): void <cimport,nodecl> end
+global function game_init_board(board_size: cuchar): void <cimport,nodecl> end
+global function game_init_team(team_id: cuchar, name: cstring): void <cimport,nodecl> end
+global function game_get_team(team_id: cuchar): *Team <cimport,nodecl> end
+global function game_get_pawn_by_gid(pawn_gid: cshort): *Pawn <cimport,nodecl> end
+global function board_find_pawn_tile(pawn_gid: cshort): cint <cimport,nodecl> end
+global function board_get_tile(tile_id: cint): *BoardTile <cimport,nodecl> end
+global function board_get_pawn(tile_id: cint): *Pawn <cimport,nodecl> end
+global function board_set_pawn(tile_id: cint, pawn_gid: cshort): void <cimport,nodecl> end
+global function board_move_pawn(pawn_gid: cshort, start_tile_id: cint, end_tile_id: cint): void <cimport,nodecl> end
+global function board_set_terrain(tile_id: cint, terrain: Terrain): void <cimport,nodecl> end
+global function board_get_terrain(tile_id: cint): Terrain <cimport,nodecl> end
+global function board_dist(tx1: cint, ty1: cint, tx2: cint, ty2: cint): cint <cimport,nodecl> end
+global function team_set_pawn_t(team: *Team, pawn_id: cint, class: cint): void <cimport,nodecl> end
+global function team_set_pawn(team_id: cint, pawn_id: cint, class: cint): cshort <cimport,nodecl> end
+global function team_pawn_recalculate(team_id: cint, pawn_id: cint): void <cimport,nodecl> end
+global function pawn_get_classdata(pawn_gid: cshort): *ClassData <cimport,nodecl> end
+global function game_logic_step(): void <cimport,nodecl> end
+global function game_logic_interact(initiator: cshort, receiver: cshort): void <cimport,nodecl> end
+global function game_logic_calc_hostile_damage(initiator_pawn: *Pawn, receiver_pawn: *Pawn): HostileUnitDuel <cimport,nodecl> end
+global function board_util_is_on_board(tx: cint, ty: cint): cuchar <cimport,nodecl> end
+global function board_util_is_walkable(tx: cint, ty: cint): cuchar <cimport,nodecl> end
+global function board_util_tid_to_pos(tile_id: cint): VPos16 <cimport,nodecl> end
+global function board_util_get_neighbors(tile_id: cint): tile_neighbors_t <cimport,nodecl> end
+global function board_util_calc_rangebuf(start_tx: cint, start_ty: cint, range: cint, pos_buf: *VPos16, pos_buf_len: cint): cint <cimport,nodecl> end
+global function pawn_util_is_valid_move(pawn_gid: cshort, start_pos: VPos16, end_pos: VPos16): cuchar <cimport,nodecl> end
+global function pawn_util_on_same_team(pawn1: cshort, pawn2: cshort): cuchar <cimport,nodecl> end
+global function game_util_is_my_turn(pawn_gid: cshort): cuchar <cimport,nodecl> end
+global function game_util_whose_turn(): cint <cimport,nodecl> end
+global function pawn_util_moved_this_turn(pawn: *Pawn): cuchar <cimport,nodecl> end
+global function pawn_util_calc_stats(class_data: *ClassData, level: cint): UnitDataStats <cimport,nodecl> end
+global function game_load_gamemap(data: pointer, len: cuint): cuchar <cimport,nodecl> end
+
