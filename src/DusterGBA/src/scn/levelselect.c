@@ -5,7 +5,7 @@
 #include "scenes.h"
 #include "contrib/mgba.h"
 
-BOOL levelselect_dirty = TRUE;
+BOOL levelselect_dirty = FALSE;
 int levelselect_selected = 0;
 
 #define NUM_LEVEL_INFOS 2
@@ -56,6 +56,9 @@ void levelselect_start() {
 
     // draw text
     pal_bg_mem[1] = RES_PAL[0];
+
+    // draw first time
+    levelselect_dirty = TRUE;
 }
 
 void draw_levelselect_ui() {
