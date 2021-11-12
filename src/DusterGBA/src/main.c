@@ -4,7 +4,8 @@
 #include "contrib/mgba.h"
 #include "maxmod.h"
 
-__attribute__((used)) const char* GAME_VERSION = "$DUSTER v0.3";
+__attribute__((used)) const char* GAME_VERSION = "$DUSTER v0.3.0-aicomp";
+__attribute__((used)) const char* GAME_COPYING = "$COPYING Copyright (C) 2018-2021 bean machine.";
 
 void maxmod_audio_init() {
     // irq setup for maxmod dma
