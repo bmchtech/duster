@@ -31,7 +31,7 @@ void menu_update() {
     dusk_frame();
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
-        dusk_scene_set(levelselect_scene);
+        dusk_scene_set(board_scene);
     }
 
     // update sprites
