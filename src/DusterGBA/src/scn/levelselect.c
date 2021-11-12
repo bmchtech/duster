@@ -15,7 +15,7 @@ typedef struct {
     int description_lines;
 } LevelInfo;
 
-LevelInfo level_infos[16];
+EWRAM_DATA LevelInfo level_infos[16];
 int level_infos_count = 0;
 
 void levelselect_start() {
