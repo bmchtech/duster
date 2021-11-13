@@ -86,6 +86,22 @@ void boardscn_start() {
     // set vars for drawing
     board_offset = (VPos){.x = 8, .y = 8};
     cursor_pos = (VPos16){.x = 0, .y = 0};
+    board_ui_dirty = TRUE;
+    sidebar_dirty = TRUE;
+    cursor_shown = TRUE;
+    cursor_click = FALSE;
+    cache_range_buf_filled = 0;
+    request_step = FALSE;
+    board_scene_page = BOARDSCN_BOARD;
+    pausemenu_dirty = TRUE;
+    board_scroll_x = 0;
+    board_scroll_y = 0;
+    sidebar_page = 0;
+    movequeue_length = 0;
+    movequeue_progress = -1;
+    movequeue_delay_timer = 0;
+    ai_played_move = -1;
+    ai_wait_timer = AI_WAIT_TIME;
 
     // clear tweens
     pawn_move_tween.pawn_gid = -1;
