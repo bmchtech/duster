@@ -105,7 +105,7 @@ void boardscn_start() {
     }
 
     // set vars for drawing
-    boardscn_init_vars()
+    boardscn_init_vars();
 
     // clear tweens
     pawn_move_tween.pawn_gid = -1;
