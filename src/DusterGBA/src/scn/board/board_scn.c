@@ -10,28 +10,49 @@ BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
 int cursor_last_moved_frame = 0;
 VPos16 cursor_pos;
-BOOL cursor_shown = TRUE;
-BOOL cursor_click = FALSE;
+BOOL cursor_shown;
+BOOL cursor_click;
 VPos16 cursor_click_pos;
 PawnMoveTweenInfo pawn_move_tween;
 PawnFlashTweenInfo pawn_flash_tween;
 CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
 VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
-int cache_range_buf_filled = 0;
-BOOL request_step = FALSE;
+int cache_range_buf_filled;
+BOOL request_step;
 BOOL pawn_move_range_dirty = TRUE;
-BoardScenePage board_scene_page = BOARDSCN_BOARD;
-BOOL pausemenu_dirty = TRUE;
-int board_scroll_x = 0;
-int board_scroll_y = 0;
-int sidebar_page = 0;
+BoardScenePage board_scene_page;
+BOOL pausemenu_dirty;
+int board_scroll_x;
+int board_scroll_y;
+int sidebar_page;
 int movequeue_length = 0;
 QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
 int movequeue_progress = -1;
 int movequeue_delay_timer = 0;
 int ai_played_move = -1;
 int ai_wait_timer = AI_WAIT_TIME;
+
+void boardscn_init_vars() {
+    board_offset = (VPos){.x = 8, .y = 8};
+    cursor_pos = (VPos16){.x = 0, .y = 0};
+    board_ui_dirty = TRUE;
+    sidebar_dirty = TRUE;
+    cursor_shown = TRUE;
+    cursor_click = FALSE;
+    cache_range_buf_filled = 0;
+    request_step = FALSE;
+    board_scene_page = BOARDSCN_BOARD;
+    pausemenu_dirty = TRUE;
+    board_scroll_x = 0;
+    board_scroll_y = 0;
+    sidebar_page = 0;
+    movequeue_length = 0;
+    movequeue_progress = -1;
+    movequeue_delay_timer = 0;
+    ai_played_move = -1;
+    ai_wait_timer = AI_WAIT_TIME;
+}
 
 void boardscn_start() {
     // init
@@ -84,8 +105,7 @@ void boardscn_start() {
     }
 
     // set vars for drawing
-    board_offset = (VPos){.x = 8, .y = 8};
-    cursor_pos = (VPos16){.x = 0, .y = 0};
+    boardscn_init_vars();
 
     // clear tweens
     pawn_move_tween.pawn_gid = -1;

@@ -30,13 +30,11 @@ PauseMenuItem_t pause_menu_items[3] = {
 #define PAUSE_MENU_INCREMENT_Y 12
 
 void update_pause_ui() {
-    if (key_hit(KEY_DOWN) && pause_cursor_selection < (NUM_PAUSE_SELECTIONS - 1)) {
-        pause_cursor_selection++;
-        pausemenu_dirty = TRUE;
-    }
-
-    if (key_hit(KEY_UP) && pause_cursor_selection > 0) {
-        pause_cursor_selection--;
+    int ud_touched = key_transit(KEY_UP | KEY_DOWN);
+    int ud_input = key_tri_vert();
+    if (ud_input != 0 && ud_touched) {
+        // change selected item
+        pause_cursor_selection = (pause_cursor_selection + ud_input + NUM_PAUSE_SELECTIONS) % NUM_PAUSE_SELECTIONS;
         pausemenu_dirty = TRUE;
     }
 
