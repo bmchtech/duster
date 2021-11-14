@@ -150,6 +150,7 @@ void update_pawn_flash_tween() {
     int frame_prog = frame_count - tween->start_frame;     // how many frames have elapsed since the start frame
 
     // do sprite flash
+    mgba_printf(MGBA_LOG_DEBUG, "frame_prog: %d, tween_len: %d", frame_prog, tween_len);
 
     if (tween_len > 16) {
         int fade_step1 = tween_len / 16; // frames per blend step
