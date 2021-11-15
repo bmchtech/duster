@@ -180,11 +180,11 @@ void boardscn_update() {
         draw_sidebar();
         draw_board();
 
-        // tween updates are last
-        update_pawn_tweens();
-
         // step queued
         update_queued_moves();
+
+        // tween updates are last
+        update_pawn_tweens();
 
         // update sprites
         dusk_sprites_update();
