@@ -20,6 +20,7 @@ AS	:= $(CROSS)as
 CC	:= $(CROSS)gcc
 LD	:= $(CROSS)gcc
 OBJCOPY	:= $(CROSS)objcopy
+LDC     := ldc2
 
 ARCH	:= -mthumb-interwork -mthumb
 
@@ -28,6 +29,13 @@ LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/l
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
+DFLAGS  := -frame-pointer=none -function-sections \
+				-betterC \
+				--d-version=DevkitARM \
+				--d-version=CRuntime_Newlib_GBA \
+				--d-version=_GBA \
+				-mtriple=arm7tdmi-none-eabi -mcpu=arm7tdmi -mtune=arm7tdmi
+endif
 
 ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
@@ -50,7 +58,9 @@ APP_SOURCES_C     := $(shell find $(SOURCE_DIR) -name '*.c' ! -name "*main.c"  !
 APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
-APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S)
+APP_SOURCES_D     := $(shell find $(SOURCE_DIR) -name '*.d')
+APP_OBJECTS_D     := $(APP_SOURCES_D:%.d=%.o)
+APP_OBJECTS       := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_D)
 
 # Built commands and dependencies
 
@@ -91,6 +101,9 @@ $(APP_OBJECTS_C) : %.o : %.c libs
 
 $(APP_OBJECTS_S) : %.o : %.s
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(APP_OBJECTS_D) : %.o : %.d
+	$(LDC) $(DFLAGS) -c -of=$@ $<
 
 $(APP_MAIN_OBJECT) : $(APP_MAIN_SOURCE)
 	$(CC) $(CFLAGS) -c $< -o $@
