@@ -129,16 +129,16 @@ void update_pawn_flash_tween() {
     // check if we are at start of tween
     if (frame_count == tween->start_frame) {
         // enable window
-        REG_DISPCNT |= DCNT_WIN0;
+        // REG_DISPCNT |= DCNT_WIN0;
 
         // set up win0
-        REG_WIN0H = WIN_BUILD(pawn_sprite->x + 8, pawn_sprite->x);
-        REG_WIN0V = WIN_BUILD(pawn_sprite->y + 8, pawn_sprite->y);
-        REG_WININ = WININ_BUILD(WIN_OBJ | WIN_BLD, 0);
-        REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
+        // REG_WIN0H = WIN_BUILD(pawn_sprite->x + 8, pawn_sprite->x);
+        // REG_WIN0V = WIN_BUILD(pawn_sprite->y + 8, pawn_sprite->y);
+        // REG_WININ = WININ_BUILD(WIN_OBJ | WIN_BLD, 0);
+        // REG_WINOUT = WINOUT_BUILD(WIN_ALL, 0);
 
         // set up blending
-        REG_BLDCNT = BLD_OBJ;
+        REG_BLDCNT = BLD_OBJ | BLD_ALL;
         if (tween->flash_color)
             REG_BLDCNT |= BLD_WHITE;
         else
