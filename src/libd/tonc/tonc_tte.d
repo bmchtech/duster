@@ -440,7 +440,7 @@ ssize_t tte_con_nocash (_reent* r, void* fd, const(char)* text, size_t len);
 /*! Wrapper 'function' to hide that we're making iprintf do
 	things it doesn't usually do.
 */
-// alias tte_printf = iprintf;
+alias tte_printf = iprintf;
 
 /*!	\}	*/
 

@@ -2242,6 +2242,10 @@ else version (CRuntime_Newlib_GBA)
     ///
     pragma(printf)
     int  vsnprintf(scope char* s, size_t n, scope const char* format, va_list arg);
+
+    ///
+    pragma(printf)
+    int iprintf(scope const char* format, scope const ...);
 }
 else
 {
