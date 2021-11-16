@@ -1,8 +1,0 @@
-name "dlang_test_wasm"
-description "A minimal D application."
-authors "Saltine"
-copyright "Copyright © 2021, Saltine"
-license "proprietary"
-
-dflags "-betterC"
-lflags "-allow-undefined"
