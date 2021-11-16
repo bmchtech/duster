@@ -1,6 +1,6 @@
 module mgba;
 
-import tonc_types;
+import tonc.tonc_types;
 
 extern (C):
 

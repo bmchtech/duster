@@ -11,9 +11,11 @@
 //   Look around on the forum and count the number of times people
 //   have copied, say, from a u32 source to a u16 destination.
 
-module tonc_types;
+module tonc.tonc_types;
 
 extern (C):
+
+
 
 /*!	\defgroup grpTypes	Types and attributes	*/
 
