@@ -15,6 +15,7 @@
 module core.stdc.stdint;
 
 import core.stdc.config;
+import core.stdc.config;
 import core.stdc.stddef; // for wchar_t
 import core.stdc.signal; // for sig_atomic_t
 import core.stdc.wchar_; // for wint_t

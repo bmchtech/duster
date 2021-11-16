@@ -29,36 +29,37 @@ LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/l
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
-DFLAGS  := -frame-pointer=none -function-sections \
-				-betterC \
-				--d-version=DevkitARM \
-				--d-version=CRuntime_Newlib_GBA \
-				--d-version=_GBA \
-				-mtriple=arm7tdmi-none-eabi -mcpu=arm7tdmi -mtune=arm7tdmi
-endif
+DFLAGS  := -betterC --defaultlib=no \
+				-frame-pointer=none -function-sections \
+				--d-version=DevkitARM --d-version=CRuntime_Newlib_GBA --d-version=_GBA \
+				-mtriple=arm-none-eabi -mcpu=arm7tdmi
 
 ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
 
+DSTDLIB := ../libd
+DFLAGS += -I$(DSTDLIB)
+
 ifeq ($(DEBUG),1)
 	CFLAGS += -O2 -g -DDEBUG
+	DFLAGS += -O2 -g --d-version=DEBUG
 	DUSK_MKFLAGS += DEBUG=1
 else
 	# non-debug
 	CFLAGS += -O2 -fomit-frame-pointer -ffast-math
+	DFLAGS += -O2 -ffast-math
 endif
 
 .PHONY : build clean
 
 # Find and predetermine all relevant source files
-
 APP_MAIN_SOURCE := $(shell find $(SOURCE_DIR) -name '*main.c')
 APP_MAIN_OBJECT := $(APP_MAIN_SOURCE:%.c=%.o)
 APP_SOURCES_C     := $(shell find $(SOURCE_DIR) -name '*.c' ! -name "*main.c"  ! -name "*.test.c")
 APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
-APP_SOURCES_D     := $(shell find $(SOURCE_DIR) -name '*.d')
+APP_SOURCES_D     := $(shell find $(DSTDLIB) $(SOURCE_DIR) -name '*.d')
 APP_OBJECTS_D     := $(APP_SOURCES_D:%.d=%.o)
 APP_OBJECTS       := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_D)
 
@@ -73,9 +74,6 @@ no-content: libs $(NAME)-code.gba
 libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
 	cd $(CCOLL_DIR) && make
-
-
-
 
 # Tools build
 $(TOOLS_DIR)/bin/crunch_gen:
