@@ -11,6 +11,7 @@
 
 module tonc.tonc_memdef;
 
+import tonc.tonc_types;
 
 extern (C):
 
@@ -163,7 +164,7 @@ enum BG_CBB_SHIFT = 2;
 
 extern (D) auto BG_CBB(T)(auto ref T n)
 {
-    return n << BG_CBB_SHIFT;
+    return cast(T) n << BG_CBB_SHIFT;
 }
 
 enum BG_SBB_MASK = 0x1F00;
@@ -171,7 +172,7 @@ enum BG_SBB_SHIFT = 8;
 
 extern (D) auto BG_SBB(T)(auto ref T n)
 {
-    return n << BG_SBB_SHIFT;
+    return cast(T) n << BG_SBB_SHIFT;
 }
 
 enum BG_SIZE_MASK = 0xC000;
@@ -360,7 +361,7 @@ extern (D) auto BLDY(T)(auto ref T n)
     return n << BLD_EY_SHIFT;
 }
 
-extern (D) auto BLDY_BUILD(T)(auto ref T ey)
+extern (D) u16 BLDY_BUILD(u16 ey)
 {
     return ey & 31;
 }

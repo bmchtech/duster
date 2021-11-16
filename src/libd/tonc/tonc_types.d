@@ -13,9 +13,9 @@
 
 module tonc.tonc_types;
 
+import ldc.attributes;
+
 extern (C):
-
-
 
 /*!	\defgroup grpTypes	Types and attributes	*/
 
@@ -41,17 +41,29 @@ extern (C):
 //     // code 
 // }
 
-//! Put variable in IWRAM (default).
+// //! Put variable in IWRAM (default).
+// #define IWRAM_DATA __attribute__((section(".iwram")))
+template IWRAM_DATA(string T, string var) {
+    const char[] IWRAM_DATA = "@(ldc.attributes.section(\".iwram\")) " ~ T ~ var ~ ";";
+}
 
-//! Put variable in EWRAM.
+// //! Put variable in EWRAM.
+// #define EWRAM_DATA __attribute__((section(".ewram")))
+template EWRAM_DATA(string T, string var) {
+    const char[] EWRAM_DATA = "@(ldc.attributes.section(\".ewram\")) " ~ T ~ var ~ ";";
+}
 
-//! Put <b>non</b>-initialized variable in EWRAM.
+// //! Put <b>non</b>-initialized variable in EWRAM.
+// #define  EWRAM_BSS __attribute__((section(".sbss")))
 
-//! Put function in IWRAM.
+// //! Put function in IWRAM.
+// #define IWRAM_CODE __attribute__((section(".iwram"), long_call))
 
-//! Put function in EWRAM.
+// //! Put function in EWRAM.
+// #define EWRAM_CODE __attribute__((section(".ewram"), long_call))
 
-//! Force a variable to an \a n-byte boundary
+// //! Force a variable to an \a n-byte boundary
+// #define ALIGN(n)	__attribute__((aligned(n)))
 
 //! Force word alignment.
 /*! \note	In the old days, GCC aggregates were always word aligned.
@@ -101,12 +113,19 @@ extern (C):
 	</ul>
 */
 //\{
-alias uchar = ubyte;
-alias echar = ubyte;
-alias hword = ushort;
-alias eshort = ushort;
-alias word = uint;
-alias eint = uint;
+alias u8 = ubyte;
+alias u16 = ushort;
+alias u32 = uint;
+alias u64 = ulong;
+
+alias echar = u8;
+alias eshort = u16;
+alias eint = u32;
+
+alias s8 = byte;
+alias s16 = short;
+alias s32 = int;
+alias s64 = long;
 
 //\}
 
