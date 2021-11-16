@@ -6,10 +6,10 @@ import core.stdc.string;
 import dusk;
 import tonc;
 
-Sprite* logo;
-const int FADE_LENGTH = 60; // fade length in frames
-int start_frame;
-int fade_step;
+__gshared Sprite* logo;
+enum FADE_LENGTH = 60; // fade length in frames
+__gshared int start_frame;
+__gshared int fade_step;
 
 void logo_start() {
     dusk_init_graphics_mode0();
