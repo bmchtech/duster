@@ -29,15 +29,17 @@ LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/l
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
-DFLAGS  := -betterC --defaultlib=no \
-				-frame-pointer=none -function-sections \
+DFLAGS  := -betterC --defaultlib=no -mtriple=arm-none-eabi -mcpu=arm7tdmi \
+				-I$(SOURCE_DIR) \
 				--d-version=DevkitARM --d-version=CRuntime_Newlib_GBA --d-version=_GBA \
-				-mtriple=arm-none-eabi -mcpu=arm7tdmi
+				-function-sections
+				
 
 ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
 
 DSTDLIB := ../libd
+DINCFLAGS :=
 DFLAGS += -I$(DSTDLIB)
 
 ifeq ($(DEBUG),1)
@@ -47,7 +49,7 @@ ifeq ($(DEBUG),1)
 else
 	# non-debug
 	CFLAGS += -O2 -fomit-frame-pointer -ffast-math
-	DFLAGS += -O2 -ffast-math
+	DFLAGS += -O2 -frame-pointer=none -ffast-math
 endif
 
 .PHONY : build clean
