@@ -24,6 +24,8 @@
 //   it should be ok. (PONDER: system with void pointers?)
 module tonc.tonc_memmap;
 
+import rt.mmio;
+import tonc.tonc_types;
 
 extern (C):
 
@@ -251,9 +253,9 @@ enum sram_mem = cast(ubyte*) MEM_SRAM;
 //\{
 
 // 0300:7ff[y] is mirrored at 03ff:fff[y], which is why this works out:
-enum REG_IFBIOS = *cast(vu16*) REG_BASE - 0x0008; //!< IRQ ack for IntrWait functions
+enum REG_IFBIOS = *(cast(vu16*) REG_BASE - 0x0008); //!< IRQ ack for IntrWait functions
 enum REG_RESET_DST = *cast(vu16*) REG_BASE - 0x0006; //!< Destination for after SoftReset
-enum REG_ISR_MAIN = *cast(fnptr*) REG_BASE - 0x0004; //!< IRQ handler address
+enum REG_ISR_MAIN = *(cast(fnptr*) REG_BASE - 0x0004); //!< IRQ handler address
 //\}
 
 //! \name Display registers

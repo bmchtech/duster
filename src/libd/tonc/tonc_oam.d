@@ -11,6 +11,9 @@
 module tonc.tonc_oam;
 
 import tonc.tonc_types;
+import tonc.tonc_memmap;
+import tonc.tonc_memdef;
+import tonc.tonc_core;
 
 
 extern (C):
