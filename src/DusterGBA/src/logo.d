@@ -1,5 +1,7 @@
 module logo;
 
+extern(C):
+
 import core.stdc.string;
 import dusk;
 import tonc;

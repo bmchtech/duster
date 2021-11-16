@@ -41,7 +41,9 @@ DUSK_MKFLAGS :=
 
 DSTDLIB := ../libd
 DINCFLAGS :=
-DFLAGS += -I$(DSTDLIB) -I$(DUSK_DIR)/d_src
+DDUSKDIR := $(DUSK_DIR)/d_src
+# DFLAGS += -I$(DSTDLIB) -I$(DUSK_DIR)/d_src
+DFLAGS += -I$(DSTDLIB) -I$(DDUSKDIR)
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O2 -g -DDEBUG
@@ -63,7 +65,7 @@ APP_SOURCES_C     := $(shell find $(SOURCE_DIR) -name '*.c' ! -name "*main.c"  !
 APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
-APP_SOURCES_D     := $(shell find $(DSTDLIB) $(SOURCE_DIR) -name '*.d')
+APP_SOURCES_D     := $(shell find $(DSTDLIB) $(DDUSKDIR) $(SOURCE_DIR) -name '*.d')
 APP_OBJECTS_D     := $(APP_SOURCES_D:%.d=%.o)
 APP_SOURCES_NELUA := $(shell find $(SOURCE_DIR) -name '*.lua')
 APP_NELUA_SCRIPTS := $(shell find $(SOURCE_DIR) -name '*.nelua')
