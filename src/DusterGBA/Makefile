@@ -41,7 +41,7 @@ DUSK_MKFLAGS :=
 
 DSTDLIB := ../libd
 DINCFLAGS :=
-DFLAGS += -I$(DSTDLIB)
+DFLAGS += -I$(DSTDLIB) -I$(DUSK_DIR)/d_src
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O2 -g -DDEBUG
