@@ -371,6 +371,30 @@ else version (CRuntime_Newlib_3DS)
         int _size;
     }
 }
+else version (CRuntime_Newlib_GBA)
+{
+    enum
+    {
+        ///
+        BUFSIZ       = 1024,
+        ///
+        EOF          = -1,
+        ///
+        FOPEN_MAX    = 20,
+        ///
+        FILENAME_MAX = 1024,
+        ///
+        TMP_MAX      = 26,
+        ///
+        L_tmpnam     = FILENAME_MAX
+    }
+
+    struct __sbuf
+    {
+        ubyte* _base;
+        int _size;
+    }
+}
 else
 {
     static assert( false, "Unsupported platform" );
@@ -995,6 +1019,185 @@ else version (CRuntime_Newlib_3DS)
     ///
     alias shared(__STDIO_FILE_STRUCT) FILE;
 }
+else version (CRuntime_Newlib_GBA)
+{
+    import core.stdc.wchar_ : mbstate_t;
+    import core.stdc.stddef : wchar_t;
+    import core.stdc.time : tm;
+
+    alias off_t = int;
+    alias ssize_t = int;
+
+    ///
+    struct fpos_t
+    {
+        off_t __pos;
+        mbstate_t __state;
+        int __mblen_pending;
+    }
+
+    struct _Bigint
+    {
+        _Bigint* _next;
+        int _k, _maxwds, _sign, _wds;
+        c_ulong[1] _x;
+    }
+
+    struct _glue
+    {
+        _glue* _next;
+        int _niobs;
+        FILE* _iobs;
+    }
+
+    struct _rand48
+    {
+        ushort[3] _seed;
+        ushort[3] _mult;
+        ushort _add;
+    }
+
+    enum _REENT_EMERGENCY_SIZE = 25;
+    enum _REENT_ASCTIME_SIZE = 26;
+    enum _REENT_SIGNAL_SIZE = 24;
+
+    alias _READ_WRITE_RETURN_TYPE = ssize_t;
+    alias _READ_WRITE_BUFSIZE_TYPE = int;
+    struct locale_t { }
+    alias flock_t = int;
+
+    enum _ATEXIT_SIZE = 32;
+
+    struct _on_exit_args
+    {
+        void*[_ATEXIT_SIZE]  _fnargs;
+        void*[_ATEXIT_SIZE]  _dso_handle;
+        c_ulong _fntypes;
+        c_ulong _is_cxa;
+    }
+
+    struct _atexit
+    {
+        _atexit* _next;
+        int _ind;
+
+        void function()[_ATEXIT_SIZE] _fns;
+        _on_exit_args __on_exit_args;
+    }
+
+    struct _reent
+    {
+        int _errno;
+
+        FILE* _stdin, _stdout, _stderr;
+
+        int _inc;
+        char[_REENT_EMERGENCY_SIZE] _emergency;
+
+        int _unspecified_locale_info;
+        locale_t* _locale;
+
+        int __sdidinit;
+
+        void function(_reent*) __cleanup;
+
+        _Bigint* _result;
+        int _result_k;
+        _Bigint* _p5s;
+        _Bigint** _freelist;
+
+        int _cvtlen;
+        char* _cvtbuf;
+
+        union _u
+        {
+            struct _a
+            {
+                uint _unused_rand;
+                char* _strtok_last;
+                char[_REENT_ASCTIME_SIZE] _asctime_buf;
+                tm _localtime_buf;
+                int _gamma_signgam;
+                ulong _rand_next;
+                _rand48 _r48;
+                mbstate_t _mblen_state;
+                mbstate_t _mbtowc_state;
+                mbstate_t _wctomb_state;
+                char[8] _l64a_buf;
+                char[_REENT_SIGNAL_SIZE] _signal_buf;
+                int _getdate_err;
+                mbstate_t _mbrlen_state;
+                mbstate_t _mbrtowc_state;
+                mbstate_t _mbsrtowcs_state;
+                mbstate_t _wcrtomb_state;
+                mbstate_t _wcsrtombs_state;
+                int _h_errno;
+            }
+            _a _reent;
+
+            struct _b
+            {
+                enum _N_LISTS = 30;
+                ubyte*[_N_LISTS] _nextf;
+                uint*[_N_LISTS] _nmalloc;
+            }
+            _b _unused;
+        }
+        _u _new;
+
+        _atexit* _atexit_ptr;
+        _atexit _atexit0;
+
+        void function(int)** _sig_func;
+
+        _glue __sglue;
+
+        void* deviceData;
+        FILE[3] __sf;
+    }
+
+    ///
+    struct __STDIO_FILE_STRUCT
+    {
+        ubyte* _p;
+        int _r;
+        int _w;
+        short _flags;
+        short _file;
+        __sbuf _bf;
+        int _lbfsize;
+
+        void* _cookie;
+        _READ_WRITE_RETURN_TYPE function(_reent*, void*, char*, _READ_WRITE_BUFSIZE_TYPE) _read;
+        _READ_WRITE_RETURN_TYPE function(_reent*, void*, const char*, _READ_WRITE_BUFSIZE_TYPE) _write;
+        fpos_t function(_reent*, void*, fpos_t, int) _seek;
+        int function(_reent*, void*) _close;
+
+        __sbuf _ub;
+        ubyte* _up;
+        int _ur;
+
+        ubyte[3] _ubuf;
+        ubyte[1] _nbuf;
+
+        __sbuf _lb;
+
+        int _blksize;
+        off_t _offset;
+
+        _reent* _data;
+
+        flock_t _lock;
+
+        mbstate_t _mbstate;
+        int _flags2;
+    }
+
+    ///
+    alias __STDIO_FILE_STRUCT _iobuf;
+    ///
+    alias shared(__STDIO_FILE_STRUCT) FILE;
+}
 else
 {
     static assert( false, "Unsupported platform" );
@@ -1330,6 +1533,30 @@ else version (CRuntime_UClibc)
     extern shared FILE* stderr;
 }
 else version (CRuntime_Newlib_3DS)
+{
+    enum
+    {
+        ///
+        _IOFBF = 0,
+        ///
+        _IOLBF = 1,
+        ///
+        _IONBF = 2,
+    }
+
+    private extern shared _reent __REENT;
+
+    @property auto __stdin()() { return __REENT._stdin; }
+    @property auto __stdout()() { return __REENT._stdout; }
+    @property auto __stderr()() { return __REENT._stderr; }
+    ///
+    alias __stdin stdin;
+    ///
+    alias __stdout stdout;
+    ///
+    alias __stderr stderr;
+}
+else version (CRuntime_Newlib_GBA)
 {
     enum
     {
@@ -1969,6 +2196,30 @@ else version (CRuntime_UClibc)
     int  vsnprintf(scope char* s, size_t n, scope const char* format, va_list arg);
 }
 else version (CRuntime_Newlib_3DS)
+{
+  // No unsafe pointer manipulation.
+  @trusted
+  {
+    ///
+    void rewind(FILE* stream);
+    ///
+    pure void clearerr(FILE* stream);
+    ///
+    pure int  feof(FILE* stream);
+    ///
+    pure int  ferror(FILE* stream);
+    ///
+    int  fileno(FILE *);
+  }
+
+    ///
+    pragma(printf)
+    int  snprintf(scope char* s, size_t n, scope const char* format, ...);
+    ///
+    pragma(printf)
+    int  vsnprintf(scope char* s, size_t n, scope const char* format, va_list arg);
+}
+else version (CRuntime_Newlib_GBA)
 {
   // No unsafe pointer manipulation.
   @trusted

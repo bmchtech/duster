@@ -174,6 +174,17 @@ else version (_3DS)
     alias long  cpp_longlong;
     alias ulong cpp_ulonglong;
 }
+else version (_GBA)
+{
+    alias int  c_long;
+    alias uint c_ulong;
+
+    alias int   cpp_long;
+    alias uint  cpp_ulong;
+
+    alias long  cpp_longlong;
+    alias ulong cpp_ulonglong;
+}
 
 version (CRuntime_Microsoft)
 {

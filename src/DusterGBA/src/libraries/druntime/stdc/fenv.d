@@ -509,6 +509,11 @@ else version (CRuntime_Newlib_3DS)
     alias fenv_t    = int;
     alias fexcept_t = int;
 }
+else version (CRuntime_Newlib_GBA)
+{
+    alias fenv_t    = int;
+    alias fexcept_t = int;
+}
 else
 {
     static assert( false, "Unsupported platform" );
@@ -867,6 +872,12 @@ else version (CRuntime_UClibc)
     enum FE_DFL_ENV = cast(fenv_t*)(-1);
 }
 else version (CRuntime_Newlib_3DS)
+{
+    private extern const fenv_t __fe_dfl_env;
+    ///
+    enum FE_DFL_ENV = &__fe_dfl_env;
+}
+else version (CRuntime_Newlib_GBA)
 {
     private extern const fenv_t __fe_dfl_env;
     ///

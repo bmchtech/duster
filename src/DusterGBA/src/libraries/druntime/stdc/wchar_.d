@@ -131,6 +131,22 @@ else version (CRuntime_Newlib_3DS)
 
     alias mbstate_t = _mbstate_t;
 }
+else version (CRuntime_Newlib_GBA)
+{
+    ///
+    struct _mbstate_t
+    {
+        int __count;
+        union _u
+        {
+            wint_t __wch;
+            ubyte[4] __wchb;
+        }
+        _u __value;
+    }
+
+    alias mbstate_t = _mbstate_t;
+}
 else
 {
     ///

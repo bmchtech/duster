@@ -41,6 +41,7 @@ immutable
         android,   /// Android
         otherPosix, /// Other Posix Systems
         _3ds,      /// Nintendo 3DS
+        _gba,      /// Nintendo GBA
         unknown,   /// Unknown
     }
 
@@ -55,6 +56,7 @@ immutable
     else version (DragonFlyBSD) OS os = OS.dragonFlyBSD;
     else version (Posix)   OS os = OS.otherPosix;
     else version (_3DS)    OS os = OS._3ds;
+    else version (_GBA)    OS os = OS._gba;
     else OS os = OS.unknown;
 
     /++

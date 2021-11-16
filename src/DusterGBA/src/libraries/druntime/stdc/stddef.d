@@ -39,4 +39,9 @@ else version (CRuntime_Newlib_3DS)
     ///
     alias dchar wchar_t;
 }
+else version (CRuntime_Newlib_GBA)
+{
+    ///
+    alias dchar wchar_t;
+}
 
