@@ -23,6 +23,11 @@
 
 module tonc.tonc_text;
 
+import tonc.tonc_types;
+import tonc.tonc_memmap;
+import tonc.tonc_memdef;
+import tonc.tonc_core;
+
 extern (C):
 
 /*!	\addtogroup module tonc.tonc_text;

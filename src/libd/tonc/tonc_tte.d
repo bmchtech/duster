@@ -13,7 +13,6 @@
   * 20070723: PONDER: Make positional items signed?
 */
 
-extern (C):
 
 module tonc.tonc_tte;
 
@@ -22,7 +21,9 @@ import core.stdc.stdio;
 import tonc.tonc_surface;
 import tonc.tonc_types;
 
-*! \addtogroup grpTTE
+extern (C):
+
+/*! \addtogroup grpTTE
 	\brief	A generalized raster text system.
 
 	As of v1.3, Tonc has a completely new way of handling text. It can
@@ -184,19 +185,26 @@ enum TTE_SPECIAL = 3;
 
 //! \name Default fonts
 //\{
-enum fwf_default = sys8Font; //!< Default fixed-width font
-enum vwf_default = verdana9Font; //!< Default vairable-width font
+alias fwf_default = sys8Font; //!< Default fixed-width font
+alias vwf_default = verdana9Font; //!< Default vairable-width font
 //\}
 
 //! \name Default glyph renderers
 //\{
-enum ase_drawg_default = cast(fnDrawg) ase_drawg_s;
-enum bmp8_drawg_default = cast(fnDrawg) bmp8_drawg_b1cts;
-enum bmp16_drawg_default = cast(fnDrawg) bmp16_drawg_b1cts;
-enum chr4c_drawg_default = cast(fnDrawg) chr4c_drawg_b1cts;
-enum chr4r_drawg_default = cast(fnDrawg) chr4r_drawg_b1cts;
-enum obj_drawg_default = cast(fnDrawg) obj_drawg;
-enum se_drawg_default = cast(fnDrawg) se_drawg_s;
+// // enum ase_drawg_default = cast(fnDrawg) ase_drawg_s;
+// ref fnDrawg ase_drawg_default() { return cast(fnDrawg) ase_drawg_s;}
+// // enum bmp8_drawg_default = cast(fnDrawg) bmp8_drawg_b1cts;
+// ref fnDrawg bmp8_drawg_default() { return cast(fnDrawg) bmp8_drawg_b1cts;}
+// // enum bmp16_drawg_default = cast(fnDrawg) bmp16_drawg_b1cts;
+// ref fnDrawg bmp16_drawg_default() { return cast(fnDrawg) bmp16_drawg_b1cts;}
+// // enum chr4c_drawg_default = cast(fnDrawg) chr4c_drawg_b1cts;
+// ref fnDrawg chr4c_drawg_default() { return cast(fnDrawg) chr4c_drawg_b1cts;}
+// // enum chr4r_drawg_default = cast(fnDrawg) chr4r_drawg_b1cts;
+// ref fnDrawg chr4r_drawg_default() { return cast(fnDrawg) chr4r_drawg_b1cts;}
+// // enum obj_drawg_default = cast(fnDrawg) obj_drawg;
+// ref fnDrawg obj_drawg_default() { return cast(fnDrawg) obj_drawg;}
+// // enum se_drawg_default = cast(fnDrawg) se_drawg_s;
+// ref fnDrawg se_drawg_default() { return cast(fnDrawg) se_drawg_s;}
 //\}
 
 //! \name Default initializers
@@ -432,7 +440,7 @@ ssize_t tte_con_nocash (_reent* r, void* fd, const(char)* text, size_t len);
 /*! Wrapper 'function' to hide that we're making iprintf do
 	things it doesn't usually do.
 */
-enum tte_printf = iprintf;
+// alias tte_printf = iprintf;
 
 /*!	\}	*/
 

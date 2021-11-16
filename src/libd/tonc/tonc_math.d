@@ -68,7 +68,7 @@ extern (D) int SGN(T)(auto ref T x)
     return x >= 0 ? 1 : -1;
 }
 
-enum SGN2 = SGN;
+alias SGN2 = SGN;
 // SGN
 
 //! Tri-state sign: -1 for negative, 0 for 0, +1 for positive.
@@ -94,8 +94,11 @@ extern (D) auto MIN(T0, T1)(auto ref T0 a, auto ref T1 b)
 // MAX
 
 //! In-place swap. 
-
-enum SWAP = SWAP2;
+extern (D) auto SWAP2(T0, T1)(auto ref T0 a, auto ref T1 b)
+{
+    do { a=(a)-(b); b=(a)+(b); a=(b)-(a); } while(0);
+}
+alias SWAP = SWAP2;
 
 //Alternative:
 //#define SWAP2(a, b)	( (b) ^= ((a) ^= ((b) ^= (a))) )
