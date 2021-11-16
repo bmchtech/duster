@@ -9,6 +9,26 @@
 
 module tonc;
 
+public {
+	import tonc.tonc_types;
+	import tonc.tonc_memmap;
+	import tonc.tonc_memdef;
+
+	import tonc.tonc_bios;
+	import tonc.tonc_core;
+	import tonc.tonc_input;
+	import tonc.tonc_irq;
+	import tonc.tonc_math;
+	import tonc.tonc_oam;
+	import tonc.tonc_tte;
+	import tonc.tonc_video;
+	import tonc.tonc_surface;
+
+	import tonc.tonc_nocash;
+
+	import tonc.tonc_text;
+}
+
 extern (C):
 
 // For old times' sake

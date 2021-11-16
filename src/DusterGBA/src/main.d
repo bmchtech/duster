@@ -1,6 +1,6 @@
 import core.stdc.stdio;
 import mgba;
-import tonc.tonc_types;
+import tonc;
 
 extern(C) int main() {
 	// nothing
