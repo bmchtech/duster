@@ -10,3 +10,6 @@
 [submodule "src/tools/crunch"]
 	path = src/tools/crunch
 	url = https://github.com/xdrie/crunch.git
+[submodule "lib/gba_dlang"]
+	path = lib/gba_dlang
+	url = https://github.com/redthing1/gba_dlang.git
