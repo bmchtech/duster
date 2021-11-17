@@ -390,13 +390,13 @@ ref vu8 REG_WINOBJCNT() { return *(cast(vu8*) REG_BASE + 0x004B); }
 //! \name Graphic effects
 //\{
 // enum REG_MOSAIC = *cast(vu32*) REG_BASE + 0x004C; //!< Mosaic control
-ref vu32 REG_MOSAIC() { return *(cast(vu32*) REG_BASE + 0x004C); }
+vu32* REG_MOSAIC() { return cast(vu32*) (REG_BASE + 0x004C); }
 // enum REG_BLDCNT = *cast(vu16*) REG_BASE + 0x0050; //!< Alpha control
-ref vu16 REG_BLDCNT() { return *(cast(vu16*) REG_BASE + 0x0050); }
+vu16* REG_BLDCNT() { return cast(vu16*) (REG_BASE + 0x0050); }
 // enum REG_BLDALPHA = *cast(vu16*) REG_BASE + 0x0052; //!< Fade level
-ref vu16 REG_BLDALPHA() { return *(cast(vu16*) REG_BASE + 0x0052); }
+vu16* REG_BLDALPHA() { return cast(vu16*) (REG_BASE + 0x0052); }
 // enum REG_BLDY = *cast(vu16*) REG_BASE + 0x0054; //!< Blend levels
-ref vu16 REG_BLDY() { return *(cast(vu16*) REG_BASE + 0x0054); }
+vu16* REG_BLDY() { return cast(vu16*) (REG_BASE + 0x0054); }
 //\}
 
 // === SOUND REGISTERS ===
