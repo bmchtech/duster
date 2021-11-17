@@ -39,7 +39,7 @@ NELUA_FLAGS := -P noentrypoint -P nogc -P nochecks --release --add-path $(SOURCE
 ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
 
-DSTDLIB := ../libd
+DSTDLIB := ../../lib/gba_dlang/libd
 DINCFLAGS :=
 DDUSKDIR := $(DUSK_DIR)/d_src
 # DFLAGS += -I$(DSTDLIB) -I$(DUSK_DIR)/d_src
