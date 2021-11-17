@@ -18,8 +18,10 @@ void logo_start() {
 
     pal_bg_mem[0] = 0x0C02; // background color
 
-    // load sprite atlas
     dusk_sprites_init();
+    dusk_sprites_configure(false); // use 4bpp
+
+    // load sprite atlas
     SpriteAtlas atlas = dusk_load_atlas(cast(char*)"a_logo");
     dusk_sprites_upload_atlas(&atlas);
 
