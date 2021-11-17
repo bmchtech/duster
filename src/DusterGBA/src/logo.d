@@ -69,4 +69,4 @@ void logo_end() {
     REG_BLDCNT = BLD_OFF;
 }
 
-Scene logo_scene = Scene(&logo_start, &logo_update, &logo_end);
+__gshared Scene logo_scene = Scene(&logo_start, &logo_update, &logo_end);
