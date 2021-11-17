@@ -5,11 +5,17 @@ extern(C):
 import core.stdc.string;
 import dusk;
 import tonc;
+import dusk.contrib.mgba;
 
 __gshared Sprite* logo;
-enum FADE_LENGTH = 60; // fade length in frames
+enum FADE_LENGTH = 120; // fade length in frames
 __gshared int start_frame;
 __gshared int fade_step;
+
+vu16* REG_BLDY2() {
+    // return (cast(vu16*) REG_BASE + 0x0054);
+    return (cast(vu16*) 0x4000054);
+}
 
 void logo_start() {
     dusk_init_graphics_mode0();
@@ -34,7 +40,12 @@ void logo_start() {
 
     // set up blending registers
     REG_BLDCNT = BLD_OBJ | BLD_BG1 | BLD_BLACK;
-    REG_BLDY = BLDY_BUILD(16u);
+    
+    auto bldy2 = REG_BLDY2();
+    *bldy2 = cast(vu16) 3;
+    // REG_BLDY = BLDY_BUILD(16u);
+    // log REG_BLDY and REG_BLDY2
+    mgba_printf(1, "&REG_BLDY: 0x%08x, &REG_BLDY2: 0x%08x, val: 0x%08x", cast(int)(&REG_BLDY), REG_BLDY2, cast(int)(*REG_BLDY2));
 
     fade_step = FADE_LENGTH / 16;
 
@@ -59,7 +70,7 @@ void logo_update() {
     int progress = (frame_count - start_frame);
     if (progress <= FADE_LENGTH) {
         int fade = clamp(progress / fade_step, 0, 16);
-        REG_BLDY = BLDY_BUILD(cast(ushort)(16 - fade));
+        // REG_BLDY = BLDY_BUILD(cast(ushort)(16 - fade));
     }
 
     // update sprites
