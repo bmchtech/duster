@@ -41,7 +41,7 @@ void logo_start() {
 
     // ----------
 
-	REG_DISPCNT |= DCNT_BG1;
+	*REG_DISPCNT |= DCNT_BG1;
 	tte_init_chr4c(1, cast(u16) (BG_CBB!u16(0)|BG_SBB!u16(31)), 0, 0x0201, CLR_WHITE, &verdana9Font, null);
 	tte_init_con();
 
