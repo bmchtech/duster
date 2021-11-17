@@ -13,6 +13,7 @@
 module tonc.tonc_core;
 
 import tonc.tonc_types;
+import tonc.tonc_memdef;
 
 extern (C):
 
@@ -90,18 +91,43 @@ extern (D) auto _BF_PREP(T0, T1, T2)(auto ref T0 x, auto ref T1 shift, auto ref 
 //\{
 
 //! Prepare a named bit-field for for insterion or combination.
+// #define BFN_PREP(x, name)	( ((x)<<name##_SHIFT) & name##_MASK )
+template BFN_PREP(string x, string name) {
+    const char[] BFN_PREP = "( (("~x~")<<" ~ (name ~ "_SHIFT") ~ ") & " ~ (name ~ "_MASK") ~ ")";
+}
 
 //! Get the value of a named bitfield from \a y. Equivalent to (var=) y.name
+// #define BFN_GET(y, name)	( ((y) & name##_MASK)>>name##_SHIFT )
+template BFN_GET(string y, string name) {
+	const char[] BFN_GET = "( (("~y~") & " ~ (name ~ "_MASK") ~ ")>>" ~ (name ~ "_SHIFT") ~ ")";
+}
 
 //! Set a named bitfield in \a y to \a x. Equivalent to y.name= x.
+// #define BFN_SET(y, x, name)	(y = ((y)&~name##_MASK) | BFN_PREP(x,name) )
+template BFN_SET(string y, string x, string name) {
+	const char[] BFN_SET = "("~y~" = (("~y~")&~" ~ (name ~ "_MASK") ~ ") | " ~ BFN_PREP!(x,name) ~ ")";
+}
 
 //! Compare a named bitfield to named literal \a x.
+// #define BFN_CMP(y, x, name)	( ((y)&name##_MASK) == (x) )
 
 //! Massage \a x for use in bitfield \a name with pre-shifted \a x
+// #define BFN_PREP2(x, name)	( (x) & name##_MASK )
+template BFN_PREP2(string x, string name) {
+	const char[] BFN_PREP2 = "( ("~x~") & " ~ (name ~ "_MASK") ~ ")";
+}
 
 //! Get the value of bitfield \a name from \a y, but don't down-shift
+// #define BFN_GET2(y, name)	( (y) & name##_MASK )
+template BFN_GET2(string y, string name) {
+	const char[] BFN_GET2 = "( ("~y~") & " ~ (name ~ "_MASK") ~ ")";
+}
 
 //! Set bitfield \a name from \a y to \a x with pre-shifted \a x
+// #define BFN_SET2(y,x,name)	( y = ((y)&~name##_MASK) | BFN_PREP2(x,name) )
+template BFN_SET2(string y, string x, string name) {
+	const char[] BFN_SET2 = "("~y~" = (("~y~")&~" ~ (name ~ "_MASK") ~ ") | " ~ BFN_PREP2!(x,name) ~ ")";
+}
 
 //\}
 
