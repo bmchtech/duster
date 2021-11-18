@@ -30,7 +30,7 @@ int main() {
     maxmod_audio_init();
 
     // set waitstates to be as fast as possible
-    *REG_WAITCNT = 0b0100011011011010;
+    *REG_WAITCNT = WS_SRAM_2 | WS_ROM0_N2 | WS_ROM1_N2 | WS_ROM2_N2 | WS_PHI_OFF | WS_PREFETCH | WS_GBA;
 
     version (DEBUG) {
         mgba_open();
