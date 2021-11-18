@@ -5,6 +5,7 @@ import dusk;
 import tonc;
 import libgba.maxmod;
 import res;
+import scn;
 
 extern (C):
 
@@ -72,7 +73,7 @@ void logo_update() {
     }
     if (progress > FADE_LENGTH * 2 + 2) {
         // done
-        // dusk_scene_set(menu_scene);
+        dusk_scene_set(menu_scene);
     }
 
     // update sprites
