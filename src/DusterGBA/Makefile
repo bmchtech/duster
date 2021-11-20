@@ -129,6 +129,7 @@ $(NAME).gbfs: assets
 clean:
 	@rm -fv *.gba
 	@rm -fv *.elf
+	@rm -fv *.map
 	@rm -fv *.sav
 	@rm -fv *.gbfs
 	@rm -rf $(APP_OBJECTS)
