@@ -7,6 +7,7 @@ import dusk.contrib.mgba;
 import dusk.contrib.gbfs;
 import libgba.maxmod;
 import scn.logo;
+import res;
 
 extern(C):
 
@@ -35,6 +36,8 @@ int main() {
     version (DEBUG) {
         mgba_open();
     }
+    // log rom info
+    mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_INFO, "build info: %s %s (%s)\n", GAME_VERSION, GAME_BUILD, GAME_COPYING);
 
     dusk_scene_set(logo_scene);
 
