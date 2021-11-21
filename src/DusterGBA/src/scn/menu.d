@@ -21,9 +21,7 @@ void menu_start() {
     tte_init_con();
 
     // load bg for title
-    GritImage bg_img = dusk_load_image(cast(const (char)*)"title");
-    // log loaded image
-    mgba_printf(1, "loaded image: %d, %d\n", bg_img.tile_sz, bg_img.pal_sz);
+    GritImage bg_img = dusk_load_image(cast(char*)"title");
     dusk_background_upload_raw(&bg_img, 0, 30);
 
     dusk_background_make(1, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ 0, /*sbb*/ 30));
