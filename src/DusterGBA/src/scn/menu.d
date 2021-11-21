@@ -34,9 +34,9 @@ void menu_start() {
 void menu_update() {
     dusk_frame();
 
-    // if (key_hit(KEY_A) || key_hit(KEY_START)) {
-    //     // dusk_scene_set(levelselect_scene);
-    // }
+    if (key_hit(KEY_A) || key_hit(KEY_START)) {
+        // dusk_scene_set(levelselect_scene);
+    }
 
     // update sprites
     dusk_sprites_update();

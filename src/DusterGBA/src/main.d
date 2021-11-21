@@ -14,8 +14,8 @@ extern(C):
 void maxmod_audio_init() {
     // irq setup for maxmod dma
     irq_init(null);
-    irq_add(IrqIndex.II_VBLANK, &mmVBlank);
-    irq_enable(IrqIndex.II_VBLANK);
+    irq_add(IrqIndex.VBLANK, &mmVBlank);
+    irq_enable(IrqIndex.VBLANK);
 
     // load soundbank
     u32 soundbank_len;
