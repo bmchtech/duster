@@ -9,7 +9,6 @@ SOURCE_DIR 	:= src
 LIB_DIR    	:= lib
 TOOLS_DIR	:= ../tools
 DUSK_DIR   := ../../lib/dusk/src/dusk
-CCOLL_DIR   := ../../lib/ccoll
 DATA_DIR   := asset/build
 SPECS      := -specs=gba.specs
 
@@ -25,8 +24,8 @@ NELUA	:= nelua
 
 ARCH	:= -mthumb-interwork -mthumb
 
-INCFLAGS := -I$(DUSK_DIR)/include -I$(CCOLL_DIR)/include -I$(DEVKITPRO)/libtonc/include -I$(DEVKITPRO)/libgba/include -I$(SOURCE_DIR) -I$(DATA_DIR)
-LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/libtonc/lib -ltonc -L$(DEVKITPRO)/libgba/lib -lmm
+INCFLAGS := -I$(DUSK_DIR)/include -I$(DEVKITPRO)/libtonc/include -I$(DEVKITPRO)/libgba/include -I$(SOURCE_DIR) -I$(DATA_DIR)
+LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(DEVKITPRO)/libtonc/lib -ltonc -L$(DEVKITPRO)/libgba/lib -lmm
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
@@ -83,7 +82,6 @@ no-content: libs $(NAME)-code.gba
 
 libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
-	cd $(CCOLL_DIR) && make
 
 tools: $(TOOLS_DIR)/bin/crunch_gen $(TOOLS_DIR)/bin/duster_mapc
 
@@ -136,5 +134,4 @@ clean:
 	@rm -rf $(APP_OBJECTS)
 	@rm -rf $(APP_MAIN_OBJECT)
 	cd $(DUSK_DIR) && make clean
-	cd $(CCOLL_DIR) && make clean
 	cd asset/build && make clean
