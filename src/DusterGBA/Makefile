@@ -47,7 +47,7 @@ DFLAGS += -I$(DSTDLIB) -I$(DDUSKDIR)
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O2 -g -DDEBUG
-	DFLAGS += -g --d-version=DEBUG
+	DFLAGS += -O2 -g --d-version=DEBUG
 	DUSK_MKFLAGS += DEBUG=1
 else
 	# non-debug

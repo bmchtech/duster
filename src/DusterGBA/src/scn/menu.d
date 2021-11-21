@@ -5,6 +5,7 @@ import dusk;
 import tonc;
 import libgba.maxmod;
 import res;
+import dusk.contrib.mgba;
 
 extern (C):
 
@@ -15,12 +16,14 @@ void menu_start() {
     dusk_sprites_configure(false);
 
     // init tte
-    *REG_DISPCNT |= DCNT_BG0;
+    *REG_DISPCNT |= DCNT_BG0 | DCNT_BG1;
     tte_init_chr4c(0, cast(u16) (BG_CBB(1) | BG_SBB(31)), 0, 0x0201, CLR_GRAY, null, null);
     tte_init_con();
 
     // load bg for title
-    GritImage bg_img = dusk_load_image(cast(char*)"title");
+    GritImage bg_img = dusk_load_image(cast(const (char)*)"title");
+    // log loaded image
+    mgba_printf(1, "loaded image: %d, %d\n", bg_img.tile_sz, bg_img.pal_sz);
     dusk_background_upload_raw(&bg_img, 0, 30);
 
     dusk_background_make(1, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ 0, /*sbb*/ 30));

@@ -33,9 +33,9 @@ int main() {
     // set waitstates to be as fast as possible
     *REG_WAITCNT = WS_SRAM_2 | WS_ROM0_N2 | WS_ROM1_N2 | WS_ROM2_N2 | WS_PHI_OFF | WS_PREFETCH | WS_GBA;
 
-    version (DEBUG) {
-        mgba_open();
-    }
+    // version (DEBUG) {
+    // }
+    mgba_open();
     // log rom info
     mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_INFO, "build info: %s %s (%s)\n", GAME_VERSION, GAME_BUILD, GAME_COPYING);
 
