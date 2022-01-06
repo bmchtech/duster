@@ -6,6 +6,7 @@ import tonc;
 import libgba.maxmod;
 import res;
 import dusk.contrib.mgba;
+import scn.board;
 
 extern (C):
 
