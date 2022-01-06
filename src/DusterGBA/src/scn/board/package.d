@@ -2,5 +2,5 @@ module scn.board;
 
 public {
     import scn.board.scene;
-    import scn.board.vars;
+    import scn.board.defs;
 }

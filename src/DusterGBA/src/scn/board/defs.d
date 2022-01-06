@@ -1,7 +1,7 @@
-module scn.board.vars;
+module DusterGBA.src.scn.board.defs;
 
 import tonc;
-import typ.vpos;
+import game;
 import scn.board;
 
 struct PawnMoveTweenInfo {
@@ -21,7 +21,7 @@ struct PawnFlashTweenInfo {
 }
 
 struct SpritePawnPair {
-    pawn_gid pawn_gid;
+    pawn_gid_t pawn_gid;
     int sprite;
 }
 

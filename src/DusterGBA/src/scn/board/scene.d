@@ -9,6 +9,8 @@ import dusk.contrib.mgba;
 import typ.vpos;
 import scn.board;
 
+extern (C):
+
 void boardscn_init_vars() {
     board_offset = VPos(8, 8);
     cursor_pos = VPos16(0, 0);
