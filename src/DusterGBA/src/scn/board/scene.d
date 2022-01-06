@@ -9,6 +9,7 @@ import res;
 import dusk.contrib.mgba;
 import typ.vpos;
 import scn.board;
+import game;
 
 extern (C):
 
