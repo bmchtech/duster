@@ -11,7 +11,7 @@ a sleek strategy game for the gba
 
 + version control: [git](https://git-scm.com/)
 + gba toolchain: [devkitarm](https://devkitpro.org/wiki/Getting_Started) (packages: `tonc`, `grit`)
-+ dlang ldc compiler: [ldc2](https://github.com/ldc-developers/ldc)
++ dlang llvm compiler: [ldc2](https://github.com/ldc-developers/ldc)
 + atlas packer: [crunch](https://github.com/redthing1/crunch)
 
 ### from source
