@@ -85,10 +85,10 @@ void levelselect_update() {
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
         // selected, copy data
-        // strcpy(selected_map_file, level_infos[levelselect_selected].map_file);
+        strcpy(cast(char*) selected_map_file, cast(char*) level_infos[levelselect_selected].map_file);
 
         // switch to scene
-        // dusk_scene_set(board_scene);
+        dusk_scene_set(board_scene);
     }
 
     int lr_touched = key_transit(KEY_LEFT | KEY_RIGHT);
