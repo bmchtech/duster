@@ -1,6 +1,12 @@
-module DusterGBA.src.scn.board.defs;
+module scn.board.defs;
 
+import core.stdc.string;
+import dusk;
 import tonc;
+import libgba.maxmod;
+import res;
+import dusk.contrib.mgba;
+
 import game;
 import scn.board;
 
@@ -44,7 +50,7 @@ bool cursor_click;
 VPos16 cursor_click_pos;
 PawnMoveTweenInfo pawn_move_tween;
 PawnFlashTweenInfo pawn_flash_tween;
-CC_HashTable* pawn2sprite;
+// CC_HashTable* pawn2sprite;
 SpritePawnPair[128] sprite_pawn_pairs;
 enum CACHE_RANGE_BUF_LEN = 128;
 VPos16[CACHE_RANGE_BUF_LEN] cache_range_buf;

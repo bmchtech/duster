@@ -1,6 +1,7 @@
 module scn.board.scene;
 
 import core.stdc.string;
+import core.stdc.stdio;
 import dusk;
 import tonc;
 import libgba.maxmod;
@@ -20,7 +21,7 @@ void boardscn_init_vars() {
     cursor_click = false;
     cache_range_buf_filled = 0;
     request_step = false;
-    board_scene_page = BOARDSCN_BOARD;
+    board_scene_page = BoardScenePage.BOARDSCN_BOARD;
     pausemenu_dirty = true;
     board_scroll_x = 0;
     board_scroll_y = 0;
@@ -42,17 +43,17 @@ void boardscn_start() {
     sqran(frame_count ^ 0xBEEF1234);
 
     // main bg
-    REG_DISPCNT |= DCNT_BG0;
-    REG_BG0CNT = BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb) | BG_PRIO(0);
+    *REG_DISPCNT |= DCNT_BG0;
+    *REG_BG0CNT = cast(u16) (BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb) | BG_PRIO(0));
 
     // set up bg0 as a drawing surface
-    srf_init(&bg0_srf, SRF_CHR4C, tile_mem[bg0_srf_cbb], 240, 160, 4, pal_bg_mem);
-    schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
+    srf_init(&bg0_srf, ESurfaceType.SRF_CHR4C, cast(void*) tile_mem[bg0_srf_cbb], 240, 160, 4, pal_bg_mem);
+    schr4c_prep_map(&bg0_srf, cast(ushort*) se_mem[bg0_srf_sbb], cast(u16) 0); // set whole map to 0
 
     // set up bg1 with tte
-    REG_DISPCNT |= DCNT_BG1;
-    tte_init_chr4c(1, BG_CBB(bg1_tte_cbb) | BG_SBB(bg1_tte_sbb), 0, 0x0201, CLR_GRAY, NULL, NULL);
-    REG_BG1CNT |= BG_PRIO(2);
+    *REG_DISPCNT |= DCNT_BG1;
+    tte_init_chr4c(1, cast(u16) (BG_CBB(bg1_tte_cbb) | BG_SBB(bg1_tte_sbb)), 0, 0x0201, CLR_GRAY, null, null);
+    *REG_BG1CNT |= BG_PRIO(2);
     tte_init_con();
 
     // set bg palette
@@ -61,7 +62,7 @@ void boardscn_start() {
     pal_bg_mem[2] = RES_PAL[3]; // draw col 2
 
     // pawn spritesheet
-    SpriteAtlas atlas = dusk_load_atlas("a_pawn");
+    SpriteAtlas atlas = dusk_load_atlas(cast(char*) "a_pawn");
     dusk_sprites_upload_atlas(&atlas);
 
     // initialize game
@@ -72,14 +73,14 @@ void boardscn_start() {
     // load gamemap
     u32 test1_gmp_len;
     char[48] gamemap_file_name;
-    sprintf(gamemap_file_name, "%s.gmp.bin", selected_map_file);
-    mgba_printf(MGBA_LOG_ERROR, "loading map file %s\n", gamemap_file_name);
-    const void* test1_gmp = dusk_load_raw(gamemap_file_name, &test1_gmp_len);
-    mgba_printf(MGBA_LOG_ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
+    sprintf(cast(char*) gamemap_file_name, "%s.gmp.bin", cast(char*) selected_map_file);
+    mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "loading map file %s\n", cast(char*) gamemap_file_name);
+    const void* test1_gmp = dusk_load_raw(cast(char*) gamemap_file_name, &test1_gmp_len);
+    mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
     bool load_success = game_load_gamemap(cast(void*) test1_gmp, test1_gmp_len);
 
     if (!load_success) {
-        mgba_printf(MGBA_LOG_ERROR, "gamemap load failed");
+        mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "gamemap load failed");
     }
 
     // set vars for drawing
@@ -130,10 +131,10 @@ void boardscn_input() {
 
     if (key_hit(KEY_START)) {
         // pause menu
-        if (board_scene_page == BOARDSCN_BOARD)
-            board_scene_page = BOARDSCN_PAUSEMENU;
-        else if (board_scene_page == BOARDSCN_PAUSEMENU)
-            board_scene_page = BOARDSCN_BOARD;
+        if (board_scene_page == BoardScenePage.BOARDSCN_BOARD)
+            board_scene_page = BoardScenePage.BOARDSCN_PAUSEMENU;
+        else if (board_scene_page == BoardScenePage.BOARDSCN_PAUSEMENU)
+            board_scene_page = BoardScenePage.BOARDSCN_BOARD;
 
         pausemenu_dirty = true;
         set_ui_dirty();
@@ -173,7 +174,7 @@ void update_ai_moveplay() {
     int human_player_team = -1;
     if (whose_move != human_player_team) {
         // initialize the move queue
-        memset(movequeue_queue, 0, sizeof(movequeue_queue));
+        memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
 
         // call the planner to plan moves for this team
         int num_moves_planned = 0;
@@ -185,7 +186,7 @@ void update_ai_moveplay() {
         }
 
         // log planned moves
-        mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+        mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
         // set variables for move queue
         movequeue_length = num_moves_planned;
         movequeue_progress = -1; // indicates ready movequeue
@@ -208,7 +209,7 @@ void boardscn_update() {
     // draw
 
     switch (board_scene_page) {
-    case BOARDSCN_BOARD:
+    case BoardScenePage.BOARDSCN_BOARD:
         draw_sidebar();
         draw_board();
 
