@@ -6,6 +6,7 @@ import tonc;
 import libgba.maxmod;
 import res;
 import dusk.contrib.mgba;
+import scn.levelselect;
 
 extern (C):
 
@@ -35,7 +36,7 @@ void menu_update() {
     dusk_frame();
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
-        // dusk_scene_set(levelselect_scene);
+        dusk_scene_set(levelselect_scene);
     }
 
     // update sprites
