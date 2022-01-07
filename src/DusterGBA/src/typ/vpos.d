@@ -45,5 +45,5 @@ VPos16 vpos16_add(VPos16 p1, VPos16 p2) {
 }
 
 VPos16 vpos16_neg(VPos16 p1) {
-    return VPos16(-p1.x, -p1.y);
+    return VPos16(cast(s16)(-p1.x), cast(s16)(-p1.y));
 }
