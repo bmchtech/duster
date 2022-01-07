@@ -20,6 +20,7 @@ void boardscn_init_vars() {
     sidebar_dirty = true;
     cursor_shown = true;
     cursor_click = false;
+    cursor_last_moved_frame = 0;
     cache_range_buf_filled = 0;
     request_step = false;
     board_scene_page = BoardScenePage.BOARDSCN_BOARD;
@@ -92,14 +93,15 @@ void boardscn_start() {
     pawn_flash_tween.pawn_gid = -1;
 
     // init data structures
-    CC_HashTableConf pawn2sprite_conf;
-    cc_hashtable_conf_init(&pawn2sprite_conf);
-    pawn2sprite_conf.hash = GENERAL_HASH;
-    pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
-    cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
+    // TODO: reimplement in D
+    // CC_HashTableConf pawn2sprite_conf;
+    // cc_hashtable_conf_init(&pawn2sprite_conf);
+    // pawn2sprite_conf.hash = GENERAL_HASH;
+    // pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
+    // cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
 
     // play start game sfx
-    boardscn_sfx_play_startchime();
+    sfx_play_startchime();
 }
 
 void set_ui_dirty() {
@@ -173,25 +175,25 @@ void update_ai_moveplay() {
 
     // if it is the ai's turn, ask the ai to plan moves
     int human_player_team = -1;
-    if (whose_move != human_player_team) {
-        // initialize the move queue
-        memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
+    // if (whose_move != human_player_team) {
+    //     // initialize the move queue
+    //     memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
 
-        // call the planner to plan moves for this team
-        int num_moves_planned = 0;
-        if (whose_move == 0) {
-            num_moves_planned = game_gs_ai_plan_moves_variant_1(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
-        }
-        if (whose_move == 1) {
-            num_moves_planned = game_gs_ai_plan_moves_variant_2(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
-        }
+    //     // call the planner to plan moves for this team
+    //     int num_moves_planned = 0;
+    //     if (whose_move == 0) {
+    //         num_moves_planned = game_gs_ai_plan_moves_variant_1(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+    //     }
+    //     if (whose_move == 1) {
+    //         num_moves_planned = game_gs_ai_plan_moves_variant_2(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+    //     }
 
-        // log planned moves
-        mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
-        // set variables for move queue
-        movequeue_length = num_moves_planned;
-        movequeue_progress = -1; // indicates ready movequeue
-    }
+    //     // log planned moves
+    //     mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+    //     // set variables for move queue
+    //     movequeue_length = num_moves_planned;
+    //     movequeue_progress = -1; // indicates ready movequeue
+    // }
 }
 
 void boardscn_update() {
@@ -227,7 +229,7 @@ void boardscn_update() {
         dusk_sprites_update();
 
         break;
-    case BOARDSCN_PAUSEMENU:
+    case BoardScenePage.BOARDSCN_PAUSEMENU:
         update_pause_ui();
         draw_pause_ui();
 
@@ -237,7 +239,8 @@ void boardscn_update() {
 
 void boardscn_end() {
     // clean ds
-    cc_hashtable_destroy(pawn2sprite);
+    // TODO: reimplement in D
+    // cc_hashtable_destroy(pawn2sprite);
 }
 
 __gshared Scene board_scene = Scene(&boardscn_start, &boardscn_end, &boardscn_update);

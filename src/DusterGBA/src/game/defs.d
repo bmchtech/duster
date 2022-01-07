@@ -199,6 +199,6 @@ struct QueuedMove {
     VPos16 end_pos;
 }
 
-GameState game_state;
-GameColdData game_data;
+// GameState game_state;
+// GameColdData game_data;
 u8[4096] game_ai_blackboard;

@@ -48,6 +48,7 @@ VPos16 cursor_pos;
 bool cursor_shown;
 bool cursor_click;
 VPos16 cursor_click_pos;
+int cursor_last_moved_frame;
 PawnMoveTweenInfo pawn_move_tween;
 PawnFlashTweenInfo pawn_flash_tween;
 // CC_HashTable* pawn2sprite;
@@ -72,3 +73,11 @@ int movequeue_delay_timer;
 int ai_played_move;
 enum AI_WAIT_TIME = 30;
 int ai_wait_timer;
+
+// extern functions
+void sfx_play_startchime();
+void sfx_play_scroll();
+void sfx_play_click();
+void sfx_play_interact();
+void sfx_play_move();
+void sfx_play_cant();
