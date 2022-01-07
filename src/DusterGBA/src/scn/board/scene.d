@@ -234,6 +234,8 @@ void boardscn_update() {
         draw_pause_ui();
 
         break;
+    default:
+        break;
     }
 }
 

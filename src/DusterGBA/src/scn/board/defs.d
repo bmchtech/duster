@@ -63,7 +63,7 @@ bool pausemenu_dirty;
 enum BOARD_SCROLL_WINDOW = 16;
 int board_scroll_x;
 int board_scroll_y;
-int pause_cursor_selection;
+int pause_cursor_selection = 0;
 enum NUM_SIDEBAR_PAGES = 2;
 int sidebar_page;
 int movequeue_length;
