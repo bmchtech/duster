@@ -76,13 +76,13 @@ void boardscn_start() {
     u32 test1_gmp_len;
     char[48] gamemap_file_name;
     sprintf(cast(char*) gamemap_file_name, "%s.gmp.bin", cast(char*) selected_map_file);
-    mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "loading map file %s\n", cast(char*) gamemap_file_name);
+    mgba_printf(MGBALogLevel.ERROR, "loading map file %s\n", cast(char*) gamemap_file_name);
     const void* test1_gmp = dusk_load_raw(cast(char*) gamemap_file_name, &test1_gmp_len);
-    mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
+    mgba_printf(MGBALogLevel.ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
     bool load_success = game_load_gamemap(cast(void*) test1_gmp, test1_gmp_len);
 
     if (!load_success) {
-        mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "gamemap load failed");
+        mgba_printf(MGBALogLevel.ERROR, "gamemap load failed");
     }
 
     // set vars for drawing
@@ -189,7 +189,7 @@ void update_ai_moveplay() {
     //     }
 
     //     // log planned moves
-    //     mgba_printf(MGBA_LOG_LEVEL.MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+    //     mgba_printf(MGBALogLevel.ERROR, "planning moves returned %d", num_moves_planned);
     //     // set variables for move queue
     //     movequeue_length = num_moves_planned;
     //     movequeue_progress = -1; // indicates ready movequeue

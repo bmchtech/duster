@@ -15,8 +15,8 @@ import game;
 
 VPos16 board_vpos_to_pix_pos(int tx, int ty) {
     VPos16 ret;
-    ret.x = board_offset.x + ((tx - board_scroll_x) << 3);
-    ret.y = board_offset.y + ((ty - board_scroll_y) << 3);
+    ret.x = cast(s16)(board_offset.x + ((tx - board_scroll_x) << 3));
+    ret.y = cast(s16)(board_offset.y + ((ty - board_scroll_y) << 3));
     return ret;
 }
 
@@ -102,14 +102,16 @@ void draw_blocked_tile(int tx, int ty, BlockedPattern pattern) {
     int y2 = y1 + 8;
 
     switch (pattern) {
-    case BLOCKED_PATTERN_SOLID:
+    case BlockedPattern.BLOCKED_PATTERN_SOLID:
         // filled
         // schr4c_rect(&bg0_srf, x1, y1, x2, y2, 1);
-    case BLOCKED_PATTERN_STRIPE:
+        break;
+    case BlockedPattern.BLOCKED_PATTERN_STRIPE:
         // stripes
         for (int i = 0; i < (y2 - y1); i += 2) {
             schr4c_hline(&bg0_srf, x1, y1 + i, x2, 1);
         }
+        break;
     default:
         break;
     }
@@ -117,8 +119,8 @@ void draw_blocked_tile(int tx, int ty, BlockedPattern pattern) {
 
 void draw_clear_ui_surface() {
     // clear whole bg ui surface
-    memset32(tile_mem[bg0_srf_cbb], 0, 4096); // clear cbb
-    schr4c_prep_map(&bg0_srf, se_mem[bg0_srf_sbb], 0); // set whole map to 0
+    memset32(cast(void*) tile_mem[bg0_srf_cbb], 0, 4096); // clear cbb
+    schr4c_prep_map(&bg0_srf, cast(u16*) se_mem[bg0_srf_sbb], cast(u16) 0); // set whole map to 0
 }
 
 void draw_clear_text_surface() {
@@ -138,11 +140,11 @@ void draw_clicked_pawn_graphics() {
         if (pawn_move_range_dirty) {
             pawn_move_range_dirty = FALSE;
 
-            cache_range_buf_filled = board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y, class_data.move, cache_range_buf,
-                CACHE_RANGE_BUF_LEN);
+            cache_range_buf_filled = board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y,
+                class_data.move, cast(VPos16*) cache_range_buf, CACHE_RANGE_BUF_LEN);
             if (cache_range_buf_filled <= 0) {
                 // calc range failed
-                mgba_printf(MGBA_LOG_ERROR, "calculate range buf for pawn %d failed (code %d)!", get_clicked_pawn_gid(),
+                mgba_printf(MGBALogLevel.ERROR, "calculate range buf for pawn %d failed (code %d)!", get_clicked_pawn_gid(),
                     cache_range_buf_filled);
                 // unclick
                 cursor_click = FALSE;
@@ -190,7 +192,7 @@ void draw_board() {
         sprites[i].flags &= ~DUSKSPRITE_FLAGS_VISIBLE; // set not visible
     }
 
-    cc_hashtable_remove_all(pawn2sprite);
+    // cc_hashtable_remove_all(pawn2sprite);
 
     // get board window pos
     int bwy = board_scroll_y;
@@ -220,9 +222,9 @@ void draw_board() {
                 // *pair = (SpritePawnPair){.pawn_gid = pawn_gid, .sprite = pawn_sprite_id};
                 *pair = SpritePawnPair(pawn_gid, pawn_sprite_id);
 
-                cc_hashtable_add(pawn2sprite, &pair.pawn_gid, &pair.sprite);
+                // cc_hashtable_add(pawn2sprite, &pair.pawn_gid, &pair.sprite);
 
-                // mgba_printf(MGBA_LOG_ERROR, "set 2sprite k: %d, v: %d", pair.pawn_gid, pair.sprite);
+                // mgba_printf(ERROR, "set 2sprite k: %d, v: %d", pair.pawn_gid, pair.sprite);
 
                 // assign a sprite to drawing this pawn
                 // dusk_sprites_make(pawn_sprite_id, 8, 8,
@@ -233,9 +235,9 @@ void draw_board() {
                 //                   });
                 dusk_sprites_make(pawn_sprite_id, 8, 8,
                     Sprite(
-                        board_offset.x + (bdx << 3),
-                        board_offset.y + (bdy << 3),
-                        pawn.unit_class + (team_ix * NUM_UNIT_CLASSES)));
+                        cast(s16)(board_offset.x + (bdx << 3)),
+                        cast(s16)(board_offset.y + (bdy << 3)),
+                        cast(u8)(pawn.unit_class + (team_ix * NUM_UNIT_CLASSES))));
 
                 pawn_sprite_ix++;
 
@@ -247,8 +249,8 @@ void draw_board() {
             }
             if (tile.terrain > 0) {
                 switch (tile.terrain) {
-                case TERRAIN_BLOCKED:
-                    draw_blocked_tile(bdx, bdy, BLOCKED_PATTERN_STRIPE);
+                case Terrain.TERRAIN_BLOCKED:
+                    draw_blocked_tile(bdx, bdy, BlockedPattern.BLOCKED_PATTERN_STRIPE);
                 default:
                     break;
                 }
@@ -276,7 +278,7 @@ void draw_sidebar() {
 
     // turn indicator
     int turn = game_util_whose_turn();
-    tte_printf("#{P:8,140}#{ci:1}turn: %s", game_state.teams[turn].name);
+    tte_printf("#{P:8,140}#{ci:1}turn: %s", cast(char*) game_state.teams[turn].name);
 
     // sidebar pawn info
     int page = sidebar_page % NUM_SIDEBAR_PAGES;
@@ -292,7 +294,7 @@ void draw_sidebar() {
 
         switch (page) {
         case 0:
-            tte_printf("#{P:142,06}#{ci:1}cl: %s L%d", class_data.name, unit_data.level);
+            tte_printf("#{P:142,06}#{ci:1}cl: %s L%d", cast(char*) class_data.name, unit_data.level);
             tte_printf("#{P:142,14}#{ci:1}hp: %d", unit_data.hitpoints);
             tte_printf("#{P:142,22}#{ci:1}st: %d|%d|%d|%d", unit_data.stats.atk, unit_data.stats.def,
                 unit_data.stats.hp, unit_data.stats.spd);
@@ -310,7 +312,7 @@ void draw_sidebar() {
         switch (page) {
         case 0:
             tte_printf("#{P:142,96}#{ci:1}look");
-            tte_printf("#{P:142,104}#{ci:1}cl: %s L%d", class_data.name, unit_data.level);
+            tte_printf("#{P:142,104}#{ci:1}cl: %s L%d", cast(char*) class_data.name, unit_data.level);
             tte_printf("#{P:142,112}#{ci:1}hp: %d", unit_data.hitpoints);
             tte_printf("#{P:142,120}#{ci:1}st: %d|%d|%d|%d", unit_data.stats.atk, unit_data.stats.def,
                 unit_data.stats.hp, unit_data.stats.spd);

@@ -2,6 +2,7 @@ module game.defs;
 
 import tonc;
 import game;
+import ldc.attributes;
 
 // #define MAX_BOARD_SIZE 64
 // #define NUM_TEAMS 4
@@ -201,4 +202,32 @@ struct QueuedMove {
 
 // GameState game_state;
 // GameColdData game_data;
-u8[4096] game_ai_blackboard;
+@(ldc.attributes.section(".ewram")) __gshared u8[4096] game_ai_blackboard;
+
+// macros
+
+// #define BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
+// #define PAWN_GID(team, pawn) ((team)*TEAM_MAX_PAWNS + (pawn))
+// #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
+// #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
+// #define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
+
+auto BOARD_POS(int x, int y) {
+    return (y) * MAX_BOARD_SIZE + (x);
+}
+
+auto PAWN_GID(int team, int pawn) {
+    return (team) * TEAM_MAX_PAWNS + (pawn);
+}
+
+auto PAWN_WHICH_TEAM(int gid) {
+    return (gid) / TEAM_MAX_PAWNS;
+}
+
+auto PAWN_NUM_IN_TEAM(int gid) {
+    return (gid) % TEAM_MAX_PAWNS;
+}
+
+auto POS_TO_TID(VPos16 pos) {
+    return BOARD_POS((pos).x, (pos).y);
+}

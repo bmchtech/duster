@@ -34,7 +34,7 @@ int get_sprite_index_for_pawn(pawn_gid_t pawn_gid) {
 
     int* pawn_sprite_ix_out;
     if (cc_hashtable_get(pawn2sprite, &pawn_gid, cast(void*)&pawn_sprite_ix_out) != CC_OK) {
-        mgba_printf(MGBA_LOG_ERROR, "failed to get sprite index for pawn gid: %d", pawn_gid);
+        mgba_printf(ERROR, "failed to get sprite index for pawn gid: %d", pawn_gid);
         return -1;
     }
 
@@ -91,7 +91,7 @@ void update_pawn_move_tween() {
     int x_step = dx / tween_len; // pix per frame
     int y_step = dy / tween_len; // pix per frame
 
-    // mgba_printf(MGBA_LOG_ERROR, "sr: %d, st: %d", x_step_rate, curr_x_step);
+    // mgba_printf(ERROR, "sr: %d, st: %d", x_step_rate, curr_x_step);
     int x_prog = start_pix_pos.x + (frame_prog * x_step);
     int y_prog = start_pix_pos.y + (frame_prog * y_step);
 

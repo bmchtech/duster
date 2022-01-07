@@ -117,13 +117,13 @@ void on_cursor_click_move(VPos16 dest_pos) {
             boardscn_sfx_play_interact();
 
             // interact with the pawn
-            mgba_printf(MGBA_LOG_ERROR, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile
+            mgba_printf(ERROR, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile
                     .pawn_gid);
 
             // request_step = TRUE; // request step
         } else {
             // we can't reach this pawn, give up
-            mgba_printf(MGBA_LOG_ERROR, "we couldn't reach this pawn");
+            mgba_printf(ERROR, "we couldn't reach this pawn");
         }
     } else {
         // request a move anim

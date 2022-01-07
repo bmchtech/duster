@@ -36,17 +36,17 @@ bool game_load_gamemap(void* data, u32 len) {
     u32 offset = 0;
 
     int magic = read_int(binmap, &offset);
-    mgba_printf(MGBA_LOG_ERROR, "binmap magic number: %08x", magic);
+    mgba_printf(ERROR, "binmap magic number: %08x", magic);
 
     const int expected_magic = 0xD0570000;
     if (magic != expected_magic) {
-        mgba_printf(MGBA_LOG_ERROR, "binmap magic number did not match!: found: %08x, expected: %08x", magic,
+        mgba_printf(ERROR, "binmap magic number did not match!: found: %08x, expected: %08x", magic,
                     expected_magic);
     }
 
     map.board_size = read_int(binmap, &offset);
 
-    mgba_printf(MGBA_LOG_ERROR, "board size: %d", map.board_size);
+    mgba_printf(ERROR, "board size: %d", map.board_size);
 
     // initialize board
     game_init_board(map.board_size);
@@ -67,7 +67,7 @@ bool game_load_gamemap(void* data, u32 len) {
     }
 
     // spawn pawns
-    mgba_printf(MGBA_LOG_ERROR, "offset: %08x", offset);
+    mgba_printf(ERROR, "offset: %08x", offset);
     map.num_spawns = read_int(binmap, &offset);
     for (int i = 0; i < map.num_spawns; i++) {
         // read in the spawn data
@@ -90,7 +90,7 @@ bool game_load_gamemap(void* data, u32 len) {
 
         board_set_pawn(BOARD_POS(spawn_pos.x, spawn_pos.y), PAWN_GID(spawn.team, spawn.pawn));
 
-        mgba_printf(MGBA_LOG_ERROR, "spawned pawn (team: %d, pawn: %d, c: %d, l: %d) at pos (%d, %d)", spawn.team,
+        mgba_printf(ERROR, "spawned pawn (team: %d, pawn: %d, c: %d, l: %d) at pos (%d, %d)", spawn.team,
                     spawn.pawn, spawn.pclass, spawn.level, spawn_pos.x, spawn_pos.y);
     }
 
