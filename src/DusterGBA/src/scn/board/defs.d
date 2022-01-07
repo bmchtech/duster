@@ -11,7 +11,7 @@ import game;
 import scn.board;
 
 struct PawnMoveTweenInfo {
-    int pawn_gid;
+    pawn_gid_t pawn_gid;
     VPos16 start_pos;
     VPos16 end_pos;
     int start_frame;
@@ -19,7 +19,7 @@ struct PawnMoveTweenInfo {
 }
 
 struct PawnFlashTweenInfo {
-    int pawn_gid;
+    pawn_gid_t pawn_gid;
     int initiator_gid;
     int start_frame;
     int end_frame;
