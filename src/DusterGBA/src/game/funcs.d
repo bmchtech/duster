@@ -2,6 +2,8 @@ module game.funcs;
 
 import ldc.attributes;
 
+import core.stdc.stdio;
+import core.stdc.string;
 import tonc;
 import game;
 
@@ -14,7 +16,7 @@ extern (C):
 @(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
 
 void game_clear_state() {
-    memset32(&game_state, 0, sizeof(GameState) / 4);
+    memset32(&game_state, 0, (GameState.sizeof) / 4);
 }
 
 void game_load_cold_data() {
@@ -37,11 +39,11 @@ void game_init_board(u8 board_size) {
 
 void game_init_team(u8 team_id, const char* name) {
     Team* team = &game_state.teams[team_id];
-    sprintf(team.name, "%s", name);
+    sprintf(cast(char*) team.name, "%s", name);
     team.alive = TRUE;
 
     // set all pawns to empty
-    memset32(team.pawns, 0, sizeof(team.pawns) / 4);
+    memset32(cast(void*)team.pawns, 0, (team.pawns.sizeof) / 4);
 }
 
 Team* game_get_team(u8 team_id) {
@@ -86,7 +88,7 @@ Pawn* board_get_pawn(int tile_id) {
 
     // this means there is no pawn
     if (pawn_gid == -1)
-        return NULL;
+        return null;
 
     return game_get_pawn_by_gid(pawn_gid);
 }
@@ -119,7 +121,7 @@ Terrain board_get_terrain(int tile_id) {
     return board_get_tile(tile_id).terrain;
 }
 
-void team_set_pawn_t(Team* team, int pawn_id, int class_id) {
+void team_set_pawn_t(Team* team, int pawn_id, u8 class_id) {
     Pawn pw;
 
     ClassData* class_data = &game_data.class_data[class_id];
@@ -140,7 +142,7 @@ void team_set_pawn_t(Team* team, int pawn_id, int class_id) {
     team.pawns[pawn_id] = pw;
 }
 
-pawn_gid_t team_set_pawn(int team_id, int pawn_id, int class_id) {
+pawn_gid_t team_set_pawn(u8 team_id, int pawn_id, u8 class_id) {
     Team* team = game_get_team(team_id);
     team_set_pawn_t(team, pawn_id, class_id);
     return PAWN_GID(team_id, pawn_id);

@@ -216,8 +216,8 @@ auto BOARD_POS(int x, int y) {
     return (y) * MAX_BOARD_SIZE + (x);
 }
 
-auto PAWN_GID(int team, int pawn) {
-    return (team) * TEAM_MAX_PAWNS + (pawn);
+pawn_gid_t PAWN_GID(int team, int pawn) {
+    return cast(pawn_gid_t)((team) * TEAM_MAX_PAWNS + (pawn));
 }
 
 auto PAWN_WHICH_TEAM(int gid) {
