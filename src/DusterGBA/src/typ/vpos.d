@@ -21,16 +21,16 @@ VPos vpos_one() {
 }
 
 VPos vpos_add(VPos p1, VPos p2) {
-    return VPos(p1.x + p2.x, p1.y + p2.y);
+    return VPos(cast(u8)(p1.x + p2.x), cast(u8)(p1.y + p2.y));
 }
 
 VPos16 vpos16_from_vpos(VPos p1) {
     return VPos16(p1.x, p1.y);
 }
 
-VPos vpos_from_vpos16(VPos16 p1) {
-    return VPos(p1.x, p1.y);
-}
+// VPos vpos_from_vpos16(VPos16 p1) {
+//     return VPos(p1.x, p1.y);
+// }
 
 VPos16 vpos16_zero() {
     return VPos16(0, 0);
@@ -41,7 +41,7 @@ VPos16 vpos16_one() {
 }
 
 VPos16 vpos16_add(VPos16 p1, VPos16 p2) {
-    return VPos16(p1.x + p2.x, p1.y + p2.y);
+    return VPos16(cast(s16)(p1.x + p2.x), cast(s16)(p1.y + p2.y));
 }
 
 VPos16 vpos16_neg(VPos16 p1) {
