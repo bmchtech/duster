@@ -14,7 +14,7 @@ void game_clear_state() {
 }
 
 void game_load_cold_data() {
-    // game_data.class_data = cast (ClassData*) &cold_class_data;
+    // game_data.class_data = cast (ClassData*) cold_class_data;
 }
 
 void game_init() {

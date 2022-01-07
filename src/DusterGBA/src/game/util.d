@@ -194,10 +194,10 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
 
     // use a macro to spread out the growth over every 5 levels
 
-    // mixin(MACRO_CALC_STATS_GROWTH!("atk") ~ ";");
-    // mixin(MACRO_CALC_STATS_GROWTH!("def") ~ ";");
-    // mixin(MACRO_CALC_STATS_GROWTH!("hp") ~ ";");
-    // mixin(MACRO_CALC_STATS_GROWTH!("spd") ~ ";");
+    mixin(MACRO_CALC_STATS_GROWTH!("atk") ~ ";");
+    mixin(MACRO_CALC_STATS_GROWTH!("def") ~ ";");
+    mixin(MACRO_CALC_STATS_GROWTH!("hp") ~ ";");
+    mixin(MACRO_CALC_STATS_GROWTH!("spd") ~ ";");
 
     return calc_stats;
 }
