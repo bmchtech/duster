@@ -36,7 +36,6 @@ enum BoardScenePage {
     BOARDSCN_PAUSEMENU,
 }
 
-
 enum CACHE_RANGE_BUF_LEN = 128;
 enum BOARD_SCROLL_WINDOW = 16;
 enum NUM_SIDEBAR_PAGES = 2;
@@ -77,9 +76,11 @@ __gshared int ai_played_move;
 __gshared int ai_wait_timer;
 
 // extern functions
-void sfx_play_startchime();
-void sfx_play_scroll();
-void sfx_play_click();
-void sfx_play_interact();
-void sfx_play_move();
-void sfx_play_cant();
+extern (C) {
+    void sfx_play_startchime();
+    void sfx_play_scroll();
+    void sfx_play_click();
+    void sfx_play_interact();
+    void sfx_play_move();
+    void sfx_play_cant();
+}
