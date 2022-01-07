@@ -234,10 +234,10 @@ void draw_board() {
                 //                       .base_tid = pawn.unit_class + (team_ix * NUM_UNIT_CLASSES),
                 //                   });
                 dusk_sprites_make(pawn_sprite_id, 8, 8,
-                    Sprite(
-                        cast(s16)(board_offset.x + (bdx << 3)),
-                        cast(s16)(board_offset.y + (bdy << 3)),
-                        cast(u8)(pawn.unit_class + (team_ix * NUM_UNIT_CLASSES))));
+                    Sprite.init(cast(s16)(board_offset.x + (bdx << 3)), cast(s16)(
+                        board_offset.y + (bdy << 3)),
+                        cast(u8)(pawn.unit_class + (team_ix * NUM_UNIT_CLASSES)))
+                );
 
                 pawn_sprite_ix++;
 
@@ -313,7 +313,8 @@ void draw_sidebar() {
         switch (page) {
         case 0:
             tte_printf("#{P:142,96}#{ci:1}look");
-            tte_printf("#{P:142,104}#{ci:1}cl: %s L%d", cast(char*) class_data.name, unit_data.level);
+            tte_printf("#{P:142,104}#{ci:1}cl: %s L%d", cast(char*) class_data.name, unit_data
+                    .level);
             tte_printf("#{P:142,112}#{ci:1}hp: %d", unit_data.hitpoints);
             tte_printf("#{P:142,120}#{ci:1}st: %d|%d|%d|%d", unit_data.stats.atk, unit_data.stats.def,
                 unit_data.stats.hp, unit_data.stats.spd);
