@@ -40,15 +40,15 @@ enum CACHE_RANGE_BUF_LEN = 128;
 enum BOARD_SCROLL_WINDOW = 16;
 enum NUM_SIDEBAR_PAGES = 2;
 enum AI_WAIT_TIME = 30;
+enum BG0_SRF_CBB = 0;
+enum BG0_SRF_SBB = 31;
+enum BG1_TTE_CBB = 2;
+enum BG1_TTE_SBB = 28;
 
 __gshared TSurface bg0_srf;
-__gshared int bg0_srf_cbb;
-__gshared int bg0_srf_sbb;
-__gshared int bg1_tte_cbb;
-__gshared int bg1_tte_sbb;
 __gshared VPos board_offset;
-__gshared bool board_ui_dirty;
-__gshared bool sidebar_dirty;
+__gshared bool board_ui_dirty = true;
+__gshared bool sidebar_dirty = true;
 __gshared VPos16 cursor_pos;
 __gshared bool cursor_shown;
 __gshared bool cursor_click;
@@ -68,11 +68,11 @@ __gshared int board_scroll_x;
 __gshared int board_scroll_y;
 __gshared int pause_cursor_selection = 0;
 __gshared int sidebar_page;
-__gshared int movequeue_length;
+__gshared int movequeue_length = 0;
 __gshared QueuedMove[TEAM_MAX_PAWNS + 1] movequeue_queue;
-__gshared int movequeue_progress;
-__gshared int movequeue_delay_timer;
-__gshared int ai_played_move;
+__gshared int movequeue_progress = -1;
+__gshared int movequeue_delay_timer = 0;
+__gshared int ai_played_move = -1;
 __gshared int ai_wait_timer;
 
 // extern functions

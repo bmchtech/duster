@@ -46,15 +46,15 @@ void boardscn_start() {
 
     // main bg
     *REG_DISPCNT |= DCNT_BG0;
-    *REG_BG0CNT = cast(u16) (BG_CBB(bg0_srf_cbb) | BG_SBB(bg0_srf_sbb) | BG_PRIO(0));
+    *REG_BG0CNT = cast(u16)(BG_CBB(BG0_SRF_CBB) | BG_SBB(BG0_SRF_SBB) | BG_PRIO(0));
 
     // set up bg0 as a drawing surface
-    srf_init(&bg0_srf, ESurfaceType.SRF_CHR4C, cast(void*) tile_mem[bg0_srf_cbb], 240, 160, 4, pal_bg_mem);
-    schr4c_prep_map(&bg0_srf, cast(ushort*) se_mem[bg0_srf_sbb], cast(u16) 0); // set whole map to 0
+    srf_init(&bg0_srf, ESurfaceType.SRF_CHR4C, cast(void*) tile_mem[BG0_SRF_CBB], 240, 160, 4, pal_bg_mem);
+    schr4c_prep_map(&bg0_srf, cast(ushort*) se_mem[BG0_SRF_SBB], cast(u16) 0); // set whole map to 0
 
     // set up bg1 with tte
     *REG_DISPCNT |= DCNT_BG1;
-    tte_init_chr4c(1, cast(u16) (BG_CBB(bg1_tte_cbb) | BG_SBB(bg1_tte_sbb)), 0, 0x0201, CLR_GRAY, null, null);
+    tte_init_chr4c(1, cast(u16)(BG_CBB(BG1_TTE_CBB) | BG_SBB(BG1_TTE_SBB)), 0, 0x0201, CLR_GRAY, null, null);
     *REG_BG1CNT |= BG_PRIO(2);
     tte_init_con();
 

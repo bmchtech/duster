@@ -119,8 +119,8 @@ void draw_blocked_tile(int tx, int ty, BlockedPattern pattern) {
 
 void draw_clear_ui_surface() {
     // clear whole bg ui surface
-    memset32(cast(void*) tile_mem[bg0_srf_cbb], 0, 4096); // clear cbb
-    schr4c_prep_map(&bg0_srf, cast(u16*) se_mem[bg0_srf_sbb], cast(u16) 0); // set whole map to 0
+    memset32(cast(void*) tile_mem[BG0_SRF_CBB], 0, 4096); // clear cbb
+    schr4c_prep_map(&bg0_srf, cast(u16*) se_mem[BG0_SRF_SBB], cast(u16) 0); // set whole map to 0
 }
 
 void draw_clear_text_surface() {
