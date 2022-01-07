@@ -61,13 +61,15 @@ tile_neighbors_t board_util_get_neighbors(int tile_id) {
 // check whether a tile id is a neighbor
 bool board_util_is_neighbor(int tile_id, int neighbor_id) {
     tile_neighbors_t neighbors = board_util_get_neighbors(tile_id);
-    return neighbors.neighbors[0] == neighbor_id || neighbors.neighbors[1] == neighbor_id || neighbors.neighbors[2] == neighbor_id || neighbors.neighbors[3] == neighbor_id;
+    return neighbors.neighbors[0] == neighbor_id || neighbors.neighbors[1] == neighbor_id || neighbors
+        .neighbors[2] == neighbor_id || neighbors.neighbors[3] == neighbor_id;
 }
 
 // get tile board position from tid
 VPos16 board_util_tid_to_pos(int tile_id) {
     // return (VPos16) {tile_id % MAX_BOARD_SIZE, tile_id / MAX_BOARD_SIZE};
-    return VPos16(tile_id % game_state.board_size, tile_id / game_state.board_size);
+    return VPos16(cast(s16)(tile_id % game_state.board_size), cast(s16)(
+            tile_id / game_state.board_size));
 }
 
 // get tid from board position
@@ -108,8 +110,8 @@ struct PQueuePair {
 };
 
 static int pqueue_pair_cmp(const void* a, const void* b) {
-    PQueuePair* a1 = cast(PQueuePair*)a;
-    PQueuePair* b1 = cast(PQueuePair*)b;
+    PQueuePair* a1 = cast(PQueuePair*) a;
+    PQueuePair* b1 = cast(PQueuePair*) b;
 
     return b1.prio - a1.prio;
 }
@@ -190,7 +192,7 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
     // use a macro to spread out the growth over every 5 levels
 
     // TODO: reimplement this in D
-    
+
     // MACRO_CALC_STATS_GROWTH(atk);
     // MACRO_CALC_STATS_GROWTH(def);
     // MACRO_CALC_STATS_GROWTH(hp);
