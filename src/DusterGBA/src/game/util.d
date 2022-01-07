@@ -116,10 +116,6 @@ static int pqueue_pair_cmp(const void* a, const void* b) {
     return b1.prio - a1.prio;
 }
 
-int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_buf, int pos_buf_len) {
-    return 0;
-}
-
 bool pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
     ClassData* class_data = pawn_get_classdata(pawn_gid);
 

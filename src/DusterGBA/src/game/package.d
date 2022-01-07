@@ -8,4 +8,5 @@ public {
     import game.logic;
     import game.util;
     import game.mapload;
+    import game.pathfind;
 }
