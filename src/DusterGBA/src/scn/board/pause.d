@@ -9,6 +9,7 @@ import res;
 import dusk.contrib.mgba;
 import typ.vpos;
 import scn.board;
+import scn.logo;
 import game;
 
 // VPos pause_cursor_pos;
@@ -16,12 +17,12 @@ import game;
 
 void pause_menu_back_selected() {
     // set scene back to board
-    board_scene_page = BOARDSCN_BOARD;
+    board_scene_page = BoardScenePage.BOARDSCN_BOARD;
 }
 
 void pause_menu_quit_selected() {
     // set scene back to board
-    board_scene_page = BOARDSCN_BOARD;
+    board_scene_page = BoardScenePage.BOARDSCN_BOARD;
 
     // restart game
     dusk_scene_set(logo_scene);
@@ -50,6 +51,7 @@ void update_pause_ui() {
         // change selected item
         pause_cursor_selection = (pause_cursor_selection + ud_input + NUM_PAUSE_SELECTIONS) % NUM_PAUSE_SELECTIONS;
         pausemenu_dirty = TRUE;
+        sfx_play_scroll();
     }
 
     if (key_hit(KEY_A)) {
