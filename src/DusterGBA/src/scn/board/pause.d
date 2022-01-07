@@ -33,7 +33,7 @@ struct PauseMenuItem {
     void function() action;
 }
 
-PauseMenuItem[3] pause_menu_items = [
+enum PauseMenuItem[3] pause_menu_items = [
     PauseMenuItem(cast(char*) "back", &pause_menu_back_selected),
     PauseMenuItem(cast(char*) "save", &pause_menu_back_selected),
     PauseMenuItem(cast(char*) "quit", &pause_menu_quit_selected)
