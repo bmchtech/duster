@@ -9,12 +9,6 @@ import game;
 
 extern (C):
 
-// EWRAM_DATA GameState game_state;
-// EWRAM_DATA GameColdData game_data;
-
-@(ldc.attributes.section(".ewram")) __gshared GameState game_state;
-@(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
-
 void game_clear_state() {
     memset32(&game_state, 0, (GameState.sizeof) / 4);
 }
