@@ -24,32 +24,33 @@ struct BinDusterMap {
 }
 
 int read_int(u8* data, u32* offset) {
-    int int_word = data[*offset] | (data[*offset + 1] << 8) | (data[*offset + 2] << 16) | (data[*offset + 3] << 24);
+    int int_word = data[*offset] | (data[*offset + 1] << 8) | (
+        data[*offset + 2] << 16) | (data[*offset + 3] << 24);
     *offset += 4;
     return int_word;
 }
 
 bool game_load_gamemap(void* data, u32 len) {
-    u8* binmap = cast(u8*)data;
+    u8* binmap = cast(u8*) data;
     BinDusterMap map;
 
     u32 offset = 0;
 
     int magic = read_int(binmap, &offset);
-    mgba_printf(ERROR, "binmap magic number: %08x", magic);
+    mgba_printf(MGBALogLevel.ERROR, "binmap magic number: %08x", magic);
 
     const int expected_magic = 0xD0570000;
     if (magic != expected_magic) {
-        mgba_printf(ERROR, "binmap magic number did not match!: found: %08x, expected: %08x", magic,
-                    expected_magic);
+        mgba_printf(MGBALogLevel.ERROR, "binmap magic number did not match!: found: %08x, expected: %08x", magic,
+            expected_magic);
     }
 
     map.board_size = read_int(binmap, &offset);
 
-    mgba_printf(ERROR, "board size: %d", map.board_size);
+    mgba_printf(MGBALogLevel.ERROR, "board size: %d", map.board_size);
 
     // initialize board
-    game_init_board(map.board_size);
+    game_init_board(cast(u8) map.board_size);
 
     // init default teams
     game_init_team(0, "devil");
@@ -67,7 +68,7 @@ bool game_load_gamemap(void* data, u32 len) {
     }
 
     // spawn pawns
-    mgba_printf(ERROR, "offset: %08x", offset);
+    mgba_printf(MGBALogLevel.ERROR, "offset: %08x", offset);
     map.num_spawns = read_int(binmap, &offset);
     for (int i = 0; i < map.num_spawns; i++) {
         // read in the spawn data
@@ -80,18 +81,18 @@ bool game_load_gamemap(void* data, u32 len) {
         spawn.ty = read_int(binmap, &offset);
 
         // place the pawn on the board
-        auto spawn_pos = VPos16(spawn.tx / 8, spawn.ty / 8);
+        auto spawn_pos = VPos16(cast(s16)(spawn.tx / 8), cast(s16)(spawn.ty / 8));
 
-        team_set_pawn(spawn.team, spawn.pawn, spawn.pclass);
+        team_set_pawn(cast(u8) spawn.team, spawn.pawn, cast(u8) spawn.pclass);
         // set level
         Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(spawn.team, spawn.pawn));
-        pawn.unit_data.level = spawn.level;
+        pawn.unit_data.level = cast(u16) spawn.level;
         team_pawn_recalculate(spawn.team, spawn.pawn);
 
         board_set_pawn(BOARD_POS(spawn_pos.x, spawn_pos.y), PAWN_GID(spawn.team, spawn.pawn));
 
-        mgba_printf(ERROR, "spawned pawn (team: %d, pawn: %d, c: %d, l: %d) at pos (%d, %d)", spawn.team,
-                    spawn.pawn, spawn.pclass, spawn.level, spawn_pos.x, spawn_pos.y);
+        mgba_printf(MGBALogLevel.ERROR, "spawned pawn (team: %d, pawn: %d, c: %d, l: %d) at pos (%d, %d)", spawn.team,
+            spawn.pawn, spawn.pclass, spawn.level, spawn_pos.x, spawn_pos.y);
     }
 
     return true;
