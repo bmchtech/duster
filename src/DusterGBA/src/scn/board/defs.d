@@ -36,43 +36,45 @@ enum BoardScenePage {
     BOARDSCN_PAUSEMENU,
 }
 
-TSurface bg0_srf;
-int bg0_srf_cbb;
-int bg0_srf_sbb;
-int bg1_tte_cbb;
-int bg1_tte_sbb;
-VPos board_offset;
-bool board_ui_dirty;
-bool sidebar_dirty;
-VPos16 cursor_pos;
-bool cursor_shown;
-bool cursor_click;
-VPos16 cursor_click_pos;
-int cursor_last_moved_frame;
-PawnMoveTweenInfo pawn_move_tween;
-PawnFlashTweenInfo pawn_flash_tween;
-// CC_HashTable* pawn2sprite;
-SpritePawnPair[128] sprite_pawn_pairs;
+
 enum CACHE_RANGE_BUF_LEN = 128;
-VPos16[CACHE_RANGE_BUF_LEN] cache_range_buf;
-int cache_range_buf_filled;
-bool request_step;
-bool pawn_move_range_dirty;
-BoardScenePage board_scene_page;
-bool pausemenu_dirty;
 enum BOARD_SCROLL_WINDOW = 16;
-int board_scroll_x;
-int board_scroll_y;
-int pause_cursor_selection = 0;
 enum NUM_SIDEBAR_PAGES = 2;
-int sidebar_page;
-int movequeue_length;
-QueuedMove[TEAM_MAX_PAWNS + 1] movequeue_queue;
-int movequeue_progress;
-int movequeue_delay_timer;
-int ai_played_move;
 enum AI_WAIT_TIME = 30;
-int ai_wait_timer;
+
+__gshared TSurface bg0_srf;
+__gshared int bg0_srf_cbb;
+__gshared int bg0_srf_sbb;
+__gshared int bg1_tte_cbb;
+__gshared int bg1_tte_sbb;
+__gshared VPos board_offset;
+__gshared bool board_ui_dirty;
+__gshared bool sidebar_dirty;
+__gshared VPos16 cursor_pos;
+__gshared bool cursor_shown;
+__gshared bool cursor_click;
+__gshared VPos16 cursor_click_pos;
+__gshared int cursor_last_moved_frame;
+__gshared PawnMoveTweenInfo pawn_move_tween;
+__gshared PawnFlashTweenInfo pawn_flash_tween;
+// __gshared CC_HashTable* pawn2sprite;
+__gshared SpritePawnPair[128] sprite_pawn_pairs;
+__gshared VPos16[CACHE_RANGE_BUF_LEN] cache_range_buf;
+__gshared int cache_range_buf_filled;
+__gshared bool request_step;
+__gshared bool pawn_move_range_dirty;
+__gshared BoardScenePage board_scene_page;
+__gshared bool pausemenu_dirty;
+__gshared int board_scroll_x;
+__gshared int board_scroll_y;
+__gshared int pause_cursor_selection = 0;
+__gshared int sidebar_page;
+__gshared int movequeue_length;
+__gshared QueuedMove[TEAM_MAX_PAWNS + 1] movequeue_queue;
+__gshared int movequeue_progress;
+__gshared int movequeue_delay_timer;
+__gshared int ai_played_move;
+__gshared int ai_wait_timer;
 
 // extern functions
 void sfx_play_startchime();
