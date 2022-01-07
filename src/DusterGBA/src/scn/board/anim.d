@@ -33,11 +33,10 @@ int get_sprite_index_for_pawn(pawn_gid_t pawn_gid) {
 
     int* pawn_sprite_ix_out;
 
-    // TODO: fix this
-    // if (cc_hashtable_get(pawn2sprite, &pawn_gid, cast(void*)&pawn_sprite_ix_out) != CC_OK) {
-    //     mgba_printf(ERROR, "failed to get sprite index for pawn gid: %d", pawn_gid);
-    //     return -1;
-    // }
+    if (pawn_gid !in pawn2sprite) {
+        mgba_printf(MGBALogLevel.ERROR, "failed to get sprite index for pawn gid: %d", pawn_gid);
+        return -1;
+    }
 
     return *pawn_sprite_ix_out;
 }

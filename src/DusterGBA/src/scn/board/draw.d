@@ -192,7 +192,7 @@ void draw_board() {
         sprites[i].flags &= ~DUSKSPRITE_FLAGS_VISIBLE; // set not visible
     }
 
-    // cc_hashtable_remove_all(pawn2sprite);
+    pawn2sprite.clear();
 
     // get board window pos
     int bwy = board_scroll_y;
@@ -222,7 +222,7 @@ void draw_board() {
                 // *pair = (SpritePawnPair){.pawn_gid = pawn_gid, .sprite = pawn_sprite_id};
                 *pair = SpritePawnPair(pawn_gid, pawn_sprite_id);
 
-                // cc_hashtable_add(pawn2sprite, &pair.pawn_gid, &pair.sprite);
+                pawn2sprite[pair.pawn_gid] = pair.sprite;
 
                 // mgba_printf(ERROR, "set 2sprite k: %d, v: %d", pair.pawn_gid, pair.sprite);
 

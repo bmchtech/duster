@@ -93,12 +93,7 @@ void boardscn_start() {
     pawn_flash_tween.pawn_gid = -1;
 
     // init data structures
-    // TODO: reimplement in D
-    // CC_HashTableConf pawn2sprite_conf;
-    // cc_hashtable_conf_init(&pawn2sprite_conf);
-    // pawn2sprite_conf.hash = GENERAL_HASH;
-    // pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
-    // cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
+    pawn2sprite.clear();
 
     // play start game sfx
     sfx_play_startchime();
@@ -241,8 +236,7 @@ void boardscn_update() {
 
 void boardscn_end() {
     // clean ds
-    // TODO: reimplement in D
-    // cc_hashtable_destroy(pawn2sprite);
+    pawn2sprite.clear();
 }
 
 __gshared Scene board_scene = Scene(&boardscn_start, &boardscn_end, &boardscn_update);

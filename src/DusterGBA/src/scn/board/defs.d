@@ -6,6 +6,7 @@ import tonc;
 import libgba.maxmod;
 import res;
 import dusk.contrib.mgba;
+import libtind.ds.dict;
 
 import game;
 import scn.board;
@@ -56,7 +57,7 @@ __gshared VPos16 cursor_click_pos;
 __gshared int cursor_last_moved_frame;
 __gshared PawnMoveTweenInfo pawn_move_tween;
 __gshared PawnFlashTweenInfo pawn_flash_tween;
-// __gshared CC_HashTable* pawn2sprite;
+__gshared Dict!(pawn_gid_t, int) pawn2sprite;
 __gshared SpritePawnPair[128] sprite_pawn_pairs;
 __gshared VPos16[CACHE_RANGE_BUF_LEN] cache_range_buf;
 __gshared int cache_range_buf_filled;
