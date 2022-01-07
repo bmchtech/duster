@@ -251,6 +251,7 @@ void draw_board() {
                 switch (tile.terrain) {
                 case Terrain.TERRAIN_BLOCKED:
                     draw_blocked_tile(bdx, bdy, BlockedPattern.BLOCKED_PATTERN_STRIPE);
+                    break;
                 default:
                     break;
                 }
