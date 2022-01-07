@@ -177,6 +177,11 @@ bool pawn_util_moved_this_turn(Pawn* pawn) {
 // 4 atk stat boosts over every 5 levels
 // auto MACRO_CALC_STATS_GROWTH(stat) calc_stats.stat = base.stat + ((growth.stat * num_growths) / 5)
 
+template MACRO_CALC_STATS_GROWTH(string stat) {
+    const char[] MACRO_CALC_STATS_GROWTH = "calc_stats." ~ stat ~ "= cast(u16) (base." ~ stat ~ "+"
+        ~ "((growth." ~ stat ~ " * num_growths) / 5))";
+}
+
 UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
     int num_growths = (level - 1);
     UnitDataStats base = class_data.base_stats;
@@ -185,18 +190,14 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
     UnitDataStats calc_stats = base;
 
     // compute additional stats based on adding to base stats
-    // calc_stats.atk = base.atk + (num_growths * growth.atk);
-    // calc_stats.def = base.def + (num_growths * growth.def);
-    // calc_stats.hp = base.hp + (num_growths * growth.hp);
+    // calc_stats.atk = cast(u16) (base.atk + ((num_growths * growth.atk) / 5));
 
     // use a macro to spread out the growth over every 5 levels
 
-    // TODO: reimplement this in D
-
-    // MACRO_CALC_STATS_GROWTH(atk);
-    // MACRO_CALC_STATS_GROWTH(def);
-    // MACRO_CALC_STATS_GROWTH(hp);
-    // MACRO_CALC_STATS_GROWTH(spd);
+    // mixin(MACRO_CALC_STATS_GROWTH!("atk") ~ ";");
+    // mixin(MACRO_CALC_STATS_GROWTH!("def") ~ ";");
+    // mixin(MACRO_CALC_STATS_GROWTH!("hp") ~ ";");
+    // mixin(MACRO_CALC_STATS_GROWTH!("spd") ~ ";");
 
     return calc_stats;
 }

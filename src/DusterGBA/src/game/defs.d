@@ -16,56 +16,28 @@ enum TEAM_MAX_PAWNS = 32;
 
 enum NUM_UNIT_CLASSES = 4;
 
-// #define MOVEQUEUE_MAX_SIZE (TEAM_MAX_PAWNS + 1)
 
 enum MOVEQUEUE_MAX_SIZE = (TEAM_MAX_PAWNS + 1);
 
-// typedef s16 pawn_gid_t;
-
 alias pawn_gid_t = s16;
-
-// typedef enum {
-//     TERRAIN_GROUND,
-//     TERRAIN_BLOCKED,
-// } Terrain;
 
 enum Terrain {
     TERRAIN_GROUND,
     TERRAIN_BLOCKED,
 }
 
-// typedef struct {
-//     pawn_gid_t pawn_gid;
-//     Terrain terrain;
-// } BoardTile;
-
 struct BoardTile {
     pawn_gid_t pawn_gid;
     Terrain terrain;
 }
 
-// typedef struct {
-//     BoardTile tiles[MAX_BOARD_SIZE * MAX_BOARD_SIZE]; // 8K section for tile state
-// } GameBoard;
-
 struct GameBoard {
     BoardTile[MAX_BOARD_SIZE * MAX_BOARD_SIZE] tiles; // 8K section for tile state
 }
 
-// typedef struct {
-//     u8 atk, def, hp, spd;
-// } UnitDataStats;
-
 struct UnitDataStats {
-    u8 atk, def, hp, spd;
+    u16 atk, def, hp, spd;
 }
-
-// typedef struct {
-//     s16 hitpoints;
-//     s16 item;
-//     u16 level;
-//     UnitDataStats stats;
-// } UnitData;
 
 struct UnitData {
     s16 hitpoints;
@@ -73,14 +45,6 @@ struct UnitData {
     u16 level;
     UnitDataStats stats;
 }
-
-// typedef struct {
-//     u8 unit_class;
-//     UnitData unit_data;
-//     int last_moved_step;
-//     int last_moved_turn;
-//     bool alive;
-// } Pawn;
 
 struct Pawn {
     u8 unit_class;
