@@ -83,8 +83,8 @@ int board_util_get_neighbor_tile_cost(int start_tid, int neighbor_tid) {
 // get tile board position from tid
 VPos16 board_util_tid_to_pos(int tile_id) {
     // return (VPos16) {tile_id % MAX_BOARD_SIZE, tile_id / MAX_BOARD_SIZE};
-    return VPos16(cast(s16)(tile_id % game_state.board_size), cast(s16)(
-            tile_id / game_state.board_size));
+    return VPos16(cast(s16)(tile_id % MAX_BOARD_SIZE), cast(s16)(
+            tile_id / MAX_BOARD_SIZE));
 }
 
 // get tid from board position

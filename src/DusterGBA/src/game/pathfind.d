@@ -57,6 +57,8 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         int tid = unvisited_heapnode.value;
         int curr_dist = node_distance[tid];
 
+        // mgba_printf(MGBALogLevel.ERROR, "DIJ1: %d %d\n", tid, curr_dist);
+
         // get neighbors
         tile_neighbors_t tn = board_util_get_neighbors(tid);
 
@@ -66,13 +68,21 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
             if (nid < 0)
                 continue;
 
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ11: %d %d\n", tn.neighbors[i], curr_dist + 1);
+            auto npos = board_util_tid_to_pos(nid);
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ16: %d %d\n", npos.x, npos.y);
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ15: %d\n", board_util_tid_is_on_board(nid) ? 1 : 0);
             // sanity check the tile
             if (!board_util_tid_is_on_board(nid))
                 continue;
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ12: %d %d\n", tn.neighbors[i], curr_dist + 1);
 
             // ensure walkable
             if (!board_util_tid_is_walkable(nid))
                 continue;
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ13: %d %d\n", tn.neighbors[i], curr_dist + 1);
+
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ2: %d %d\n", tid, curr_dist);
 
             int cost = board_util_get_neighbor_tile_cost(tid, nid);
 
@@ -86,6 +96,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
             // calculate new distance
             int ndist = curr_dist + cost;
+            // mgba_printf(MGBALogLevel.ERROR, "DIJ3: %d %d\n", nid, ndist);
 
             // if this is a better path
             if (ndist < node_distance[nid]) {
@@ -98,7 +109,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         }
     }
 
-    mgba_printf(MGBALogLevel.ERROR, "checking dists %d\n", node_distance.length);
+    // mgba_printf(MGBALogLevel.ERROR, "checking dists %d\n", node_distance.length);
 
     // finally, populate the rangebuf with the positions we can reach
     foreach (node_key; node_distance.byKey()) {
@@ -106,7 +117,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         int tid = node_key;
         int dist = node_distance[node_key];
 
-        mgba_printf(MGBALogLevel.ERROR, "CHECK: tid: %d, dist: %d\n", tid, dist);
+        // // mgba_printf(MGBALogLevel.ERROR, "CHECK: tid: %d, dist: %d\n", tid, dist);
 
         // ensure not starting tile
         if (tid == start_tid)
@@ -125,7 +136,7 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
         //     continue;
 
         // log this tile info
-        mgba_printf(MGBALogLevel.ERROR, "ACCEPT: tid: %d, dist: %d\n", tid, dist);
+        // // mgba_printf(MGBALogLevel.ERROR, "ACCEPT: tid: %d, dist: %d\n", tid, dist);
 
         // add to rangebuf
         pos_buf[pos_buf_ix++] = board_util_tid_to_pos(tid);
