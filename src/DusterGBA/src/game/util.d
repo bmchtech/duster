@@ -133,7 +133,7 @@ static int pqueue_pair_cmp(const void* a, const void* b) {
 }
 
 bool pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
-    ClassData* class_data = pawn_get_classdata(pawn_gid);
+    ClassData class_data = pawn_get_classdata(pawn_gid);
 
     int pawn_max_move = class_data.move;
     mgba_printf(MGBALogLevel.ERROR, "class data move: %d", pawn_max_move);
@@ -152,7 +152,7 @@ bool pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_p
 }
 
 bool pawn_util_is_valid_interaction(pawn_gid_t pawn1_gid, VPos16 pawn1_pos, pawn_gid_t pawn2_gid, VPos16 pawn2_pos) {
-    // ClassData* class_data = pawn_get_classdata(pawn_gid);
+    // ClassData class_data = pawn_get_classdata(pawn_gid);
 
     // int pawn_max_move = class_data.move;
 
@@ -198,7 +198,7 @@ template MACRO_CALC_STATS_GROWTH(string stat) {
         ~ "((growth." ~ stat ~ " * num_growths) / 5))";
 }
 
-UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
+UnitDataStats pawn_util_calc_stats(ClassData class_data, int level) {
     int num_growths = (level - 1);
     UnitDataStats base = class_data.base_stats;
     UnitDataStats growth = class_data.stat_growths;

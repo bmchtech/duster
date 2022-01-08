@@ -15,7 +15,7 @@ void game_clear_state() {
 }
 
 void game_load_cold_data() {
-    // game_data.class_data = cast (ClassData*) cold_class_data;
+    // game_data.class_data = cast (ClassData) cold_class_data;
 }
 
 void game_init() {
@@ -116,15 +116,16 @@ Terrain board_get_terrain(int tile_id) {
     return board_get_tile(tile_id).terrain;
 }
 
-ClassData* game_get_class_data(u8 class_id) {
-    ClassData* class_data = &game_data.class_data[class_id];
+ClassData game_get_class_data(u8 class_id) {
+    // ClassData class_data = &game_data.class_data[class_id];
+    auto class_data = cold_class_data[class_id];
     return class_data;
 }
 
 void team_set_pawn_t(Team* team, int pawn_id, u8 class_id) {
     Pawn pw;
 
-    ClassData* class_data = game_get_class_data(class_id);
+    auto class_data = game_get_class_data(class_id);
 
     // initialize pawn
     pw.alive = TRUE;
@@ -151,7 +152,7 @@ pawn_gid_t team_set_pawn(u8 team_id, int pawn_id, u8 class_id) {
 void team_pawn_recalculate(int team_id, int pawn_id) {
     // recalculate values for this pawn
     Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(team_id, pawn_id));
-    ClassData* class_data = game_get_class_data(pawn.unit_class);
+    auto class_data = game_get_class_data(pawn.unit_class);
 
     // update stats
     pawn.unit_data.stats = pawn_util_calc_stats(class_data, pawn.unit_data.level);
@@ -164,7 +165,7 @@ int board_dist(int tx1, int ty1, int tx2, int ty2) {
     return ABS(tx2 - tx1) + ABS(ty2 - ty1);
 }
 
-ClassData* pawn_get_classdata(pawn_gid_t pawn_gid) {
+ClassData pawn_get_classdata(pawn_gid_t pawn_gid) {
     Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
 
     // mgba_printf(MGBALogLevel.ERROR, "pawn unit class: %d", pawn.unit_class);

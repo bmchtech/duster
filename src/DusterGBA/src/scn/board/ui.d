@@ -36,7 +36,7 @@ Pawn* get_clicked_pawn() {
 void on_cursor_click_move(VPos16 dest_pos) {
     // get the already selected pawn
     auto sel_pawn_gid = get_clicked_pawn_gid();
-    ClassData* sel_pawn_cd = pawn_get_classdata(sel_pawn_gid);
+    ClassData sel_pawn_cd = pawn_get_classdata(sel_pawn_gid);
     VPos16 sel_pawn_pos = cursor_click_pos;
 
     // now check the dest tile

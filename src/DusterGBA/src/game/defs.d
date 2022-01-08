@@ -99,11 +99,11 @@ struct ClassData {
 }
 
 // typedef struct {
-//     ClassData* class_data;
+//     ClassData class_data;
 // } GameColdData;
 
 struct GameColdData {
-    ClassData* class_data;
+    ClassData class_data;
 }
 
 // typedef struct {
@@ -166,10 +166,10 @@ struct QueuedMove {
 }
 
 @(ldc.attributes.section(".ewram")) __gshared GameState game_state;
-// @(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
+@(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
 @(ldc.attributes.section(".ewram")) __gshared u8[4096] game_ai_blackboard;
 
-enum GameColdData game_data = GameColdData(cast(ClassData*) cold_class_data);
+// enum GameColdData game_data = GameColdData(cast(ClassData) cold_class_data);
 
 // macros
 

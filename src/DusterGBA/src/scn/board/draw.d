@@ -307,7 +307,7 @@ void draw_sidebar() {
 
     if (hover_pawn && (hover_pawn != click_pawn)) {
         // show hover pawn info
-        ClassData* class_data = game_get_class_data(hover_pawn.unit_class);
+        ClassData class_data = game_get_class_data(hover_pawn.unit_class);
         UnitData* unit_data = &hover_pawn.unit_data;
 
         switch (page) {
