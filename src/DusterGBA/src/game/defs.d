@@ -16,7 +16,6 @@ enum TEAM_MAX_PAWNS = 32;
 
 enum NUM_UNIT_CLASSES = 4;
 
-
 enum MOVEQUEUE_MAX_SIZE = (TEAM_MAX_PAWNS + 1);
 
 alias pawn_gid_t = s16;
@@ -103,7 +102,7 @@ struct ClassData {
 // } GameColdData;
 
 struct GameColdData {
-    ClassData class_data;
+    ClassData[NUM_UNIT_CLASSES] class_data;
 }
 
 // typedef struct {
@@ -166,10 +165,10 @@ struct QueuedMove {
 }
 
 @(ldc.attributes.section(".ewram")) __gshared GameState game_state;
-@(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
+// @(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
 @(ldc.attributes.section(".ewram")) __gshared u8[4096] game_ai_blackboard;
 
-// enum GameColdData game_data = GameColdData(cast(ClassData) cold_class_data);
+enum GameColdData game_data = GameColdData(cold_class_data);
 
 // macros
 

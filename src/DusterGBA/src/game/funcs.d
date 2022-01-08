@@ -117,8 +117,8 @@ Terrain board_get_terrain(int tile_id) {
 }
 
 ClassData game_get_class_data(u8 class_id) {
-    // ClassData class_data = &game_data.class_data[class_id];
-    auto class_data = cold_class_data[class_id];
+    auto class_data = game_data.class_data[class_id];
+    // auto class_data = cold_class_data[class_id];
     return class_data;
 }
 
