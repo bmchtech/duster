@@ -7,6 +7,8 @@ import game;
 
 import libtind.ds.vector;
 import libtind.ds.dict;
+import libtind.ds.heap;
+import libtind.ds.set;
 
 extern (C):
 
@@ -268,8 +270,9 @@ int board_util_calc_rangebuf(int start_tx, int start_ty, int range, VPos16* pos_
 
     // create data structures
     Dict!(int, int) node_distance;
-    Dict!(int, bool) node_visited;
-    Vector!(int) node_queue;
+    Set!int node_visited;
+    Heap!int node_queue;
+
 
     // free data structures
     node_distance.free();
