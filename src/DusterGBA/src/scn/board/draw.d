@@ -132,7 +132,7 @@ void draw_clicked_pawn_graphics() {
     Pawn* clicked_pawn = get_clicked_pawn();
     if (cursor_click && clicked_pawn) {
         VPos16 pawn_pos = cursor_click_pos;
-        ClassData* class_data = &game_data.class_data[clicked_pawn.unit_class];
+        auto class_data = game_get_class_data(clicked_pawn.unit_class);
 
         // draw footsteps for all tiles in range
 
@@ -290,7 +290,7 @@ void draw_sidebar() {
 
     if (click_pawn) {
         // show click pawn info
-        ClassData* class_data = &game_data.class_data[click_pawn.unit_class];
+        auto class_data = game_get_class_data(click_pawn.unit_class);
         UnitData* unit_data = &click_pawn.unit_data;
 
         switch (page) {
@@ -307,7 +307,7 @@ void draw_sidebar() {
 
     if (hover_pawn && (hover_pawn != click_pawn)) {
         // show hover pawn info
-        ClassData* class_data = &game_data.class_data[hover_pawn.unit_class];
+        ClassData* class_data = game_get_class_data(hover_pawn.unit_class);
         UnitData* unit_data = &hover_pawn.unit_data;
 
         switch (page) {

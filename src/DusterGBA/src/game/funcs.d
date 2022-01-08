@@ -5,6 +5,7 @@ import ldc.attributes;
 import core.stdc.stdio;
 import core.stdc.string;
 import tonc;
+import dusk.contrib.mgba;
 import game;
 
 extern (C):
@@ -37,7 +38,7 @@ void game_init_team(u8 team_id, const char* name) {
     team.alive = TRUE;
 
     // set all pawns to empty
-    memset32(cast(void*)team.pawns, 0, (team.pawns.sizeof) / 4);
+    memset32(cast(void*) team.pawns, 0, (team.pawns.sizeof) / 4);
 }
 
 Team* game_get_team(u8 team_id) {
@@ -115,10 +116,15 @@ Terrain board_get_terrain(int tile_id) {
     return board_get_tile(tile_id).terrain;
 }
 
+ClassData* game_get_class_data(u8 class_id) {
+    ClassData* class_data = &game_data.class_data[class_id];
+    return class_data;
+}
+
 void team_set_pawn_t(Team* team, int pawn_id, u8 class_id) {
     Pawn pw;
 
-    ClassData* class_data = &game_data.class_data[class_id];
+    ClassData* class_data = game_get_class_data(class_id);
 
     // initialize pawn
     pw.alive = TRUE;
@@ -145,7 +151,7 @@ pawn_gid_t team_set_pawn(u8 team_id, int pawn_id, u8 class_id) {
 void team_pawn_recalculate(int team_id, int pawn_id) {
     // recalculate values for this pawn
     Pawn* pawn = game_get_pawn_by_gid(PAWN_GID(team_id, pawn_id));
-    ClassData* class_data = &game_data.class_data[pawn.unit_class];
+    ClassData* class_data = game_get_class_data(pawn.unit_class);
 
     // update stats
     pawn.unit_data.stats = pawn_util_calc_stats(class_data, pawn.unit_data.level);
@@ -161,7 +167,8 @@ int board_dist(int tx1, int ty1, int tx2, int ty2) {
 ClassData* pawn_get_classdata(pawn_gid_t pawn_gid) {
     Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
 
-    ClassData* class_data = &game_data.class_data[pawn.unit_class];
+    // mgba_printf(MGBALogLevel.ERROR, "pawn unit class: %d", pawn.unit_class);
 
-    return class_data;
+    u8 class_id = pawn.unit_class;
+    return game_get_class_data(class_id);
 }

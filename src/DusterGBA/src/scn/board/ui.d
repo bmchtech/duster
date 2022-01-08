@@ -81,12 +81,12 @@ void on_cursor_click_move(VPos16 dest_pos) {
                         continue;
 
                     // make sure nobody else is standing there!
-                    if (board_get_pawn(BOARD_POS(nb_pos.x, nb_pos.y)))
+                    if (board_get_pawn(nb_tid) != null)
                         continue;
 
                     // test distance from start pos
-                    int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y, nb_pos.x, nb_pos
-                            .y);
+                    int nb_test_dist = board_dist(cursor_click_pos.x, cursor_click_pos.y,
+                        nb_pos.x, nb_pos.y);
 
                     if (closest_neighbor_tid < 0 || nb_test_dist < closest_neighbor_dist) {
                         closest_neighbor_dist = nb_test_dist;
@@ -127,6 +127,8 @@ void on_cursor_click_move(VPos16 dest_pos) {
         }
     } else {
         // request a move anim
+        mgba_printf(MGBALogLevel.ERROR, "move pawn (%d) to (%d, %d)", sel_pawn_gid, dest_pos.x,
+            dest_pos.y);
         animate_pawn_move(sel_pawn_gid, cursor_click_pos, dest_pos);
     }
 
@@ -145,6 +147,7 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         auto sel_pawn_gid = get_clicked_pawn_gid();
 
         bool try_click_is_valid_move = false;
+
         // then check if the click is within the range
         for (int i = 0; i < cache_range_buf_filled; i++) {
             // for each tile that's in range
@@ -155,8 +158,12 @@ void on_cursor_try_click(VPos16 try_click_pos) {
                 // ensure that the move is valid
                 bool is_move_valid = pawn_util_is_valid_move(sel_pawn_gid, cursor_click_pos, try_click_pos);
 
-                if (!is_move_valid)
+                if (!is_move_valid) {
+                    // this move is invalid
+                    mgba_printf(MGBALogLevel.ERROR, "this move from (%d, %d) to (%d, %d) is invalid",
+                        cursor_click_pos.x, cursor_click_pos.y, try_click_pos.x, try_click_pos.y);
                     break;
+                }
 
                 try_click_is_valid_move = true;
             }
