@@ -76,9 +76,9 @@ void boardscn_start() {
     u32 test1_gmp_len;
     char[48] gamemap_file_name;
     sprintf(cast(char*) gamemap_file_name, "%s.gmp.bin", cast(char*) selected_map_file);
-    mgba_printf(MGBALogLevel.ERROR, "loading map file %s\n", cast(char*) gamemap_file_name);
+    mgba_printf(MGBALogLevel.INFO, "loading map file %s\n", cast(char*) gamemap_file_name);
     const void* test1_gmp = dusk_load_raw(cast(char*) gamemap_file_name, &test1_gmp_len);
-    mgba_printf(MGBALogLevel.ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
+    mgba_printf(MGBALogLevel.INFO, "loading gamemap from tmx data[%d]", test1_gmp_len);
     bool load_success = game_load_gamemap(cast(void*) test1_gmp, test1_gmp_len);
 
     if (!load_success) {

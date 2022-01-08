@@ -42,7 +42,7 @@ int main() {
 
     dusk_scene_set(logo_scene);
 
-    while (TRUE) {
+    while (true) {
         key_poll(); // update inputF
 
         dusk_scene_update();

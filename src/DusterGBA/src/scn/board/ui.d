@@ -117,7 +117,7 @@ void on_cursor_click_move(VPos16 dest_pos) {
             sfx_play_interact();
 
             // interact with the pawn
-            mgba_printf(MGBALogLevel.ERROR, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile
+            mgba_printf(MGBALogLevel.INFO, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile
                     .pawn_gid);
 
             // request_step = true; // request step
@@ -127,7 +127,7 @@ void on_cursor_click_move(VPos16 dest_pos) {
         }
     } else {
         // request a move anim
-        mgba_printf(MGBALogLevel.ERROR, "move pawn (%d) to (%d, %d)", sel_pawn_gid, dest_pos.x,
+        mgba_printf(MGBALogLevel.INFO, "move pawn (%d) to (%d, %d)", sel_pawn_gid, dest_pos.x,
             dest_pos.y);
         animate_pawn_move(sel_pawn_gid, cursor_click_pos, dest_pos);
     }

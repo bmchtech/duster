@@ -11,7 +11,7 @@ extern (C):
 void game_logic_step() {
     game_state.steps++; // counter
 
-    mgba_printf(MGBALogLevel.ERROR, "logic step (%d)", game_state.steps);
+    mgba_printf(MGBALogLevel.INFO, "logic step (%d)", game_state.steps);
 
     int turn_team = game_util_whose_turn();
     // check if all pawns on the current team have moved
