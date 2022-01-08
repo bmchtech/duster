@@ -136,7 +136,7 @@ bool pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_p
     ClassData class_data = pawn_get_classdata(pawn_gid);
 
     int pawn_max_move = class_data.move;
-    mgba_printf(MGBALogLevel.ERROR, "class data move: %d", pawn_max_move);
+    // mgba_printf(MGBALogLevel.ERROR, "class data move: %d", pawn_max_move);
 
     // check dist from start to end tiles
     int start_end_dist = board_dist(start_pos.x, start_pos.y, end_pos.x, end_pos.y);
