@@ -9,7 +9,7 @@ import libgba.maxmod;
 import scn.logo;
 import res;
 
-extern(C):
+extern (C):
 
 void maxmod_audio_init() {
     // irq setup for maxmod dma
@@ -22,7 +22,7 @@ void maxmod_audio_init() {
     const u32* soundbank_bin = cast(const u32*) gbfs_get_obj(gbfs_dat, "soundbank.bin", &soundbank_len);
 
     // initialise maxmod with soundbank and 8 channels
-    mmInitDefault(cast(mm_addr)soundbank_bin, 8);
+    mmInitDefault(cast(mm_addr) soundbank_bin, 8);
 }
 
 int main() {
@@ -33,9 +33,10 @@ int main() {
     // set waitstates to be as fast as possible
     *REG_WAITCNT = WS_SRAM_2 | WS_ROM0_N2 | WS_ROM1_N2 | WS_ROM2_N2 | WS_PHI_OFF | WS_PREFETCH | WS_GBA;
 
-    // version (DEBUG) {
-    // }
-    mgba_open();
+    version (DEBUG) {
+        mgba_open();
+    }
+
     // log rom info
     mgba_printf(MGBALogLevel.INFO, "build info: %s %s (%s)\n", GAME_VERSION, GAME_BUILD, GAME_COPYING);
 
