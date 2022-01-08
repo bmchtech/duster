@@ -37,6 +37,8 @@ int main() {
         mgba_open();
     }
 
+    // ds_assert(true, "test assert");
+
     // log rom info
     mgba_printf(MGBALogLevel.INFO, "build info: %s %s (%s)\n", GAME_VERSION, GAME_BUILD, GAME_COPYING);
 
