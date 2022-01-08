@@ -110,8 +110,9 @@ struct GameColdData {
 //     int neighbors[4];
 // } tile_neighbors_t;
 
+enum NUM_TILE_NEIGHBORS = 4;
 struct tile_neighbors_t {
-    int[4] neighbors;
+    int[NUM_TILE_NEIGHBORS] neighbors;
 }
 
 // typedef struct {

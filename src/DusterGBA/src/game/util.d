@@ -12,6 +12,11 @@ bool board_util_is_on_board(int tx, int ty) {
         && ((ty >= 0) && ty < game_state.board_size);
 }
 
+bool board_util_tid_is_on_board(int tid) {
+    auto pos = board_util_tid_to_pos(tid);
+    return board_util_is_on_board(pos.x, pos.y);
+}
+
 bool board_util_is_walkable(int tx, int ty) {
     if (!board_util_is_on_board(tx, ty))
         return false;
@@ -22,6 +27,11 @@ bool board_util_is_walkable(int tx, int ty) {
         return true;
 
     return false;
+}
+
+bool board_util_tid_is_walkable(int tid) {
+    auto pos = board_util_tid_to_pos(tid);
+    return board_util_is_walkable(pos.x, pos.y);
 }
 
 tile_neighbors_t board_util_get_neighbors(int tile_id) {
@@ -63,6 +73,11 @@ bool board_util_is_neighbor(int tile_id, int neighbor_id) {
     tile_neighbors_t neighbors = board_util_get_neighbors(tile_id);
     return neighbors.neighbors[0] == neighbor_id || neighbors.neighbors[1] == neighbor_id || neighbors
         .neighbors[2] == neighbor_id || neighbors.neighbors[3] == neighbor_id;
+}
+
+int board_util_get_neighbor_tile_cost(int start_tid, int neighbor_tid) {
+    // TODO: should be based on terrain
+    return 1;
 }
 
 // get tile board position from tid
