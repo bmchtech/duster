@@ -1,4 +1,0 @@
-## cinclude "contrib/mgba.h"
-
-global function mgba_printf(level: int32, ptr: cstring <const>, ...: varargs): void <cimport, nodecl>
-end
