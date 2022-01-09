@@ -23,7 +23,7 @@ void menu_start() {
 
     // load bg for title
     GritImage bg_img = dusk_load_image(cast(char*)"title");
-    dusk_background_upload_raw(&bg_img, 0, 30);
+    dusk_background_upload_raw(&bg_img, 0, 30, 2);
 
     dusk_background_make(1, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ 0, /*sbb*/ 30));
 
