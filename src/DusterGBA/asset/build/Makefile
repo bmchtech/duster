@@ -17,8 +17,8 @@ IMGS_BIN := $(notdir $(ATLS_PNG:%.png=%.img.bin))
 RAWMAPS_SRC := $(shell find $(RAWMAPS_DIR) -name '*.png')
 RAWMAPS_BIN := $(notdir $(RAWMAPS_SRC:%.png=%.bin))
 
-MAPS_SRC := $(shell find $(MAPS_DIR) -name '*.tmx')
-MAPS_BIN := $(notdir $(MAPS_SRC:%.tmx=%.bin))
+# MAPS_SRC := $(shell find $(MAPS_DIR) -name '*.tmx')
+# MAPS_BIN := $(notdir $(MAPS_SRC:%.tmx=%.bin))
 
 GAMEMAPS_SRC := $(shell find $(GAMEMAPS_DIR) -name '*.json')
 GAMEMAPS_BIN := $(notdir $(GAMEMAPS_SRC:%.json=%.gmp.bin))
@@ -31,7 +31,7 @@ GRIT_BPP := 4
 GRIT_FLAGS := -gt -p -g -gB $(GRIT_BPP) -gu32 -pu32 -ftb -fh!
 CRUNCH_FLAGS := -p -j -b -s256 -p0
 
-all: $(MAPS_BIN) $(RAWMAPS_BIN) $(IMGS_BIN) $(SOUND_BIN) $(SOUND_H) $(GAMEMAPS_BIN)
+all: $(RAWMAPS_BIN) $(IMGS_BIN) $(SOUND_BIN) $(SOUND_H) $(GAMEMAPS_BIN)
 
 clean:
 	rm -rfv *.bin

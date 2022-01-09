@@ -1,12 +1,12 @@
 [submodule "lib/dusk"]
 	path = lib/dusk
 	url = https://github.com/xdrie/dusk
-[submodule "lib/ccoll"]
-	path = lib/ccoll
-	url = https://github.com/redthing1/gba_ccoll
 [submodule "src/TestMaps/raylib"]
 	path = src/TestMaps/raylib
 	url = https://github.com/raysan5/raylib.git
 [submodule "src/tools/crunch"]
 	path = src/tools/crunch
 	url = https://github.com/xdrie/crunch.git
+[submodule "lib/gba_dlang"]
+	path = lib/gba_dlang
+	url = https://github.com/redthing1/gba_dlang.git

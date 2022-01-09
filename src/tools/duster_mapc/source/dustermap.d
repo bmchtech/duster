@@ -161,7 +161,7 @@ ubyte[] compile_duster_map(DusterMap map) {
         binmap ~= spawn.team.to_le;
         binmap ~= spawn.pawn.to_le;
         binmap ~= spawn.pclass.to_le;
-        binmap ~= spawn.level.to_le;
+        binmap ~= spawn.MGBALogLevel.to_le;
         binmap ~= spawn.tx.to_le;
         binmap ~= spawn.ty.to_le;
     }

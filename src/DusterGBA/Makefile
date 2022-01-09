@@ -9,7 +9,6 @@ SOURCE_DIR 	:= src
 LIB_DIR    	:= lib
 TOOLS_DIR	:= ../tools
 DUSK_DIR   := ../../lib/dusk/src/dusk
-CCOLL_DIR   := ../../lib/ccoll
 DATA_DIR   := asset/build
 SPECS      := -specs=gba.specs
 
@@ -20,29 +19,40 @@ AS	:= $(CROSS)as
 CC	:= $(CROSS)gcc
 LD	:= $(CROSS)gcc
 OBJCOPY	:= $(CROSS)objcopy
+LDC     := ldc2
 NELUA	:= nelua
 
 ARCH	:= -mthumb-interwork -mthumb
 
-INCFLAGS := -I$(DUSK_DIR)/include -I$(CCOLL_DIR)/include -I$(DEVKITPRO)/libtonc/include -I$(DEVKITPRO)/libgba/include -I$(SOURCE_DIR) -I$(DATA_DIR)
-LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(CCOLL_DIR)/lib -lccoll -L$(DEVKITPRO)/libtonc/lib -ltonc -L$(DEVKITPRO)/libgba/lib -lmm
+INCFLAGS := -I$(DUSK_DIR)/include -I$(DEVKITPRO)/libtonc/include -I$(DEVKITPRO)/libgba/include -I$(SOURCE_DIR) -I$(DATA_DIR)
+LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(DEVKITPRO)/libtonc/lib -ltonc -L$(DEVKITPRO)/libgba/lib -lmm
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
 LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
+DFLAGS  := -betterC --defaultlib=no -mtriple=arm-none-eabi -mcpu=arm7tdmi \
+				-mattr=+strict-align,+loop-align\
+				-I$(SOURCE_DIR) \
+				--d-version=DevkitARM --d-version=CRuntime_Newlib_GBA --d-version=_GBA \
+				-function-sections
 NELUA_FLAGS := -P noentrypoint -P nogc -P nochecks --release --add-path $(SOURCE_DIR)/lua
-DEFINES := -DGBA -DGAME_BUILD_ID=\"$(shell git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g')\"
 
 ASSET_MKFLAGS := TOOLS_DIR=$(addprefix $(CURDIR)/,$(TOOLS_DIR))
 DUSK_MKFLAGS :=
 
-CFLAGS += $(DEFINES)
+DSTDLIB := ../../lib/gba_dlang/libd
+DINCFLAGS :=
+DDUSKDIR := $(DUSK_DIR)/d_src
+# DFLAGS += -I$(DSTDLIB) -I$(DUSK_DIR)/d_src
+DFLAGS += -I$(DSTDLIB) -I$(DDUSKDIR)
 
 ifeq ($(DEBUG),1)
 	CFLAGS += -O2 -g -DDEBUG
+	DFLAGS += -O2 -g --d-version=DEBUG
 	DUSK_MKFLAGS += DEBUG=1
 else
 	# non-debug
 	CFLAGS += -O2 -fomit-frame-pointer -ffast-math
+	DFLAGS += -O2 -frame-pointer=none -ffast-math
 endif
 
 .PHONY : build clean
@@ -55,10 +65,12 @@ APP_SOURCES_C     := $(shell find $(SOURCE_DIR) -name '*.c' ! -name "*main.c"  !
 APP_SOURCES_S     := $(shell find $(SOURCE_DIR) -name '*.s')
 APP_OBJECTS_C     := $(APP_SOURCES_C:%.c=%.o)
 APP_OBJECTS_S     := $(APP_SOURCES_S:%.s=%.o)
+APP_SOURCES_D     := $(shell find $(DSTDLIB) $(DDUSKDIR) $(SOURCE_DIR) -name '*.d')
+APP_OBJECTS_D     := $(APP_SOURCES_D:%.d=%.o)
 APP_SOURCES_NELUA := $(shell find $(SOURCE_DIR) -name '*.lua')
 APP_NELUA_SCRIPTS := $(shell find $(SOURCE_DIR) -name '*.nelua')
 APP_OBJECTS_NELUA := $(APP_SOURCES_NELUA:%.lua=%.o)
-APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_NELUA)
+APP_OBJECTS		  := $(APP_OBJECTS_C) $(APP_OBJECTS_S) $(APP_OBJECTS_D) $(APP_OBJECTS_NELUA)
 
 # Build commands and dependencies
 
@@ -70,7 +82,6 @@ no-content: libs $(NAME)-code.gba
 
 libs:
 	cd $(DUSK_DIR) && make $(DUSK_MKFLAGS)
-	cd $(CCOLL_DIR) && make
 
 tools: $(TOOLS_DIR)/bin/crunch_gen $(TOOLS_DIR)/bin/duster_mapc
 
@@ -102,6 +113,9 @@ $(APP_OBJECTS_C) : %.o : %.c assets libs
 $(APP_OBJECTS_S) : %.o : %.s
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(APP_OBJECTS_D) : %.o : %.d
+	$(LDC) $(DFLAGS) -c -of=$@ $<
+
 $(APP_OBJECTS_NELUA) : %.o : %.lua $(APP_NELUA_SCRIPTS)
 	$(NELUA) -B $(NELUA_FLAGS) --cc $(CC) --cflags="$(CFLAGS)" -o $@ $<
 
@@ -114,10 +128,10 @@ $(NAME).gbfs: assets
 clean:
 	@rm -fv *.gba
 	@rm -fv *.elf
+	@rm -fv *.map
 	@rm -fv *.sav
 	@rm -fv *.gbfs
 	@rm -rf $(APP_OBJECTS)
 	@rm -rf $(APP_MAIN_OBJECT)
 	cd $(DUSK_DIR) && make clean
-	cd $(CCOLL_DIR) && make clean
 	cd asset/build && make clean
