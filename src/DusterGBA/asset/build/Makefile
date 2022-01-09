@@ -46,7 +46,7 @@ clean:
 
 # define a function: atlpng2grit(size), this will set Mw and Mh to size
 atlpng2grit = grit "$<" $(GRIT_ATL_FLAGS) -Mh $(1) -Mw $(1) -o "$@"
-rawmap2grit = grit "$<" $(GRIT_RMP_FLAGS) -Mh $(1) -Mw $(1) -ps $(2) -ma $(3) -o "$@"
+rawmap2grit = grit "$<" $(GRIT_RMP_FLAGS) -Mh $(1) -Mw $(1) -o "$@"
 
 # default rule for atlpng -> img bin
 %.img.bin: %.png
