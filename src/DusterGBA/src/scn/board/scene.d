@@ -169,8 +169,7 @@ void update_ai_moveplay() {
     int whose_move = game_util_whose_turn();
 
     // if it is the ai's turn, ask the ai to plan moves
-    int human_player_team = -1;
-    // if (whose_move != human_player_team) {
+    // if (whose_move != HUMAN_PLAYER_TEAM) {
     //     // initialize the move queue
     //     memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
 

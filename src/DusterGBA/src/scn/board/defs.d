@@ -45,6 +45,7 @@ enum BG0_SRF_CBB = 0;
 enum BG0_SRF_SBB = 31;
 enum BG1_TTE_CBB = 2;
 enum BG1_TTE_SBB = 28;
+enum HUMAN_PLAYER_TEAM = -1;
 
 __gshared TSurface bg0_srf;
 __gshared VPos board_offset;

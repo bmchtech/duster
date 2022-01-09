@@ -187,11 +187,9 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         auto hover_pawn_gid = tile.pawn_gid;
         Pawn* hover_pawn = get_cursor_pawn();
 
-        version (DEBUG) {
-            // we can only move if the turn is 0
-            if (game_util_whose_turn() != 0)
-                return;
-        }
+        // we can only move via cursor if the turn is the human player's
+        if (HUMAN_PLAYER_TEAM >= 0 && game_util_whose_turn() != HUMAN_PLAYER_TEAM)
+            return;
 
         // ensure it is our turn
         if (!game_util_is_my_turn(hover_pawn_gid))
