@@ -22,7 +22,6 @@ void boardscn_init_vars() {
     cursor_click = false;
     cursor_last_moved_frame = 0;
     request_step = false;
-    board_scene_page = BoardScenePage.BOARDSCN_BOARD;
     pausemenu_dirty = true;
     board_scroll_x = 0;
     board_scroll_y = 0;
@@ -94,6 +93,9 @@ void boardscn_start() {
     pawn_move_tween.pawn_gid = -1;
     pawn_flash_tween.pawn_gid = -1;
 
+    // change page
+    boardscn_change_page(BoardScenePage.BOARDSCN_BOARD);
+
     // play start game sfx
     sfx_play_startchime();
 }
@@ -129,9 +131,9 @@ void boardscn_input() {
     if (key_hit(KEY_START)) {
         // pause menu
         if (board_scene_page == BoardScenePage.BOARDSCN_BOARD)
-            board_scene_page = BoardScenePage.BOARDSCN_TURNOVERLAY;
+            boardscn_change_page(BoardScenePage.BOARDSCN_TURNOVERLAY);
         else if (board_scene_page == BoardScenePage.BOARDSCN_TURNOVERLAY)
-            board_scene_page = BoardScenePage.BOARDSCN_BOARD;
+            boardscn_change_page(BoardScenePage.BOARDSCN_BOARD);
 
         pausemenu_dirty = true;
         set_ui_dirty();
@@ -204,15 +206,39 @@ void boardscn_update() {
 
     boardscn_input();
 
-    // draw
+    boardscn_draw_page(board_scene_page);
+}
 
-    switch (board_scene_page) {
+void boardscn_change_page(BoardScenePage next_page) {
+    switch (next_page) {
+    case BoardScenePage.BOARDSCN_BOARD:
+        // show bg0-1 only
+        *REG_DISPCNT &= ~(DCNT_BG2);
+        *REG_DISPCNT |= DCNT_BG0 | DCNT_BG1;
+        break;
+    case BoardScenePage.BOARDSCN_PAUSEMENU:
+        break;
+    case BoardScenePage.BOARDSCN_TURNOVERLAY:
+        // show bg2 only
+        *REG_DISPCNT &= ~(DCNT_BG0 | DCNT_BG1);
+        *REG_DISPCNT |= DCNT_BG2;
+        *REG_BG2CNT |= BG_PRIO(3);
+        break;
+    default:
+        break;
+    }
+
+    board_scene_page = next_page;
+}
+
+void boardscn_draw_page(BoardScenePage page) {
+    switch (page) {
     case BoardScenePage.BOARDSCN_BOARD:
         draw_sidebar();
         draw_board();
 
-        // update ai move play
-        update_ai_moveplay();
+        // // update ai move play
+        // update_ai_moveplay();
 
         // step queued
         update_queued_moves();
@@ -227,16 +253,14 @@ void boardscn_update() {
     case BoardScenePage.BOARDSCN_PAUSEMENU:
         update_pause_ui();
         draw_pause_ui();
+        break;
     case BoardScenePage.BOARDSCN_TURNOVERLAY:
         // update_pause_ui();
         // draw_pause_ui();
 
-        // set up bg2 with gfx
-        *REG_DISPCNT |= DCNT_BG2;
-        *REG_BG2CNT |= BG_PRIO(3);
-        GritImage bg_img = dusk_load_image(cast(char*)"turn_tp");
-        dusk_background_upload_raw(&bg_img, BG2_GFX_CBB, BG2_GFX_SBB);
-        dusk_background_make(2, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ BG2_GFX_CBB, /*sbb*/ BG2_GFX_SBB));
+        GritImage bg_img = dusk_load_image(cast(char*) "turn_tp");
+        dusk_background_upload_raw(&bg_img, BG2_GFX_CBB, BG2_GFX_SBB, 32);
+        dusk_background_make(2, BG_REG_32x32, Background( /*x*/ 0, /*y*/ 0, /*cbb*/ BG2_GFX_CBB, /*sbb*/ BG2_GFX_SBB));
 
         break;
     default:

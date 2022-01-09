@@ -25,7 +25,7 @@ void menu_start() {
     GritImage bg_img = dusk_load_image(cast(char*)"title");
     
     dusk_background_make(1, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ 0, /*sbb*/ 30));
-    dusk_background_upload_raw(&bg_img, 0, 30, 8);
+    dusk_background_upload_raw(&bg_img, 0, 30, 32);
 
     pal_bg_mem[16] = RES_PAL[0]; // fg col 1
     pal_bg_mem[17] = RES_PAL[1]; // fg col 2

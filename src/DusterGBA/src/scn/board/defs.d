@@ -46,7 +46,7 @@ enum BG0_SRF_CBB = 0;
 enum BG0_SRF_SBB = 31;
 enum BG1_TTE_CBB = 2;
 enum BG1_TTE_SBB = 30;
-enum BG2_GFX_CBB = 1;
+enum BG2_GFX_CBB = 0;
 enum BG2_GFX_SBB = 29;
 enum HUMAN_PLAYER_TEAM = -1;
 
