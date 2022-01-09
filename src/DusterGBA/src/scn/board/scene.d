@@ -21,8 +21,6 @@ void boardscn_init_vars() {
     cursor_shown = true;
     cursor_click = false;
     cursor_last_moved_frame = 0;
-    cache_range_vec.clear();
-    pawn2sprite.clear();
     request_step = false;
     board_scene_page = BoardScenePage.BOARDSCN_BOARD;
     pausemenu_dirty = true;
@@ -34,6 +32,9 @@ void boardscn_init_vars() {
     movequeue_delay_timer = 0;
     ai_played_move = -1;
     ai_wait_timer = AI_WAIT_TIME;
+    
+    cache_range_vec.clear();
+    pawn2sprite.clear();
 }
 
 void boardscn_start() {
@@ -92,9 +93,6 @@ void boardscn_start() {
     // clear tweens
     pawn_move_tween.pawn_gid = -1;
     pawn_flash_tween.pawn_gid = -1;
-
-    // init data structures
-    pawn2sprite.clear();
 
     // play start game sfx
     sfx_play_startchime();

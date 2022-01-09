@@ -93,45 +93,6 @@ int board_util_pos_to_tid(VPos16 pos) {
     return BOARD_POS(pos.x, pos.y);
 }
 
-// typedef struct {
-//     int tile_id;
-// } BFSVisitStorage;
-
-// typedef struct {
-//     int dist;
-//     int ix;
-//     int value;
-// } DijkstraStorage;
-
-// typedef struct {
-//     int value;
-//     int prio;
-//     int ix;
-// } PQueuePair;
-
-struct BFSVisitStorage {
-    int tile_id;
-};
-
-struct DijkstraStorage {
-    int dist;
-    int ix;
-    int value;
-};
-
-struct PQueuePair {
-    int value;
-    int prio;
-    int ix;
-};
-
-static int pqueue_pair_cmp(const void* a, const void* b) {
-    PQueuePair* a1 = cast(PQueuePair*) a;
-    PQueuePair* b1 = cast(PQueuePair*) b;
-
-    return b1.prio - a1.prio;
-}
-
 bool pawn_util_is_valid_move(pawn_gid_t pawn_gid, VPos16 start_pos, VPos16 end_pos) {
     ClassData class_data = pawn_get_classdata(pawn_gid);
 

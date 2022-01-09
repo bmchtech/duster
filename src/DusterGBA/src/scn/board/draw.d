@@ -210,29 +210,15 @@ void draw_board() {
             BoardTile* tile = &game_state.board.tiles[BOARD_POS(brx, bry)];
             pawn_gid_t pawn_gid = tile.pawn_gid;
             if (pawn_gid >= 0) {
-                // this is a pawn
                 // look up the pawn
                 Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
-
                 int team_ix = PAWN_WHICH_TEAM(pawn_gid);
-
                 int pawn_sprite_id = pawn_sprite_ix;
 
-                SpritePawnPair* pair = &sprite_pawn_pairs[pawn_sprite_id];
-                // *pair = (SpritePawnPair){.pawn_gid = pawn_gid, .sprite = pawn_sprite_id};
-                *pair = SpritePawnPair(pawn_gid, pawn_sprite_id);
-
-                pawn2sprite[pair.pawn_gid] = pair.sprite;
-
-                // mgba_printf(ERROR, "set 2sprite k: %d, v: %d", pair.pawn_gid, pair.sprite);
+                // set pawn gid to sprite mapping
+                pawn2sprite[pawn_gid] = pawn_sprite_id;
 
                 // assign a sprite to drawing this pawn
-                // dusk_sprites_make(pawn_sprite_id, 8, 8,
-                //                   (Sprite){
-                //                       .x = board_offset.x + (bdx << 3),
-                //                       .y = board_offset.y + (bdy << 3),
-                //                       .base_tid = pawn.unit_class + (team_ix * NUM_UNIT_CLASSES),
-                //                   });
                 dusk_sprites_make(pawn_sprite_id, 8, 8,
                     Sprite.init(cast(s16)(board_offset.x + (bdx << 3)), cast(s16)(
                         board_offset.y + (bdy << 3)),

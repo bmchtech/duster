@@ -58,9 +58,6 @@ __gshared VPos16 cursor_click_pos;
 __gshared int cursor_last_moved_frame;
 __gshared PawnMoveTweenInfo pawn_move_tween;
 __gshared PawnFlashTweenInfo pawn_flash_tween;
-__gshared Dict!(pawn_gid_t, int) pawn2sprite;
-__gshared Vector!VPos16 cache_range_vec;
-__gshared SpritePawnPair[128] sprite_pawn_pairs;
 __gshared bool request_step;
 __gshared bool pawn_move_range_dirty;
 __gshared BoardScenePage board_scene_page;
@@ -75,6 +72,9 @@ __gshared int movequeue_progress = -1;
 __gshared int movequeue_delay_timer = 0;
 __gshared int ai_played_move = -1;
 __gshared int ai_wait_timer;
+
+__gshared Dict!(pawn_gid_t, int) pawn2sprite;
+__gshared Vector!VPos16 cache_range_vec;
 
 // extern functions
 extern (C) {
