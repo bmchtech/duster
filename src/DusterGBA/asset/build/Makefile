@@ -15,7 +15,7 @@ ATLS_PNG := $(ATLS_OUT:%_=%_0.png)
 IMGS_BIN := $(notdir $(ATLS_PNG:%.png=%.img.bin))
 
 RAWMAPS_SRC := $(shell find $(RAWMAPS_DIR) -name '*.png')
-RAWMAPS_BIN := $(notdir $(RAWMAPS_SRC:%.png=%.bin))
+RAWMAPS_BIN := $(notdir $(RAWMAPS_SRC:%.png=%.img.bin))
 
 # MAPS_SRC := $(shell find $(MAPS_DIR) -name '*.tmx')
 # MAPS_BIN := $(notdir $(MAPS_SRC:%.tmx=%.bin))
@@ -27,8 +27,10 @@ SOUND_SRC := $(shell find $(SOUND_DIR) -type f)
 SOUND_BIN := soundbank.bin
 SOUND_H := soundbank.h
 
-GRIT_BPP := 4
-GRIT_FLAGS := -gt -p -g -gB $(GRIT_BPP) -gu32 -pu32 -ftb -fh!
+GRIT_ATL_BPP := 4
+GRIT_ATL_FLAGS := -gt -p -g -gB $(GRIT_ATL_BPP) -gu32 -pu32 -ftb -fh!
+GRIT_RMP_BPP := 8
+GRIT_RMP_FLAGS := -gt -p -m -g -gB $(GRIT_RMP_BPP) -gu32 -pu32 -ftb -fh!
 CRUNCH_FLAGS := -p -j -b -s256 -p0
 
 all: $(RAWMAPS_BIN) $(IMGS_BIN) $(SOUND_BIN) $(SOUND_H) $(GAMEMAPS_BIN)
@@ -43,11 +45,12 @@ clean:
 	rm -rfv *.json
 
 # define a function: atlpng2grit(size), this will set Mw and Mh to size
-atlpng2grit = grit "$<" $(GRIT_FLAGS) -Mh $(1) -Mw $(1) -o "$@"
+atlpng2grit = grit "$<" $(GRIT_ATL_FLAGS) -Mh $(1) -Mw $(1) -o "$@"
+rawmap2grit = grit "$<" $(GRIT_RMP_FLAGS) -Mh $(1) -Mw $(1) -ps $(2) -ma $(3) -o "$@"
 
 # default rule for atlpng -> img bin
 %.img.bin: %.png
-	grit "$<" $(GRIT_FLAGS) -o "$@"
+	grit "$<" $(GRIT_ATL_FLAGS) -o "$@"
 
 # import custom recipes
 include custom.mk
@@ -61,8 +64,8 @@ $(ATLS_PNG): $(ATLS_OUT)
 	@true
 
 # rule for building raw maps
-%.bin: ../rawmap/%.png
-	grit "$<" -p -m -g -gB 8 -gu32 -pu32 -ftb -o "$@"
+%.img.bin: ../rawmap/%.png
+	$(call rawmap2grit,1,0,0)
 
 # rule for building soundbank
 $(SOUND_BIN) $(SOUND_H): $(SOUND_SRC)
