@@ -149,9 +149,9 @@ void on_cursor_try_click(VPos16 try_click_pos) {
         bool try_click_is_valid_move = false;
 
         // then check if the click is within the range
-        for (int i = 0; i < cache_range_buf_filled; i++) {
+        for (int i = 0; i < cache_range_vec.length; i++) {
             // for each tile that's in range
-            VPos16 withinrange_pos = cache_range_buf[i];
+            VPos16 withinrange_pos = cache_range_vec[i];
             if (try_click_pos.x == withinrange_pos.x && try_click_pos.y == withinrange_pos.y) {
                 // this click target is within range
 

@@ -21,7 +21,8 @@ void boardscn_init_vars() {
     cursor_shown = true;
     cursor_click = false;
     cursor_last_moved_frame = 0;
-    cache_range_buf_filled = 0;
+    cache_range_vec.clear();
+    pawn2sprite.clear();
     request_step = false;
     board_scene_page = BoardScenePage.BOARDSCN_BOARD;
     pausemenu_dirty = true;

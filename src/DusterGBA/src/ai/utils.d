@@ -186,3 +186,4 @@ Vector!pawn_gid_t ai_scan_pawns(int team_id) {
 
     return my_pawns;
 }
+

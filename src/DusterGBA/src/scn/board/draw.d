@@ -140,12 +140,12 @@ void draw_clicked_pawn_graphics() {
         if (pawn_move_range_dirty) {
             pawn_move_range_dirty = FALSE;
 
-            cache_range_buf_filled = board_util_calc_rangebuf(pawn_pos.x, pawn_pos.y,
-                class_data.move, cast(VPos16*) cache_range_buf, CACHE_RANGE_BUF_LEN);
-            if (cache_range_buf_filled <= 0) {
+            board_util_calc_pawn_range(pawn_pos.x, pawn_pos.y,
+                class_data.move, &cache_range_vec);
+            if (cache_range_vec.length <= 0) {
                 // calc range failed
-                mgba_printf(MGBALogLevel.ERROR, "calculate range buf for pawn %d failed (code %d)!", get_clicked_pawn_gid(),
-                    cache_range_buf_filled);
+                mgba_printf(MGBALogLevel.ERROR, "calculate range buf for pawn %d failed (code %d)!",
+                    get_clicked_pawn_gid(), cache_range_vec.length);
                 // unclick
                 cursor_click = FALSE;
                 set_ui_dirty();
@@ -153,10 +153,10 @@ void draw_clicked_pawn_graphics() {
         }
 
         // draw from cached buf
-        if (cache_range_buf_filled > 0) {
+        if (cache_range_vec.length > 0) {
             // range buf is filled
-            for (int i = 0; i < cache_range_buf_filled; i++) {
-                VPos16 fs_pos = cache_range_buf[i];
+            for (int i = 0; i < cache_range_vec.length; i++) {
+                VPos16 fs_pos = cache_range_vec[i];
                 if (board_get_pawn(BOARD_POS(fs_pos.x, fs_pos.y))) {
                     // there is a pawn
                     draw_square1(fs_pos.x - board_scroll_x, fs_pos.y - board_scroll_y, 2);
