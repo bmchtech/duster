@@ -180,7 +180,7 @@ void update_ai_moveplay() {
             num_moves_planned = ai_plan_moves_variant_1(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
         }
         if (whose_move == 1) {
-            num_moves_planned = ai_plan_moves_variant_2(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
+            num_moves_planned = ai_plan_moves_variant_1(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
         }
 
         // log planned moves

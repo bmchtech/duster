@@ -317,4 +317,20 @@ void draw_sidebar() {
             break;
         }
     }
+
+    // if (!(hover_pawn || click_pawn)) {
+    //     version (DEBUG) {
+    //         // debug only hover view
+    //         switch (page) {
+    //         case 0:
+    //             break;
+    //         case 1:
+    //             // show position of hover
+    //             tte_printf("#{P:142,06}#{ci:1}(%d,%d)", cursor_pos.x, cursor_pos.y);
+    //             break;
+    //         default:
+    //             break;
+    //         }
+    //     }
+    // }
 }

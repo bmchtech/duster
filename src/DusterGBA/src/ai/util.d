@@ -1,6 +1,7 @@
 module ai.util;
 
 import dusk;
+import dusk.contrib.mgba;
 import game;
 import libtind.ds.dict;
 import libtind.ds.vector;
@@ -67,25 +68,35 @@ bool ai_can_pawn_move_to(pawn_gid_t pawn_gid, VPos16 from_pos, VPos16 pos, PawnM
     // first, check that tile is empty and walkable
     bool tile_check = false;
 
-    if (board_util_is_on_board_pos(pos) > 0 && board_util_is_walkable_pos(pos) > 0) {
+    if (board_util_is_on_board_pos(pos) && board_util_is_walkable_pos(pos)) {
         // valid tile, check if occupied
-        auto is_occupied_before = board_get_pawn(BOARD_POSV(pos)) is null;
-        auto is_reloc = pos in move_cache.relocs.map;
+        auto is_occupied_before = board_get_pawn(BOARD_POSV(pos)) !is null;
+        auto is_reloc = (pos in move_cache.relocs.map) !is null;
+        
+        // mgba_printf(1, "is_occupied_before: %d\n", is_occupied_before);
+        // mgba_printf(1, "is_reloc: %d\n", is_reloc);
 
         // double check using relocs to see if pawn is already planned to move there
         if (is_reloc) {
             auto reloc_pawn_gid = move_cache.relocs.map[pos];
             if (!is_occupied_before && reloc_pawn_gid >= 0) {
                 // someone else is already planning to move there
+                // mgba_printf(1, "someone else is already planning to move there\n");
                 tile_check = false;
             }
             if (is_occupied_before && reloc_pawn_gid < 0) {
                 // actually it is no longer occupied
+                // mgba_printf(1, "reloced, we (%d) will move to (%d, %d)\n", pawn_gid, pos.x, pos.y);
                 tile_check = true;
             }
         } else if (!is_occupied_before) {
             // no one is planning to move there. we can move there
+            // mgba_printf(1, "free space, we (%d) will move to (%d, %d)\n", pawn_gid, pos.x, pos.y);
             tile_check = true;
+        } else {
+            // occupied by someone else
+            // mgba_printf(1, "occupied by someone else\n");
+            tile_check = false;
         }
     }
 

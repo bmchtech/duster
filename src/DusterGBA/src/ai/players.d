@@ -40,6 +40,7 @@ int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
     auto move_cache = PawnMoveCache();
 
     // advance our plan
+    // for (int i = 0; i < my_pawns.length; i++) {
     for (int i = 0; i < my_pawns.length; i++) {
         auto pawn_gid = my_pawns[i];
         auto pawn = game_get_pawn_by_gid(pawn_gid);
@@ -74,11 +75,11 @@ int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
 
         dest_pos = pos_closer_to_enemy;
 
-        // check if we can move there
-        if (!ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, &move_cache)) {
-            // can't move there
-            continue;
-        }
+        // // check if we can move there
+        // if (!ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, &move_cache)) {
+        //     // can't move there
+        //     continue;
+        // }
 
         // add a move for this pawn
         QueuedMove move = {
@@ -108,6 +109,6 @@ int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
     return planned_moves;
 }
 
-int ai_plan_moves_variant_2(int team_id, QueuedMove* moves, int moves_buf_len) {
-    return ai_plan_moves_variant_1(team_id, moves, moves_buf_len);
-}
+// int ai_plan_moves_variant_2(int team_id, QueuedMove* moves, int moves_buf_len) {
+//     return ai_plan_moves_variant_1(team_id, moves, moves_buf_len);
+// }
