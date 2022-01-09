@@ -10,3 +10,6 @@
 [submodule "lib/gba_dlang"]
 	path = lib/gba_dlang
 	url = https://github.com/redthing1/gba_dlang.git
+[submodule "lib/libtonc"]
+	path = lib/libtonc
+	url = https://github.com/redthing1/libtonc
