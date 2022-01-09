@@ -1,10 +1,13 @@
 #include "dusk.h"
+#include "res.h"
 #include "ds_sys.h"
 #include "scenes.h"
 #include "contrib/mgba.h"
 #include "maxmod.h"
 
-__attribute__((used)) const char* GAME_VERSION = "$DUSTER v0.2";
+__attribute__((used)) const char* GAME_VERSION = RES_GAME_VERSION;
+__attribute__((used)) const char* GAME_BUILD = RES_GAME_BUILD;
+__attribute__((used)) const char* GAME_COPYING = RES_GAME_COPYING;
 
 void maxmod_audio_init() {
     // irq setup for maxmod dma

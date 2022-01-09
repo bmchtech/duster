@@ -220,7 +220,7 @@ int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
 }
 
 void update_queued_moves() {
-    if (movequeue_progress >= movequeue_length) {
+    if (movequeue_length <= 0 || movequeue_progress >= movequeue_length) {
         return; // all done for now
     }
 

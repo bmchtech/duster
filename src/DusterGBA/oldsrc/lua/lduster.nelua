@@ -96,12 +96,13 @@ global QueuedMove: type <cimport,nodecl> = @record{
 
 global game_state: GameState <cimport,nodecl>
 global game_data: GameColdData <cimport,nodecl>
+global game_ai_blackboard: [4096]cuchar <cimport,nodecl>
 
--- local function BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
+global function LBOARD_POS(x: cint, y: cint) return ((y)*MAX_BOARD_SIZE + (x)) end
 global function LPAWN_GID(team: cint, pawn: cint) return ((team)*TEAM_MAX_PAWNS + (pawn)) end
--- #define PAWN_WHICH_TEAM(gid) ((gid) / TEAM_MAX_PAWNS)
--- #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
--- #define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
+global function LPAWN_WHICH_TEAM(gid) return ((gid) / TEAM_MAX_PAWNS) end
+global function LPAWN_NUM_IN_TEAM(gid) return ((gid) % TEAM_MAX_PAWNS) end
+global function LPOS_TO_TID(pos) return (LBOARD_POS((pos).x, (pos).y)) end
 
 global function game_clear_state(): void <cimport,nodecl> end
 global function game_load_cold_data(): void <cimport,nodecl> end
@@ -136,5 +137,6 @@ global function game_util_is_my_turn(pawn_gid: cshort): cuchar <cimport,nodecl> 
 global function game_util_whose_turn(): cint <cimport,nodecl> end
 global function pawn_util_moved_this_turn(pawn: *Pawn): cuchar <cimport,nodecl> end
 global function pawn_util_calc_stats(class_data: *ClassData, level: cint): UnitDataStats <cimport,nodecl> end
+global function game_util_randint(): cint <cimport,nodecl> end
 global function game_load_gamemap(data: pointer, len: cuint): cuchar <cimport,nodecl> end
 

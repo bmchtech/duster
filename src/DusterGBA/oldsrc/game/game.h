@@ -104,6 +104,7 @@ typedef struct {
 
 extern GameState game_state;
 extern GameColdData game_data;
+extern u8 game_ai_blackboard[4096];
 
 #define BOARD_POS(x, y) ((y)*MAX_BOARD_SIZE + (x))
 #define PAWN_GID(team, pawn) ((team)*TEAM_MAX_PAWNS + (pawn))
@@ -155,9 +156,11 @@ BOOL game_util_is_my_turn(pawn_gid_t pawn_gid);
 int game_util_whose_turn();
 BOOL pawn_util_moved_this_turn(Pawn* pawn);
 UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level);
+int game_util_randint();
 
 // MAP
 BOOL game_load_gamemap(void* data, u32 len);
 
 // lua code binding
-int game_gs_ai_plan_moves(int team_id, QueuedMove* move_buf, int move_buf_len);
+int game_gs_ai_plan_moves_variant_1(int team_id, QueuedMove* move_buf, int move_buf_len);
+int game_gs_ai_plan_moves_variant_2(int team_id, QueuedMove* move_buf, int move_buf_len);

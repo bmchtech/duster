@@ -45,8 +45,8 @@ BOOL game_load_gamemap(void* data, u32 len) {
     game_init_board(map.board_size);
 
     // init default teams
-    game_init_team(0, "player");
-    game_init_team(1, "enmy");
+    game_init_team(0, "devil");
+    game_init_team(1, "salt");
 
     // read in terrain tiles
     map.num_tiles = read_int(binmap, &offset);

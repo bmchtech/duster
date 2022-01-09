@@ -8,6 +8,9 @@
 #include "cc_hashset.h"
 #include "contrib/mgba.h"
 
+// blackboard for game ai
+u8 game_ai_blackboard[4096];
+
 BOOL board_util_is_on_board(int tx, int ty) {
     return ((tx >= 0) && tx < game_state.board_size) && ((ty >= 0) && ty < game_state.board_size);
 }
@@ -420,4 +423,15 @@ UnitDataStats pawn_util_calc_stats(ClassData* class_data, int level) {
     MACRO_CALC_STATS_GROWTH(spd);
 
     return calc_stats;
+}
+
+int game_util_randint() {
+    // each random call is only up to 32768
+    int r1 = qran();
+    int r2 = qran();
+    int r3 = qran();
+    int r4 = qran();
+    // we want to combine them to a single number, using masked 8 bits from each
+    int r = (r1 & 0xFF) | ((r2 & 0xFF) << 8) | ((r3 & 0xFF) << 16) | ((r4 & 0xFF) << 24);
+    return r;
 }

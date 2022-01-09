@@ -10,32 +10,58 @@ BOOL board_ui_dirty = TRUE;
 BOOL sidebar_dirty = TRUE;
 int cursor_last_moved_frame = 0;
 VPos16 cursor_pos;
-BOOL cursor_shown = TRUE;
-BOOL cursor_click = FALSE;
+BOOL cursor_shown;
+BOOL cursor_click;
 VPos16 cursor_click_pos;
 PawnMoveTweenInfo pawn_move_tween;
 PawnFlashTweenInfo pawn_flash_tween;
 CC_HashTable* pawn2sprite;
 SpritePawnPair sprite_pawn_pairs[128];
 VPos16 cache_range_buf[CACHE_RANGE_BUF_LEN];
-int cache_range_buf_filled = 0;
-BOOL request_step = FALSE;
+int cache_range_buf_filled;
+BOOL request_step;
 BOOL pawn_move_range_dirty = TRUE;
-BoardScenePage board_scene_page = BOARDSCN_BOARD;
-BOOL pausemenu_dirty = TRUE;
-int board_scroll_x = 0;
-int board_scroll_y = 0;
-int sidebar_page = 0;
+BoardScenePage board_scene_page;
+BOOL pausemenu_dirty;
+int board_scroll_x;
+int board_scroll_y;
+int sidebar_page;
 int movequeue_length = 0;
 QueuedMove movequeue_queue[MOVEQUEUE_MAX_SIZE];
-int movequeue_progress = 0;
+int movequeue_progress = -1;
 int movequeue_delay_timer = 0;
+int ai_played_move = -1;
+int ai_wait_timer = AI_WAIT_TIME;
+
+void boardscn_init_vars() {
+    board_offset = (VPos){.x = 8, .y = 8};
+    cursor_pos = (VPos16){.x = 0, .y = 0};
+    board_ui_dirty = TRUE;
+    sidebar_dirty = TRUE;
+    cursor_shown = TRUE;
+    cursor_click = FALSE;
+    cache_range_buf_filled = 0;
+    request_step = FALSE;
+    board_scene_page = BOARDSCN_BOARD;
+    pausemenu_dirty = TRUE;
+    board_scroll_x = 0;
+    board_scroll_y = 0;
+    sidebar_page = 0;
+    movequeue_length = 0;
+    movequeue_progress = -1;
+    movequeue_delay_timer = 0;
+    ai_played_move = -1;
+    ai_wait_timer = AI_WAIT_TIME;
+}
 
 void boardscn_start() {
     // init
     dusk_init_graphics_mode0();
     dusk_sprites_init();
     dusk_sprites_configure(FALSE);
+
+    // init rng
+    sqran(frame_count ^ 0xBEEF1234);
 
     // main bg
     REG_DISPCNT |= DCNT_BG0;
@@ -69,6 +95,7 @@ void boardscn_start() {
     u32 test1_gmp_len;
     char gamemap_file_name[48];
     sprintf(gamemap_file_name, "%s.gmp.bin", selected_map_file);
+    mgba_printf(MGBA_LOG_ERROR, "loading map file %s\n", gamemap_file_name);
     const void* test1_gmp = dusk_load_raw(gamemap_file_name, &test1_gmp_len);
     mgba_printf(MGBA_LOG_ERROR, "loading gamemap from tmx data[%d]", test1_gmp_len);
     BOOL load_success = game_load_gamemap((void*)test1_gmp, test1_gmp_len);
@@ -78,8 +105,7 @@ void boardscn_start() {
     }
 
     // set vars for drawing
-    board_offset = (VPos){.x = 8, .y = 8};
-    cursor_pos = (VPos16){.x = 0, .y = 0};
+    boardscn_init_vars();
 
     // clear tweens
     pawn_move_tween.pawn_gid = -1;
@@ -91,13 +117,6 @@ void boardscn_start() {
     pawn2sprite_conf.hash = GENERAL_HASH;
     pawn2sprite_conf.key_length = sizeof(pawn_gid_t);
     cc_hashtable_new_conf(&pawn2sprite_conf, &pawn2sprite);
-
-    // queued moves
-    memset(movequeue_queue, 0, sizeof(movequeue_queue));
-    int num_moves_planned = game_gs_ai_plan_moves(game_util_whose_turn(), movequeue_queue, MOVEQUEUE_MAX_SIZE);
-    mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
-    movequeue_length = num_moves_planned;
-    movequeue_progress = -1; // indicates ready movequeue
 
     // play start game sfx
     boardscn_sfx_play_startchime();
@@ -153,6 +172,48 @@ void boardscn_input() {
     }
 }
 
+void update_ai_moveplay() {
+    // ensure move not already played
+    if (ai_played_move >= game_state.turns) {
+        return;
+    }
+
+    // wait for timer
+    if (ai_wait_timer > 0) {
+        ai_wait_timer--;
+        return;
+    }
+
+    // mark this turn as played, and reset timer
+    ai_played_move = game_state.turns;
+    ai_wait_timer = AI_WAIT_TIME;
+
+    // now check whose move it is
+    int whose_move = game_util_whose_turn();
+
+    // if it is the ai's turn, ask the ai to plan moves
+    int human_player_team = -1;
+    if (whose_move != human_player_team) {
+        // initialize the move queue
+        memset(movequeue_queue, 0, sizeof(movequeue_queue));
+
+        // call the planner to plan moves for this team
+        int num_moves_planned = 0;
+        if (whose_move == 0) {
+            num_moves_planned = game_gs_ai_plan_moves_variant_1(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        }
+        if (whose_move == 1) {
+            num_moves_planned = game_gs_ai_plan_moves_variant_2(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        }
+
+        // log planned moves
+        mgba_printf(MGBA_LOG_ERROR, "planning moves returned %d", num_moves_planned);
+        // set variables for move queue
+        movequeue_length = num_moves_planned;
+        movequeue_progress = -1; // indicates ready movequeue
+    }
+}
+
 void boardscn_update() {
     dusk_frame();
 
@@ -173,11 +234,14 @@ void boardscn_update() {
         draw_sidebar();
         draw_board();
 
-        // tween updates are last
-        update_pawn_tweens();
+        // update ai move play
+        update_ai_moveplay();
 
         // step queued
         update_queued_moves();
+
+        // tween updates are last
+        update_pawn_tweens();
 
         // update sprites
         dusk_sprites_update();
