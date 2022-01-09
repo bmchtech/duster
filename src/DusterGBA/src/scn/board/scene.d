@@ -169,25 +169,27 @@ void update_ai_moveplay() {
     int whose_move = game_util_whose_turn();
 
     // if it is the ai's turn, ask the ai to plan moves
-    // if (whose_move != HUMAN_PLAYER_TEAM) {
-    //     // initialize the move queue
-    //     memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
+    if (whose_move != HUMAN_PLAYER_TEAM) {
+        import ai.players;
 
-    //     // call the planner to plan moves for this team
-    //     int num_moves_planned = 0;
-    //     if (whose_move == 0) {
-    //         num_moves_planned = game_gs_ai_plan_moves_variant_1(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
-    //     }
-    //     if (whose_move == 1) {
-    //         num_moves_planned = game_gs_ai_plan_moves_variant_2(whose_move, movequeue_queue, MOVEQUEUE_MAX_SIZE);
-    //     }
+        // initialize the move queue
+        memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
 
-    //     // log planned moves
-    //     mgba_printf(MGBALogLevel.ERROR, "planning moves returned %d", num_moves_planned);
-    //     // set variables for move queue
-    //     movequeue_length = num_moves_planned;
-    //     movequeue_progress = -1; // indicates ready movequeue
-    // }
+        // call the planner to plan moves for this team
+        int num_moves_planned = 0;
+        if (whose_move == 0) {
+            num_moves_planned = ai_plan_moves_variant_1(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        }
+        if (whose_move == 1) {
+            num_moves_planned = ai_plan_moves_variant_2(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
+        }
+
+        // log planned moves
+        mgba_printf(MGBALogLevel.ERROR, "planning moves returned %d", num_moves_planned);
+        // set variables for move queue
+        movequeue_length = num_moves_planned;
+        movequeue_progress = -1; // indicates ready movequeue
+    }
 }
 
 void boardscn_update() {
