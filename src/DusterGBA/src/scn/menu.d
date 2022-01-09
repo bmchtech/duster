@@ -27,9 +27,12 @@ void menu_start() {
 
     dusk_background_make(1, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ 0, /*sbb*/ 30));
 
+    pal_bg_mem[16] = RES_PAL[0]; // fg col 1
+    pal_bg_mem[17] = RES_PAL[1]; // fg col 2
+
     // draw text
-    pal_bg_mem[16] = RES_PAL[0];
     tte_printf("#{P:200,140}#{ci:16}play >");
+    tte_printf("#{P:206,4}#{ci:16}%s", VERSION_ID);
 }
 
 void menu_update() {

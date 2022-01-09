@@ -4,6 +4,8 @@ import tonc.tonc_types;
 
 extern (C):
 
+__gshared extern const char* VERSION_ID;
+
 __gshared extern const char* GAME_VERSION;
 __gshared extern const char* GAME_BUILD;
 __gshared extern const char* GAME_COPYING;
