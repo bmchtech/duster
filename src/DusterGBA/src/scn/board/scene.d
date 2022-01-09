@@ -32,7 +32,7 @@ void boardscn_init_vars() {
     movequeue_delay_timer = 0;
     ai_played_move = -1;
     ai_wait_timer = AI_WAIT_TIME;
-    
+
     cache_range_vec.clear();
     pawn2sprite.clear();
 }
@@ -184,7 +184,7 @@ void update_ai_moveplay() {
         }
 
         // log planned moves
-        mgba_printf(MGBALogLevel.ERROR, "planning moves returned %d", num_moves_planned);
+        mgba_printf(MGBALogLevel.ERROR, "ai (team %d) planned %d moves", whose_move, num_moves_planned);
         // set variables for move queue
         movequeue_length = num_moves_planned;
         movequeue_progress = -1; // indicates ready movequeue
