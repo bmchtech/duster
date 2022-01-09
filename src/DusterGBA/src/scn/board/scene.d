@@ -56,9 +56,16 @@ void boardscn_start() {
 
     // set up bg1 with tte
     *REG_DISPCNT |= DCNT_BG1;
-    tte_init_chr4c(1, cast(u16)(BG_CBB(BG1_TTE_CBB) | BG_SBB(BG1_TTE_SBB)), 0, 0x0201, CLR_GRAY, null, null);
     *REG_BG1CNT |= BG_PRIO(2);
+    tte_init_chr4c(1, cast(u16)(BG_CBB(BG1_TTE_CBB) | BG_SBB(BG1_TTE_SBB)), 0, 0x0201, CLR_GRAY, null, null);
     tte_init_con();
+
+    // set up bg2 with gfx
+    *REG_DISPCNT |= DCNT_BG2;
+    *REG_BG2CNT |= BG_PRIO(3);
+    GritImage bg_img = dusk_load_image(cast(char*)"turn_tp");
+    dusk_background_upload_raw(&bg_img, BG2_GFX_CBB, BG2_GFX_SBB);
+    dusk_background_make(2, BG_REG_32x32, Background(/*x*/ 0, /*y*/ 0, /*cbb*/ BG2_GFX_CBB, /*sbb*/ BG2_GFX_SBB));
 
     // set bg palette
     pal_bg_mem[0] = RES_PAL[2]; // bg color
