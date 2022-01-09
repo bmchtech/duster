@@ -27,18 +27,17 @@ void animate_pawn_flash(pawn_gid_t pawn_gid, pawn_gid_t initiator_gid, bool flas
     pawn_flash_tween.end_frame = frame_count + 20;
 }
 
-int get_sprite_index_for_pawn(pawn_gid_t pawn_gid) {
+int board_get_sprite_for_pawn(pawn_gid_t pawn_gid) {
     if (pawn_gid < 0)
         return -2;
-
-    int* pawn_sprite_ix_out;
 
     if (pawn_gid !in pawn2sprite) {
         mgba_printf(MGBALogLevel.ERROR, "failed to get sprite index for pawn gid: %d", pawn_gid);
         return -1;
     }
+    int pawn_sprite_ix = pawn2sprite[pawn_gid];
 
-    return *pawn_sprite_ix_out;
+    return pawn_sprite_ix;
 }
 
 void update_pawn_move_tween() {
@@ -72,7 +71,7 @@ void update_pawn_move_tween() {
     // continue the anim...
 
     // get the assigned sprite
-    int pawn_sprite_ix = get_sprite_index_for_pawn(tween.pawn_gid);
+    int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
     if (pawn_sprite_ix < 0)
         return; // FAIL
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
@@ -133,7 +132,7 @@ void update_pawn_flash_tween() {
     }
 
     // get the assigned sprite
-    int pawn_sprite_ix = get_sprite_index_for_pawn(tween.pawn_gid);
+    int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
     if (pawn_sprite_ix < 0)
         return; // FAIL
