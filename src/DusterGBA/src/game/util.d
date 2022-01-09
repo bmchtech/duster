@@ -13,6 +13,10 @@ bool board_util_is_on_board(int tx, int ty) {
         && ((ty >= 0) && ty < game_state.board_size);
 }
 
+bool board_util_is_on_board_pos(VPos16 pos) {
+    return board_util_is_on_board(pos.x, pos.y);
+}
+
 bool board_util_tid_is_on_board(int tid) {
     auto pos = board_util_tid_to_pos(tid);
     return board_util_is_on_board(pos.x, pos.y);
@@ -28,6 +32,10 @@ bool board_util_is_walkable(int tx, int ty) {
         return true;
 
     return false;
+}
+
+bool board_util_is_walkable_pos(VPos16 pos) {
+    return board_util_is_walkable(pos.x, pos.y);
 }
 
 bool board_util_tid_is_walkable(int tid) {

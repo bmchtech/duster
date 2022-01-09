@@ -1,6 +1,6 @@
 module ai;
 
 public {
-    import ai.utils;
+    import ai.util;
     import ai.players;
 }

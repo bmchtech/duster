@@ -166,7 +166,9 @@ struct QueuedMove {
 
 @(ldc.attributes.section(".ewram")) __gshared GameState game_state;
 // @(ldc.attributes.section(".ewram")) __gshared GameColdData game_data;
-@(ldc.attributes.section(".ewram")) __gshared u8[4096] game_ai_blackboard;
+
+enum TEAM_BLACKBOARD_SIZE = 1024;
+@(ldc.attributes.section(".ewram")) __gshared u8[TEAM_BLACKBOARD_SIZE * NUM_TEAMS] game_ai_blackboard;
 
 enum GameColdData game_data = GameColdData(cold_class_data);
 
@@ -178,22 +180,28 @@ enum GameColdData game_data = GameColdData(cold_class_data);
 // #define PAWN_NUM_IN_TEAM(gid) ((gid) % TEAM_MAX_PAWNS)
 // #define POS_TO_TID(pos) (BOARD_POS((pos).x, (pos).y))
 
-auto BOARD_POS(int x, int y) {
-    return (y) * MAX_BOARD_SIZE + (x);
-}
+extern (D) {
+    auto BOARD_POS(int x, int y) {
+        return (y) * MAX_BOARD_SIZE + (x);
+    }
 
-pawn_gid_t PAWN_GID(int team, int pawn) {
-    return cast(pawn_gid_t)((team) * TEAM_MAX_PAWNS + (pawn));
-}
+    auto BOARD_POSV(VPos16 pos) {
+        return BOARD_POS((pos).x, (pos).y);
+    }
 
-auto PAWN_WHICH_TEAM(int gid) {
-    return (gid) / TEAM_MAX_PAWNS;
-}
+    pawn_gid_t PAWN_GID(int team, int pawn) {
+        return cast(pawn_gid_t)((team) * TEAM_MAX_PAWNS + (pawn));
+    }
 
-auto PAWN_NUM_IN_TEAM(int gid) {
-    return (gid) % TEAM_MAX_PAWNS;
-}
+    auto PAWN_WHICH_TEAM(int gid) {
+        return (gid) / TEAM_MAX_PAWNS;
+    }
 
-auto POS_TO_TID(VPos16 pos) {
-    return BOARD_POS((pos).x, (pos).y);
+    auto PAWN_NUM_IN_TEAM(int gid) {
+        return (gid) % TEAM_MAX_PAWNS;
+    }
+
+    auto POS_TO_TID(VPos16 pos) {
+        return BOARD_POS((pos).x, (pos).y);
+    }
 }

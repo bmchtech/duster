@@ -165,6 +165,10 @@ int board_dist(int tx1, int ty1, int tx2, int ty2) {
     return ABS(tx2 - tx1) + ABS(ty2 - ty1);
 }
 
+int board_dist_pos(VPos16 p1, VPos16 p2) {
+    return board_dist(p1.x, p1.y, p2.x, p2.y);
+}
+
 ClassData pawn_get_classdata(pawn_gid_t pawn_gid) {
     Pawn* pawn = game_get_pawn_by_gid(pawn_gid);
 
