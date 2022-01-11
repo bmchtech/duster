@@ -4,11 +4,12 @@ import game;
 import tonc;
 import dusk;
 import dusk.contrib.mgba;
+import libtind.ds.vector;
 import ai;
 
 extern (C):
 
-int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
+int ai_plan_moves_variant_1(int team_id, Vector!QueuedMove* moves) {
 
     // pick blackboard base slot based on team id
     auto bb_base = team_id * TEAM_BLACKBOARD_SIZE;
@@ -86,7 +87,8 @@ int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
             type: QueuedMoveType.QUEUEDMOVE_MOVE,
             pawn0: pawn_gid, start_pos: curr_tile_pos, end_pos: dest_pos
         };
-        moves[planned_moves] = move;
+        // moves[planned_moves] = move;
+        moves.push_back(move);
 
         // log that we are moving to this tile
         mgba_printf(MGBALogLevel.INFO, "pawn %d is moving to %d,%d", pawn_gid,
@@ -106,9 +108,9 @@ int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
     // move_cache.free();
 
     // return number of planned moves
-    return planned_moves;
+    return moves.length;
 }
 
-// int ai_plan_moves_variant_2(int team_id, QueuedMove* moves, int moves_buf_len) {
+// int ai_plan_moves_variant_2(int team_id, Vector!QueuedMove moves, int moves_buf_len) {
 //     return ai_plan_moves_variant_1(team_id, moves, moves_buf_len);
 // }

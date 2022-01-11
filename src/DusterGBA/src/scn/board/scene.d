@@ -8,6 +8,7 @@ import libgba.maxmod;
 import res;
 import dusk.contrib.mgba;
 import typ.vpos;
+import libtind.ds.vector;
 import scn.board;
 import game;
 
@@ -26,7 +27,6 @@ void boardscn_init_vars() {
     board_scroll_x = 0;
     board_scroll_y = 0;
     sidebar_page = 0;
-    movequeue_length = 0;
     movequeue_progress = -1;
     movequeue_delay_timer = 0;
     ai_played_move = -1;
@@ -34,6 +34,7 @@ void boardscn_init_vars() {
 
     cache_range_vec.clear();
     pawn2sprite.clear();
+    movequeue_queue.clear();
 }
 
 void boardscn_start() {
@@ -174,21 +175,20 @@ void update_ai_moveplay() {
         import ai.players;
 
         // initialize the move queue
-        memset(cast(void*) movequeue_queue, 0, movequeue_queue.sizeof);
+        movequeue_queue.clear();
 
         // call the planner to plan moves for this team
         int num_moves_planned = 0;
         if (whose_move == 0) {
-            num_moves_planned = ai_plan_moves_variant_1(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
+            num_moves_planned = ai_plan_moves_variant_1(whose_move, &movequeue_queue);
         }
         if (whose_move == 1) {
-            num_moves_planned = ai_plan_moves_variant_1(whose_move, cast(QueuedMove*) movequeue_queue, MOVEQUEUE_MAX_SIZE);
+            num_moves_planned = ai_plan_moves_variant_1(whose_move, &movequeue_queue);
         }
 
         // log planned moves
         mgba_printf(MGBALogLevel.ERROR, "ai (team %d) planned %d moves", whose_move, num_moves_planned);
         // set variables for move queue
-        movequeue_length = num_moves_planned;
         movequeue_progress = -1; // indicates ready movequeue
     }
 }
@@ -237,8 +237,8 @@ void boardscn_draw_page(BoardScenePage page) {
         draw_sidebar();
         draw_board();
 
-        // // update ai move play
-        // update_ai_moveplay();
+        // update ai move play
+        update_ai_moveplay();
 
         // step queued
         update_queued_moves();

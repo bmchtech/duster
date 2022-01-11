@@ -7,6 +7,7 @@ import tonc;
 import libgba.maxmod;
 import res;
 import dusk.contrib.mgba;
+import libtind.ds.vector;
 import typ.vpos;
 import scn.board;
 import game;
@@ -191,16 +192,16 @@ void run_queued_move(QueuedMove* move) {
     }
 }
 
-int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
+int step_running_queued_moves(Vector!QueuedMove* moves, int progress) {
     int curr_step = progress;
 
     // start initial move
     if (curr_step == -1) {
-        run_queued_move(&moves[0]);
+        run_queued_move(&((*moves)[0]));
         curr_step = 0;
     }
 
-    QueuedMove* curr_move = &moves[curr_step];
+    QueuedMove* curr_move = &(*moves)[curr_step];
 
     // check if last one is done
     bool move_done = FALSE;
@@ -216,12 +217,12 @@ int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
     if (move_done) {
         curr_step++;
         // check if we are at end
-        if (curr_step >= length) {
-            return length;
+        if (curr_step >= moves.length) {
+            return moves.length;
         }
 
         // start the next
-        QueuedMove* move = &moves[curr_step];
+        QueuedMove* move = &(*moves)[curr_step];
         run_queued_move(move);
     }
 
@@ -231,14 +232,14 @@ int step_running_queued_moves(QueuedMove* moves, int length, int progress) {
 }
 
 void update_queued_moves() {
-    if (movequeue_length <= 0 || movequeue_progress >= movequeue_length) {
+    if (cast(int)movequeue_queue.length <= 0 || movequeue_progress >= cast(int)movequeue_queue.length) {
         return; // all done for now
     }
 
     if (frame_count > movequeue_delay_timer) {
         movequeue_delay_timer = frame_count + 20; // schedule next run
 
-        int new_progress = step_running_queued_moves(cast(QueuedMove*) movequeue_queue, movequeue_length, movequeue_progress);
+        int new_progress = step_running_queued_moves(&movequeue_queue, movequeue_progress);
         movequeue_progress = new_progress;
     }
 }

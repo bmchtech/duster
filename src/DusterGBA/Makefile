@@ -51,6 +51,10 @@ ifeq ($(DEBUG),1)
 	CFLAGS += -O2 -g -DDEBUG
 	DFLAGS += -O2 -g --d-version=DEBUG
 	DUSK_MKFLAGS += DEBUG=1
+else ifeq ($(DEBUG),2)
+	CFLAGS += -g -DDEBUG
+	DFLAGS += -g --d-version=DEBUG --d-version=DEBUG2
+	DUSK_MKFLAGS += DEBUG=1
 else
 	# non-debug
 	CFLAGS += -O2 -fomit-frame-pointer -ffast-math
