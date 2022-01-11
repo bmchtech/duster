@@ -100,10 +100,10 @@ int ai_plan_moves_variant_1(int team_id, QueuedMove* moves, int moves_buf_len) {
         planned_moves++;
     }
 
-    // clean up
-    my_pawns.free();
-    enemy_pawns.free();
-    move_cache.free();
+    // // clean up
+    // my_pawns.free();
+    // enemy_pawns.free();
+    // move_cache.free();
 
     // return number of planned moves
     return planned_moves;

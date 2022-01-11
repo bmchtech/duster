@@ -18,10 +18,14 @@ struct PawnMoveCache {
     Relocs relocs;
     Vector!VPos16 range_data;
 
-    void free() {
-        relocs.map.free();
-        range_data.free();
-    }
+    // void free() {
+    //     relocs.map.free();
+    //     range_data.free();
+    // }
+
+    // ~this() {
+    //     free();
+    // }
 }
 
 enum ProximityType {

@@ -22,10 +22,10 @@ NodeDistanceDict board_util_calc_node_distances(int start_tx, int start_ty, int 
     NodeDistanceDict node_distances;
     Heap!int unvisited;
 
-    scope (exit) { // free data structures
-        // node_distances.free(); // we will return the dict
-        unvisited.free();
-    }
+    // scope (exit) { // free data structures
+    //     // node_distances.free(); // we will return the dict
+    //     unvisited.free();
+    // }
 
     // set initial dijstra values
     for (int i = -range; i <= range; i++) {
@@ -110,9 +110,9 @@ int board_util_calc_pawn_range(int start_tx, int start_ty, int range, Vector!VPo
     auto node_distances = board_util_calc_node_distances(start_tx, start_ty, range);
     int start_tid = BOARD_POS(start_tx, start_ty);
 
-    scope (exit) {
-        node_distances.free();
-    }
+    // scope (exit) {
+    //     node_distances.free();
+    // }
 
     // finally, populate the rangebuf with the positions we can reach
     // mgba_printf(// mgbaLogLevel.ERROR, "checking dists %d\n", node_distances.length);
