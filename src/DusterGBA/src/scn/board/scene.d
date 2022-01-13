@@ -95,7 +95,7 @@ void boardscn_start() {
     pawn_flash_tween.pawn_gid = -1;
 
     // change page
-    boardscn_change_page(BoardScenePage.BOARDSCN_BOARD);
+    boardscn_change_page(BoardScenePage.BOARD);
 
     // play start game sfx
     sfx_play_startchime();
@@ -131,10 +131,10 @@ void boardscn_input() {
 
     if (key_hit(KEY_START)) {
         // pause menu
-        if (board_scene_page == BoardScenePage.BOARDSCN_BOARD)
-            boardscn_change_page(BoardScenePage.BOARDSCN_TURNOVERLAY);
-        else if (board_scene_page == BoardScenePage.BOARDSCN_TURNOVERLAY)
-            boardscn_change_page(BoardScenePage.BOARDSCN_BOARD);
+        if (board_scene_page == BoardScenePage.BOARD)
+            boardscn_change_page(BoardScenePage.TURNOVERLAY);
+        else if (board_scene_page == BoardScenePage.TURNOVERLAY)
+            boardscn_change_page(BoardScenePage.BOARD);
 
         pausemenu_dirty = true;
         set_ui_dirty();
@@ -211,14 +211,14 @@ void boardscn_update() {
 
 void boardscn_change_page(BoardScenePage next_page) {
     switch (next_page) {
-    case BoardScenePage.BOARDSCN_BOARD:
+    case BoardScenePage.BOARD:
         // show bg0-1 only
         *REG_DISPCNT &= ~(DCNT_BG2);
         *REG_DISPCNT |= DCNT_BG0 | DCNT_BG1;
         break;
-    case BoardScenePage.BOARDSCN_PAUSEMENU:
+    case BoardScenePage.PAUSEMENU:
         break;
-    case BoardScenePage.BOARDSCN_TURNOVERLAY:
+    case BoardScenePage.TURNOVERLAY:
         // show bg2 only
         *REG_DISPCNT &= ~(DCNT_BG0 | DCNT_BG1);
         *REG_DISPCNT |= DCNT_BG2;
@@ -233,7 +233,7 @@ void boardscn_change_page(BoardScenePage next_page) {
 
 void boardscn_draw_page(BoardScenePage page) {
     switch (page) {
-    case BoardScenePage.BOARDSCN_BOARD:
+    case BoardScenePage.BOARD:
         draw_sidebar();
         draw_board();
 
@@ -250,11 +250,11 @@ void boardscn_draw_page(BoardScenePage page) {
         dusk_sprites_update();
 
         break;
-    case BoardScenePage.BOARDSCN_PAUSEMENU:
+    case BoardScenePage.PAUSEMENU:
         update_pause_ui();
         draw_pause_ui();
         break;
-    case BoardScenePage.BOARDSCN_TURNOVERLAY:
+    case BoardScenePage.TURNOVERLAY:
         // update_pause_ui();
         // draw_pause_ui();
 

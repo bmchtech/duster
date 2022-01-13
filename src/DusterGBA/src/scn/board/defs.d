@@ -34,9 +34,9 @@ struct SpritePawnPair {
 }
 
 enum BoardScenePage {
-    BOARDSCN_BOARD,
-    BOARDSCN_PAUSEMENU,
-    BOARDSCN_TURNOVERLAY,
+    BOARD,
+    PAUSEMENU,
+    TURNOVERLAY,
 }
 
 enum BOARD_SCROLL_WINDOW = 16;

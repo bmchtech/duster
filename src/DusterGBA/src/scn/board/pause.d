@@ -17,12 +17,12 @@ import game;
 
 void pause_menu_back_selected() {
     // set scene back to board
-    board_scene_page = BoardScenePage.BOARDSCN_BOARD;
+    board_scene_page = BoardScenePage.BOARD;
 }
 
 void pause_menu_quit_selected() {
     // set scene back to board
-    board_scene_page = BoardScenePage.BOARDSCN_BOARD;
+    board_scene_page = BoardScenePage.BOARD;
 
     // restart game
     dusk_scene_set(logo_scene);
