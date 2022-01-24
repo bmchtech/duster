@@ -42,6 +42,23 @@ int main() {
     // log rom info
     mgba_printf(MGBALogLevel.INFO, "build info: %s %s (%s)\n", GAME_VERSION, GAME_BUILD, GAME_COPYING);
 
+    // try rtc
+    import dusk.contrib.rtc;
+
+    auto rtc_status = rtc_init();
+    if (rtc_status == 0) {
+        // rtc init successfully
+        mgba_printf(MGBALogLevel.ERROR, "rtc init successfully\n");
+        auto raw_time = rtc_get_datetime();
+        mgba_printf(MGBALogLevel.ERROR, "raw time: %d\n", raw_time);
+        auto date_time = rtc_get_datetime_ex();
+        mgba_printf(MGBALogLevel.ERROR, "date and time: %04d-%02d-%02d %02d:%02d:%02d\n", date_time.year, date_time
+                .month, date_time.day, date_time.hour, date_time.min, date_time.sec);
+    } else {
+        // rtc init failed
+        mgba_printf(MGBALogLevel.ERROR, "rtc init failed: %d\n", rtc_status);
+    }
+
     dusk_scene_set(logo_scene);
 
     while (true) {
