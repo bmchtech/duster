@@ -130,11 +130,17 @@ void boardscn_input() {
     }
 
     if (key_hit(KEY_START)) {
-        // pause menu
-        if (board_scene_page == BoardScenePage.BOARD)
-            boardscn_change_page(BoardScenePage.TURNOVERLAY);
-        else if (board_scene_page == BoardScenePage.TURNOVERLAY)
+        // // pause menu
+        // if (board_scene_page == BoardScenePage.BOARD)
+        //     boardscn_change_page(BoardScenePage.TURNOVERLAY);
+        // else if (board_scene_page == BoardScenePage.TURNOVERLAY)
+        //     boardscn_change_page(BoardScenePage.BOARD);
+        if (board_scene_page == BoardScenePage.BOARD) {
+            pausemenu_dirty = true;
+            boardscn_change_page(BoardScenePage.PAUSEMENU);
+        } else if (board_scene_page == BoardScenePage.PAUSEMENU) {
             boardscn_change_page(BoardScenePage.BOARD);
+        }
 
         pausemenu_dirty = true;
         set_ui_dirty();
