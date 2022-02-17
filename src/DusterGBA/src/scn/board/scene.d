@@ -98,7 +98,7 @@ void boardscn_start() {
     boardscn_change_page(BoardScenePage.BOARD);
 
     // play start game sfx
-    sfx_play_startchime();
+    // sfx_play_startchime();
 }
 
 void set_ui_dirty() {
