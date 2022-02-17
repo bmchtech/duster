@@ -74,18 +74,16 @@ int ai_plan_moves_variant_1(int team_id, Vector!QueuedMove* moves) {
         auto enemy_target_tile = board_find_pawn_tile(target_enemy_pawn);
         auto enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile);
 
-        // check if we can move directly to target
-        // TODO: we can attack from within interact range as well, we should utilize that too
-        if (ai_can_pawn_move_to(pawn_gid, curr_tile_pos, enemy_target_tile_pos, &move_cache, true)) {
-            // we can move directly to target
-            dest_pos = enemy_target_tile_pos;
+        // get position closer to target
+        auto pos_closer_to_enemy = ai_get_closest_tile_in_proximity(pawn_gid, curr_tile_pos,
+            enemy_target_tile_pos, ProximityType.NEAR, &move_cache);
+        dest_pos = pos_closer_to_enemy;
+
+        // check if we can attack the target from that position
+        if (board_dist_pos(dest_pos, enemy_target_tile_pos) <= class_data.interact_range) {
             attack_target = true;
-            mgba_printf(MGBALogLevel.INFO, "pawn %d is able to move directly to target %d", pawn_gid, target_enemy_pawn_id);
-        } else {
-            // we settle for a move towards the closest possible tile to target
-            auto pos_closer_to_enemy = ai_get_closest_tile_in_proximity(pawn_gid, curr_tile_pos,
-                enemy_target_tile_pos, ProximityType.NEAR, &move_cache);
-            dest_pos = pos_closer_to_enemy;
+            mgba_printf(MGBALogLevel.INFO, "pawn %d is able to attack target %d (range %d)",
+                pawn_gid, target_enemy_pawn_id, class_data.interact_range);
         }
 
         if (!attack_target) {
