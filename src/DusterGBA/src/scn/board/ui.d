@@ -129,6 +129,7 @@ void on_cursor_click_move(VPos16 dest_pos) {
         // request a move anim
         mgba_printf(MGBALogLevel.INFO, "move pawn (%d) to (%d, %d)", sel_pawn_gid, dest_pos.x,
             dest_pos.y);
+        sfx_play_move();
         animate_pawn_move(sel_pawn_gid, cursor_click_pos, dest_pos);
     }
 

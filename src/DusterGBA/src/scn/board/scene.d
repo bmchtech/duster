@@ -176,27 +176,27 @@ void update_ai_moveplay() {
     // now check whose move it is
     int whose_move = game_util_whose_turn();
 
-    // if it is the ai's turn, ask the ai to plan moves
-    if (whose_move != HUMAN_PLAYER_TEAM) {
-        import ai.players;
+    // // if it is the ai's turn, ask the ai to plan moves
+    // if (whose_move != HUMAN_PLAYER_TEAM) {
+    //     import ai.players;
 
-        // initialize the move queue
-        movequeue_queue.clear();
+    //     // initialize the move queue
+    //     movequeue_queue.clear();
 
-        // call the planner to plan moves for this team
-        int num_moves_planned = 0;
-        if (whose_move == 0) {
-            num_moves_planned = ai_plan_moves_variant_1(whose_move, &movequeue_queue);
-        }
-        if (whose_move == 1) {
-            num_moves_planned = ai_plan_moves_variant_1(whose_move, &movequeue_queue);
-        }
+    //     // call the planner to plan moves for this team
+    //     int num_moves_planned = 0;
+    //     if (whose_move == 0) {
+    //         num_moves_planned = ai_plan_moves_variant_1(whose_move, &movequeue_queue);
+    //     }
+    //     if (whose_move == 1) {
+    //         num_moves_planned = ai_plan_moves_variant_1(whose_move, &movequeue_queue);
+    //     }
 
-        // log planned moves
-        mgba_printf(MGBALogLevel.ERROR, "ai (team %d) planned %d moves", whose_move, num_moves_planned);
-        // set variables for move queue
-        movequeue_progress = -1; // indicates ready movequeue
-    }
+    //     // log planned moves
+    //     mgba_printf(MGBALogLevel.ERROR, "ai (team %d) planned %d moves", whose_move, num_moves_planned);
+    //     // set variables for move queue
+    //     movequeue_progress = -1; // indicates ready movequeue
+    // }
 }
 
 void boardscn_update() {
