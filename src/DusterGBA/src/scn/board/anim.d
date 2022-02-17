@@ -47,15 +47,8 @@ void update_pawn_move_tween() {
     // make sure there is a running tween
     if (tween.pawn_gid < 0)
         return;
-    
+
     void move_anim_end() {
-        // propagate real actions
-        // set real pos to end
-        int pawn_old_pos = board_find_pawn_tile(tween.pawn_gid);
-        board_move_pawn(tween.pawn_gid, pawn_old_pos, BOARD_POS(tween.end_pos.x, tween.end_pos.y));
-
-        request_step = TRUE; // step
-
         // clear tween info
         memset(tween, 0, (PawnFlashTweenInfo.sizeof));
         tween.pawn_gid = -1;
@@ -66,6 +59,13 @@ void update_pawn_move_tween() {
     // check if we are at end of anim
     if (frame_count >= tween.end_frame) {
         // done
+        // propagate real actions
+        // set real pos to end
+        int pawn_old_pos = board_find_pawn_tile(tween.pawn_gid);
+        board_move_pawn(tween.pawn_gid, pawn_old_pos, BOARD_POS(tween.end_pos.x, tween.end_pos.y));
+
+        request_step = TRUE; // step
+
         move_anim_end();
         return;
     }
@@ -76,6 +76,8 @@ void update_pawn_move_tween() {
     int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
     if (pawn_sprite_ix < 0) {
         move_anim_end();
+        mgba_printf(MGBALogLevel.WARN, "canceled move tween for pawn gid: %d, because pawn sprite not found", tween
+                .pawn_gid);
         return; // FAIL
     }
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
@@ -109,39 +111,42 @@ void update_pawn_flash_tween() {
     if (tween.pawn_gid < 0)
         return;
 
-    // check if we are at end of anim
-    if (frame_count >= tween.end_frame) {
-        // done
-
-        // clean up effects
-
-        // disable window
-        *REG_DISPCNT &= ~DCNT_WIN0;
-
-        // disable blend
-        *REG_BLDY = BLDY_BUILD(0);
-
-        // propagate real actions
-        game_logic_interact(cast(pawn_gid_t) tween.initiator_gid, tween.pawn_gid);
-
-        request_step = TRUE;
-
+    void flash_anim_end() {
         // clear tween info
         memset(tween, 0, (PawnFlashTweenInfo.sizeof));
         tween.pawn_gid = -1;
 
         set_ui_dirty(); // ui dirty
+    }
+
+    // check if we are at end of anim
+    if (frame_count >= tween.end_frame) {
+        // done
+
+        // clean up effects
+        // disable window
+        *REG_DISPCNT &= ~DCNT_WIN0;
+        // disable blend
+        *REG_BLDY = BLDY_BUILD(0);
+
+        // propagate real actions
+        game_logic_interact(cast(pawn_gid_t) tween.initiator_gid, tween.pawn_gid);
+        request_step = TRUE;
+
+        flash_anim_end();
 
         return;
     }
 
     // get the assigned sprite
     int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
-    if (pawn_sprite_ix < 0)
+    if (pawn_sprite_ix < 0) {
+        flash_anim_end();
+        mgba_printf(MGBALogLevel.WARN, "canceled flash tween for pawn gid: %d, because pawn sprite not found", tween
+                .pawn_gid);
         return; // FAIL
+    }
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
-    if (pawn_sprite_ix < 0)
-        return; // FAIL
 
     // check if we are at start of tween
     if (frame_count == tween.start_frame) {
@@ -239,7 +244,8 @@ int step_running_queued_moves(Vector!QueuedMove* moves, int progress) {
 }
 
 void update_queued_moves() {
-    if (cast(int)movequeue_queue.length <= 0 || movequeue_progress >= cast(int)movequeue_queue.length) {
+    if (cast(int) movequeue_queue.length <= 0 || movequeue_progress >= cast(int) movequeue_queue
+        .length) {
         return; // all done for now
     }
 
