@@ -85,6 +85,8 @@ void levelselect_update() {
     dusk_frame();
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
+        sfx_play_aux1();
+
         // selected, copy data
         strcpy(cast(char*) selected_map_file, cast(char*) level_infos[levelselect_selected].map_file);
 

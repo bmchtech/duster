@@ -39,6 +39,8 @@ void menu_update() {
     dusk_frame();
 
     if (key_hit(KEY_A) || key_hit(KEY_START)) {
+        import scn.board.defs: sfx_play_aux1;
+        sfx_play_aux1();
         dusk_scene_set(levelselect_scene);
     }
 
