@@ -14,15 +14,15 @@ void sfx_play_intro_chime() {
 }
 
 void sfx_play_startchime() {
-    // // define sfx
-    // mm_sound_effect chime;
-    // chime.handle = 0;
-    // chime.id = SFX_OBEP2;
-    // chime.rate = (int)(1.0f * (1 << 10));
-    // chime.volume = 255;
-    // chime.panning = 128;
-    // // play sound effect
-    // mmEffectEx(&chime);
+    // define sfx
+    mm_sound_effect chime;
+    chime.handle = 0;
+    chime.id = SFX_OBEP2;
+    chime.rate = (int)(1.2f * (1 << 10));
+    chime.volume = 200;
+    chime.panning = 128;
+    // play sound effect
+    mmEffectEx(&chime);
 }
 
 void sfx_play_scroll() {
