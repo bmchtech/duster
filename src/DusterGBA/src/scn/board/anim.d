@@ -47,13 +47,9 @@ void update_pawn_move_tween() {
     // make sure there is a running tween
     if (tween.pawn_gid < 0)
         return;
-
-    // check if we are at end of anim
-    if (frame_count >= tween.end_frame) {
-        // done
-
+    
+    void move_anim_end() {
         // propagate real actions
-
         // set real pos to end
         int pawn_old_pos = board_find_pawn_tile(tween.pawn_gid);
         board_move_pawn(tween.pawn_gid, pawn_old_pos, BOARD_POS(tween.end_pos.x, tween.end_pos.y));
@@ -65,7 +61,12 @@ void update_pawn_move_tween() {
         tween.pawn_gid = -1;
 
         set_ui_dirty(); // ui dirty
+    }
 
+    // check if we are at end of anim
+    if (frame_count >= tween.end_frame) {
+        // done
+        move_anim_end();
         return;
     }
 
@@ -73,8 +74,10 @@ void update_pawn_move_tween() {
 
     // get the assigned sprite
     int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
-    if (pawn_sprite_ix < 0)
+    if (pawn_sprite_ix < 0) {
+        move_anim_end();
         return; // FAIL
+    }
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
 
     // get anim progress
@@ -134,6 +137,8 @@ void update_pawn_flash_tween() {
 
     // get the assigned sprite
     int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
+    if (pawn_sprite_ix < 0)
+        return; // FAIL
     Sprite* pawn_sprite = &sprites[pawn_sprite_ix];
     if (pawn_sprite_ix < 0)
         return; // FAIL
