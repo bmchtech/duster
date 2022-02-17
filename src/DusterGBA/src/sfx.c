@@ -101,3 +101,14 @@ void sfx_play_cant() {
     // play sound effect
     mmEffectEx(&sfx);
 }
+
+void sfx_play_death() {
+    mm_sound_effect sfx;
+    sfx.handle = 0;
+    sfx.id = SFX_CB02;
+    sfx.rate = (int)(1.0f * (1 << 10));
+    sfx.volume = 255;
+    sfx.panning = 128;
+    // play sound effect
+    mmEffectEx(&sfx);
+}

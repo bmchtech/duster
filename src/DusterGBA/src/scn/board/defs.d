@@ -89,4 +89,5 @@ extern (C) {
     void sfx_play_interact();
     void sfx_play_move();
     void sfx_play_cant();
+    void sfx_play_death();
 }

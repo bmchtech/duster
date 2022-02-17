@@ -51,6 +51,9 @@ void game_logic_kill_if_dead(pawn_gid_t pawn_gid) {
         int pawn_tile = board_find_pawn_tile(pawn_gid);
         board_set_pawn(pawn_tile, -1);
         mgba_printf(MGBALogLevel.ERROR, "pawn died: %d", pawn_gid);
+
+        import scn.board.defs: sfx_play_death;
+        sfx_play_death();
     }
 }
 
@@ -98,7 +101,7 @@ void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver) {
         HostileUnitDuel duel = game_logic_calc_hostile_damage(initiator_pawn, receiver_pawn);
 
         // exchange damage
-        mgba_printf(MGBALogLevel.ERROR, "damage exchanged: %d %d", duel.main_dmg, duel.counter_dmg);
+        mgba_printf(MGBALogLevel.ERROR, "damage exchanged: atk: %d, ctr: %d", duel.main_dmg, duel.counter_dmg);
         receiver_pawn.unit_data.hitpoints -= duel.main_dmg;
         initiator_pawn.unit_data.hitpoints -= duel.counter_dmg;
 
