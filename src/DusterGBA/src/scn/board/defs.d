@@ -74,6 +74,7 @@ __gshared int movequeue_progress = -1;
 __gshared int movequeue_delay_timer = 0;
 __gshared int ai_played_move = -1;
 __gshared int ai_wait_timer;
+__gshared bool force_auto_ai_move = false;
 
 __gshared Dict!(pawn_gid_t, int) pawn2sprite;
 __gshared Vector!VPos16 cache_range_vec;

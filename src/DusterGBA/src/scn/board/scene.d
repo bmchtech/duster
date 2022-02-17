@@ -123,10 +123,19 @@ void boardscn_input() {
     }
 
     if (key_hit(KEY_SELECT)) {
-        cursor_shown = !cursor_shown; // toggle cursor
-        cursor_click = false;
+        // cursor_shown = !cursor_shown; // toggle cursor
+        // cursor_click = false;
 
-        set_ui_dirty();
+        // set_ui_dirty();
+
+        force_auto_ai_move = !force_auto_ai_move;
+        if (force_auto_ai_move) {
+            mgba_printf(MGBALogLevel.INFO, "auto ai move enabled");
+            ai_played_move = game_state.turns - 1;
+            update_ai_moveplay();
+        } else {
+            mgba_printf(MGBALogLevel.INFO, "auto ai move disabled");
+        }
     }
 
     if (key_hit(KEY_START)) {
@@ -178,7 +187,7 @@ void update_ai_moveplay() {
     int whose_move = game_util_whose_turn();
 
     // if it is the ai's turn, ask the ai to plan moves
-    if (whose_move != HUMAN_PLAYER_TEAM) {
+    if (whose_move != HUMAN_PLAYER_TEAM || force_auto_ai_move) {
         import ai.players;
 
         // initialize the move queue
