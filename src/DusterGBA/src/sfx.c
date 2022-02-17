@@ -50,7 +50,7 @@ void sfx_play_click() {
 void sfx_play_interact() {
     mm_sound_effect sfx;
     sfx.handle = 0;
-    sfx.id = SFX_CB02;
+    sfx.id = SFX_DN02;
     sfx.rate = (int)(1.0f * (1 << 10));
     sfx.volume = 255;
     sfx.panning = 128;
@@ -61,7 +61,7 @@ void sfx_play_interact() {
 void sfx_play_move() {
     mm_sound_effect sfx;
     sfx.handle = 0;
-    sfx.id = SFX_CL04;
+    sfx.id = SFX_CB03;
     sfx.rate = (int)(1.0f * (1 << 10));
     sfx.volume = 255;
     sfx.panning = 128;
