@@ -180,9 +180,11 @@ void update_pawn_tweens() {
 void run_queued_move(QueuedMove* move) {
     switch (move.type) {
     case QueuedMoveType.QUEUEDMOVE_MOVE:
+        sfx_play_move();
         animate_pawn_move(move.pawn0, move.start_pos, move.end_pos);
         break;
     case QueuedMoveType.QUEUEDMOVE_INTERACT:
+        sfx_play_interact();
         animate_pawn_move(move.pawn0, move.start_pos, move.end_pos);
         animate_pawn_flash(move.pawn1, move.pawn0,
             pawn_util_on_same_team(move.pawn1, move.pawn0));
@@ -237,7 +239,7 @@ void update_queued_moves() {
     }
 
     if (frame_count > movequeue_delay_timer) {
-        movequeue_delay_timer = frame_count + 20; // schedule next run
+        movequeue_delay_timer = frame_count + 30; // schedule next run
 
         int new_progress = step_running_queued_moves(&movequeue_queue, movequeue_progress);
         movequeue_progress = new_progress;
