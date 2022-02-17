@@ -25,6 +25,28 @@ void sfx_play_startchime() {
     mmEffectEx(&chime);
 }
 
+void sfx_play_pause() {
+    mm_sound_effect sfx;
+    sfx.handle = 0;
+    sfx.id = SFX_CB04;
+    sfx.rate = (int)(1.0f * (1 << 10));
+    sfx.volume = 255;
+    sfx.panning = 128;
+    // play sound effect
+    mmEffectEx(&sfx);
+}
+
+void sfx_play_aux1() {
+    mm_sound_effect sfx;
+    sfx.handle = 0;
+    sfx.id = SFX_CL04;
+    sfx.rate = (int)(1.0f * (1 << 10));
+    sfx.volume = 255;
+    sfx.panning = 128;
+    // play sound effect
+    mmEffectEx(&sfx);
+}
+
 void sfx_play_scroll() {
     // mm_sound_effect sfx;
     // sfx.handle = 0;

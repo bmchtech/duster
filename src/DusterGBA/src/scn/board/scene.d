@@ -130,6 +130,7 @@ void boardscn_input() {
     }
 
     if (key_hit(KEY_START)) {
+        sfx_play_pause();
         // // pause menu
         // if (board_scene_page == BoardScenePage.BOARD)
         //     boardscn_change_page(BoardScenePage.TURNOVERLAY);

@@ -81,6 +81,8 @@ __gshared Vector!VPos16 cache_range_vec;
 // extern functions
 extern (C) {
     void sfx_play_startchime();
+    void sfx_play_pause();
+    void sfx_play_aux1();
     void sfx_play_scroll();
     void sfx_play_click();
     void sfx_play_interact();

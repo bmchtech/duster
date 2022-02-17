@@ -57,6 +57,8 @@ void update_pause_ui() {
     if (key_hit(KEY_A)) {
         // an item is selected
 
+        sfx_play_aux1();
+
         int sel_item = pause_cursor_selection;
         pause_cursor_selection = 0; // reset item selection index
 
