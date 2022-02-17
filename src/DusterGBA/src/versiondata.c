@@ -4,7 +4,7 @@
  * 
  *****************************************************************************/
 
-#define D_VERSION_ID "v0.3.1"
+#define D_VERSION_ID "v0.4.2"
 
 #define RES_GAME_VERSION ("$DUSTER " D_VERSION_ID)
 #define RES_GAME_COPYING "$COPYING Copyright (C) 2018-2022 bean machine."
