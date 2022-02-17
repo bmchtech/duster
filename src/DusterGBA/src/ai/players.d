@@ -111,7 +111,9 @@ int ai_plan_moves_variant_1(int team_id, Vector!QueuedMove* moves) {
             moves.push_back(attack);
 
             // log that we are attacking this enemy
-            mgba_printf(MGBALogLevel.INFO, "pawn %d is attacking %d", pawn_gid, target_enemy_pawn);
+            mgba_printf(MGBALogLevel.INFO, "pawn %d at (%d,%d) is attacking enemy %d at (%d,%d)",
+                pawn_gid, curr_tile_pos.x, curr_tile_pos.y, target_enemy_pawn_id,
+                enemy_target_tile_pos.x, enemy_target_tile_pos.y);
         }
 
         // update relocs
