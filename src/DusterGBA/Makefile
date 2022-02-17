@@ -61,6 +61,16 @@ else
 	DFLAGS += -O2 -frame-pointer=none -ffast-math
 endif
 
+# get revision id from git
+REVISIONID := $(shell printf "r%s.%s" "$(shell git rev-list --count HEAD)" "$(shell git rev-parse --short HEAD)")
+# append debug flag if in debug mode
+ifneq ($(DEBUG),0)
+	REVISIONID := $(addsuffix .d$(DEBUG),$(REVISIONID))
+endif
+$(info build id: $(REVISIONID))
+
+CFLAGS += -DGAME_BUILD_ID="\"$(REVISIONID)\""
+
 .PHONY : build clean
 
 # Find and predetermine all relevant source files
