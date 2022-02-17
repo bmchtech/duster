@@ -5,6 +5,9 @@
 
 a sleek strategy game for the gba
 
+written with the D programming language. as far as i know, this is the only non-trivial gba game written in D!
+D support comes from my work on [gba_dlang], providing library bindings, minimal runtime, and build scripts to run D on bare metal gba!
+
 ## build
 
 ### requirements
