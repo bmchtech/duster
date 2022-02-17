@@ -5,7 +5,7 @@
     "version": "2.0.0",
     "configurations": [
         {
-            "name": "(gdb) duster",
+            "name": "(gdb) DusterGBA",
             "type": "cppdbg",
             "request": "launch",
             // "preLaunchTask": "gdb-debug", 
