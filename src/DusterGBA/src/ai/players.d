@@ -69,30 +69,50 @@ int ai_plan_moves_variant_1(int team_id, Vector!QueuedMove* moves) {
             class_data.move, &move_cache.range_data);
 
         // plan a move towards target
+        bool attack_target = false;
+
         auto enemy_target_tile = board_find_pawn_tile(target_enemy_pawn);
         auto enemy_target_tile_pos = board_util_tid_to_pos(enemy_target_tile);
-        auto pos_closer_to_enemy = ai_get_closest_tile_in_proximity(pawn_gid, curr_tile_pos,
-            enemy_target_tile_pos, ProximityType.NEAR, &move_cache);
 
-        dest_pos = pos_closer_to_enemy;
+        // check if we can move directly to target
+        // TODO: we can attack from within interact range as well, we should utilize that too
+        if (ai_can_pawn_move_to(pawn_gid, curr_tile_pos, enemy_target_tile_pos, &move_cache, true)) {
+            // we can move directly to target
+            dest_pos = enemy_target_tile_pos;
+            attack_target = true;
+            mgba_printf(MGBALogLevel.INFO, "pawn %d is able to move directly to target %d", pawn_gid, target_enemy_pawn_id);
+        } else {
+            // we settle for a move towards the closest possible tile to target
+            auto pos_closer_to_enemy = ai_get_closest_tile_in_proximity(pawn_gid, curr_tile_pos,
+                enemy_target_tile_pos, ProximityType.NEAR, &move_cache);
+            dest_pos = pos_closer_to_enemy;
+        }
 
-        // // check if we can move there
-        // if (!ai_can_pawn_move_to(pawn_gid, curr_tile_pos, dest_pos, &move_cache)) {
-        //     // can't move there
-        //     continue;
-        // }
+        if (!attack_target) {
+            // add a move for this pawn
+            QueuedMove move = {
+                type: QueuedMoveType.QUEUEDMOVE_MOVE,
+                start_pos: curr_tile_pos, end_pos: dest_pos,
+                pawn0: pawn_gid, pawn1: target_enemy_pawn_id,
+            };
+            moves.push_back(move);
 
-        // add a move for this pawn
-        QueuedMove move = {
-            type: QueuedMoveType.QUEUEDMOVE_MOVE,
-            pawn0: pawn_gid, start_pos: curr_tile_pos, end_pos: dest_pos
-        };
-        // moves[planned_moves] = move;
-        moves.push_back(move);
+            // log that we are moving to this tile
+            mgba_printf(MGBALogLevel.INFO, "pawn %d is moving to %d,%d", pawn_gid,
+                dest_pos.x, dest_pos.y);
+        } else {
+            // add an interact (attack) move for this pawn
+            QueuedMove attack = {
+                type: QueuedMoveType.QUEUEDMOVE_INTERACT,
+                start_pos: curr_tile_pos, end_pos: dest_pos,
+                pawn0: pawn_gid, pawn1: target_enemy_pawn
+            };
 
-        // log that we are moving to this tile
-        mgba_printf(MGBALogLevel.INFO, "pawn %d is moving to %d,%d", pawn_gid,
-            dest_pos.x, dest_pos.y);
+            moves.push_back(attack);
+
+            // log that we are attacking this enemy
+            mgba_printf(MGBALogLevel.INFO, "pawn %d is attacking %d", pawn_gid, target_enemy_pawn);
+        }
 
         // update relocs
         move_cache.relocs.map[curr_tile_pos] = -1;

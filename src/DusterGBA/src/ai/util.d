@@ -68,15 +68,22 @@ pawn_gid_t ai_get_closest_enemy_pawn(VPos16 pos, Vector!pawn_gid_t enemy_pawns) 
     return closest_enemy_pawn;
 }
 
-bool ai_can_pawn_move_to(pawn_gid_t pawn_gid, VPos16 from_pos, VPos16 pos, PawnMoveCache* move_cache) {
+bool ai_can_pawn_move_to(pawn_gid_t pawn_gid, VPos16 from_pos, VPos16 pos, PawnMoveCache* move_cache,
+    bool ignore_occupied = false) {
+
     // first, check that tile is empty and walkable
     bool tile_check = false;
 
     if (board_util_is_on_board_pos(pos) && board_util_is_walkable_pos(pos)) {
         // valid tile, check if occupied
+        if (ignore_occupied) {
+            tile_check = true;
+            goto after_tile_check;
+        }
+
         auto is_occupied_before = board_get_pawn(BOARD_POSV(pos)) !is null;
         auto is_reloc = (pos in move_cache.relocs.map) !is null;
-        
+
         // mgba_printf(1, "is_occupied_before: %d\n", is_occupied_before);
         // mgba_printf(1, "is_reloc: %d\n", is_reloc);
 
@@ -103,6 +110,7 @@ bool ai_can_pawn_move_to(pawn_gid_t pawn_gid, VPos16 from_pos, VPos16 pos, PawnM
             tile_check = false;
         }
     }
+after_tile_check:
 
     // check range
     bool range_check = false;
