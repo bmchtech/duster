@@ -62,7 +62,7 @@ else
 endif
 
 # get revision id from git
-REVISIONID := $(shell printf "r%s.%s" "$(shell git rev-list --count HEAD)" "$(shell git rev-parse --short HEAD)")
+REVISIONID := $(shell printf "r%s" "$(shell git rev-parse --short HEAD)")
 # append debug flag if in debug mode
 ifneq ($(DEBUG),0)
 	REVISIONID := $(addsuffix .d$(DEBUG),$(REVISIONID))
