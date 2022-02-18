@@ -53,8 +53,8 @@ bool game_load_gamemap(void* data, u32 len) {
     game_init_board(cast(u8) map.board_size);
 
     // init default teams
-    game_init_team(0, "devil");
-    game_init_team(1, "salt");
+    game_init_team(0, "blue");
+    game_init_team(1, "red");
 
     // read in terrain tiles
     map.num_tiles = read_int(binmap, &offset);
