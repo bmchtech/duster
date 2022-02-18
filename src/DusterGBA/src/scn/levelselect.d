@@ -30,6 +30,12 @@ const LevelInfo[] level_infos = [
         "",
         "",
     ]),
+    LevelInfo("the garden", "garden", [
+        "A conflict has broken out in this garden of",
+        "abstraction.",
+        "What kind of garden is this?",
+        "",
+    ]),
     LevelInfo("underground", "underground", [
         "A shitty clone of a Fire Emblem Three Houses",
         "Map. It is not very good.",
