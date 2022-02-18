@@ -52,7 +52,8 @@ void game_logic_kill_if_dead(pawn_gid_t pawn_gid) {
         board_set_pawn(pawn_tile, -1);
         mgba_printf(MGBALogLevel.ERROR, "pawn died: %d", pawn_gid);
 
-        import scn.board.defs: sfx_play_death;
+        import scn.board.defs : sfx_play_death;
+
         sfx_play_death();
     }
 }
@@ -61,20 +62,119 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
     UnitDataStats* i_stats = &initiator_pawn.unit_data.stats;
     UnitDataStats* r_stats = &receiver_pawn.unit_data.stats;
 
+    mgba_printf(MGBALogLevel.INFO, "duel between (stats %d %d %d %d) and (stats %d %d %d %d)", // initiator_pawn.gid,
+        i_stats.atk, i_stats.def, i_stats.hp, i_stats.spd, // receiver_pawn.gid,
+        r_stats.atk, r_stats.def, r_stats.hp, r_stats.spd
+    );
+
     // get attack strength
     int atk_strength = i_stats.atk;
+    int atk_speed = i_stats.spd;
 
     // get defense strength
     int def_strength = r_stats.def;
+    int def_speed = r_stats.spd;
 
     HostileUnitDuel ret;
 
-    // mitigate attack
-    int mitigated_atk = atk_strength - def_strength;
-    mitigated_atk = clamp(mitigated_atk, 0, atk_strength);
+    // calculate base damage
+    // this damage is reduced by opponent def stat
+    int atk_advantage = atk_strength - def_strength;
+    // if the attacker is the same or lower, then the base damage is 0
+    auto base_atk_damage = clamp(atk_advantage, 0, atk_strength);
+    // the denominator of the rng chances
+    auto atk_pool = 5;
+    // if def is more than 3 levels higher, then pool is doubled
+    if (def_strength - atk_strength >= 3) {
+        atk_pool *= 2;
+    }
+    auto speed_advantage = atk_speed - def_speed;
+    if (speed_advantage <= -2) {
+        // if the attacker is moderately slower, then the base damage is halved
+        base_atk_damage /= 2;
+    }
+    if (speed_advantage >= 4) {
+        // if the attacker is greatly faster, then the base damage is greatly increased
+        base_atk_damage = (base_atk_damage + 1) * 2;
+    }
 
-    ret.main_dmg = mitigated_atk;
-    ret.counter_dmg = 0;
+    // calculate 5 different attack landings
+    auto atk_miss = 0;
+    auto atk_glancing = (2 * base_atk_damage) / 3;
+    auto atk_hit = base_atk_damage;
+    auto atk_strong = (4 * base_atk_damage) / 3;
+    auto atk_crit = (3 * base_atk_damage) / 2;
+
+    // since base pool is 5, base distr is 50
+    auto distr_pool = atk_pool * 10;
+
+    // calculate rng value
+    auto rng1 = qran_range(0, distr_pool + 1);
+
+    /*
+        chances:
+            miss: 2/10 -- cdf = 2/10
+            glancing: 2/10 -- cdf = 4/10
+            hit: 3/10 -- cdf = 7/10
+            strong: 2/10 -- cdf = 9/10
+            crit: 1/10 -- cdf = 10/10
+    */
+
+    // get attack type
+    auto calc_dmg = 1; // 1 free point
+
+    if (rng1 < 10) {
+        // critical
+        calc_dmg = atk_crit;
+    } else if (rng1 < 30) {
+        // strong
+        calc_dmg = atk_strong;
+    } else if (rng1 < 60) {
+        // hit
+        calc_dmg = atk_hit;
+    } else if (rng1 < 80) {
+        // glancing
+        calc_dmg = atk_glancing;
+    } else {
+        // miss
+        calc_dmg = atk_miss;
+    }
+
+    // clamp attack damage
+    if (calc_dmg < 0)
+        calc_dmg = 0;
+
+    // now, calculate counter
+    // counter is the damage the defender returns
+    auto counter_ceiling = (calc_dmg + r_stats.atk + def_strength) / 2;
+    auto counter_penalty = 0;
+    auto counter_roll = qran_range(0, counter_ceiling);
+    auto speed_counter_penalty = clamp(speed_advantage, 0, 4);
+    counter_penalty = (atk_strength + speed_counter_penalty) / 2;
+
+    auto counter_dmg = counter_roll - counter_penalty;
+
+    if (atk_advantage < 0) {
+        // defender has an advantage, so counter damage is increased
+        counter_dmg = (4 * counter_dmg) / 3;
+    }
+
+    if (counter_dmg < 0)
+        counter_dmg = 0;
+
+    // log all damage calculation variables
+    mgba_printf(MGBALogLevel.INFO, "atk calc: adv %d, base %d, pool %d, distr %d, rng %d",
+        atk_advantage, base_atk_damage, atk_pool, distr_pool, rng1
+    );
+    mgba_printf(MGBALogLevel.INFO, "atk dmg: miss %d, glancing %d, hit %d, strong %d, crit %d",
+        atk_miss, atk_glancing, atk_hit, atk_strong, atk_crit
+    );
+    mgba_printf(MGBALogLevel.INFO, "ctr dmg: ceil %d, roll %d, penalty %d, dmg %d",
+        counter_ceiling, counter_roll, counter_penalty, counter_dmg
+    );
+
+    ret.main_dmg = calc_dmg;
+    ret.counter_dmg = counter_dmg;
 
     return ret;
 }
@@ -101,7 +201,8 @@ void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver) {
         HostileUnitDuel duel = game_logic_calc_hostile_damage(initiator_pawn, receiver_pawn);
 
         // exchange damage
-        mgba_printf(MGBALogLevel.ERROR, "damage exchanged: atk: %d, ctr: %d", duel.main_dmg, duel.counter_dmg);
+        mgba_printf(MGBALogLevel.ERROR, "damage exchanged: atk: %d, ctr: %d", duel.main_dmg, duel
+                .counter_dmg);
         receiver_pawn.unit_data.hitpoints -= duel.main_dmg;
         initiator_pawn.unit_data.hitpoints -= duel.counter_dmg;
 
