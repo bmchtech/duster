@@ -56,15 +56,19 @@ void update_pawn_move_tween() {
         set_ui_dirty(); // ui dirty
     }
 
-    // check if we are at end of anim
-    if (frame_count >= tween.end_frame) {
-        // done
+    void propagate_move() {
         // propagate real actions
         // set real pos to end
         int pawn_old_pos = board_find_pawn_tile(tween.pawn_gid);
         board_move_pawn(tween.pawn_gid, pawn_old_pos, BOARD_POS(tween.end_pos.x, tween.end_pos.y));
-
         request_step = TRUE; // step
+    }
+
+    // check if we are at end of anim
+    if (frame_count >= tween.end_frame) {
+        // done
+        
+        propagate_move();
 
         move_anim_end();
         return;
@@ -74,7 +78,13 @@ void update_pawn_move_tween() {
 
     // get the assigned sprite
     int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
+    auto pawn = game_get_pawn_by_gid(tween.pawn_gid);
     if (pawn_sprite_ix < 0) {
+        if (pawn.alive) {
+            // if the pawn is alive, we still need to propagate the effect
+            propagate_move();
+        }
+        // end the animation
         move_anim_end();
         mgba_printf(MGBALogLevel.WARN, "canceled move tween for pawn gid: %d, because pawn sprite not found", tween
                 .pawn_gid);
@@ -119,6 +129,12 @@ void update_pawn_flash_tween() {
         set_ui_dirty(); // ui dirty
     }
 
+    void propagate_interact() {
+        // propagate real actions
+        game_logic_interact(cast(pawn_gid_t) tween.initiator_gid, tween.pawn_gid);
+        request_step = TRUE;
+    }
+
     // check if we are at end of anim
     if (frame_count >= tween.end_frame) {
         // done
@@ -129,9 +145,7 @@ void update_pawn_flash_tween() {
         // disable blend
         *REG_BLDY = BLDY_BUILD(0);
 
-        // propagate real actions
-        game_logic_interact(cast(pawn_gid_t) tween.initiator_gid, tween.pawn_gid);
-        request_step = TRUE;
+        propagate_interact();
 
         flash_anim_end();
 
@@ -140,7 +154,13 @@ void update_pawn_flash_tween() {
 
     // get the assigned sprite
     int pawn_sprite_ix = board_get_sprite_for_pawn(tween.pawn_gid);
+    auto pawn = game_get_pawn_by_gid(tween.pawn_gid);
     if (pawn_sprite_ix < 0) {
+        if (pawn.alive) {
+            // if the pawn is alive, we still need to propagate the effect
+            propagate_interact();
+        }
+        // end the animation
         flash_anim_end();
         mgba_printf(MGBALogLevel.WARN, "canceled flash tween for pawn gid: %d, because pawn sprite not found", tween
                 .pawn_gid);
