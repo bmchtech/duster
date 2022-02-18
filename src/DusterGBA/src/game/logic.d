@@ -81,29 +81,29 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
     // this damage is reduced by opponent def stat
     int atk_advantage = atk_strength - def_strength;
     // if the attacker is the same or lower, then the base damage is 0
-    auto base_atk_damage = clamp(atk_advantage, 0, atk_strength);
+    auto atk_dmg_base = clamp(atk_advantage, 0, atk_strength);
     // the denominator of the rng chances
     auto atk_pool = 5;
     // if def is more than 3 levels higher, then pool is doubled
     if (def_strength - atk_strength >= 3) {
         atk_pool *= 2;
     }
-    auto speed_advantage = atk_speed - def_speed;
-    if (speed_advantage <= -2) {
+    auto spd_advantage = atk_speed - def_speed;
+    if (spd_advantage <= -2) {
         // if the attacker is moderately slower, then the base damage is halved
-        base_atk_damage /= 2;
+        atk_dmg_base /= 2;
     }
-    if (speed_advantage >= 4) {
+    if (spd_advantage >= 4) {
         // if the attacker is greatly faster, then the base damage is greatly increased
-        base_atk_damage = (base_atk_damage + 1) * 2;
+        atk_dmg_base = (atk_dmg_base + 1) * 2;
     }
 
     // calculate 5 different attack landings
     auto atk_miss = 0;
-    auto atk_glancing = (2 * base_atk_damage) / 3;
-    auto atk_hit = base_atk_damage;
-    auto atk_strong = (4 * base_atk_damage) / 3;
-    auto atk_crit = (3 * base_atk_damage) / 2;
+    auto atk_glancing = (2 * atk_dmg_base) / 3;
+    auto atk_hit = atk_dmg_base;
+    auto atk_strong = (4 * atk_dmg_base) / 3;
+    auto atk_crit = (3 * atk_dmg_base) / 2;
 
     // since base pool is 5, base distr is 50
     auto distr_pool = atk_pool * 10;
@@ -149,7 +149,7 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
     auto counter_ceiling = (calc_dmg + r_stats.atk + def_strength) / 2;
     auto counter_penalty = 0;
     auto counter_roll = qran_range(0, counter_ceiling);
-    auto speed_counter_penalty = clamp(speed_advantage, 0, 4);
+    auto speed_counter_penalty = clamp(spd_advantage, 0, 4);
     counter_penalty = (atk_strength + speed_counter_penalty) / 2;
 
     auto counter_dmg = counter_roll - counter_penalty;
@@ -163,11 +163,11 @@ HostileUnitDuel game_logic_calc_hostile_damage(Pawn* initiator_pawn, Pawn* recei
         counter_dmg = 0;
 
     // log all damage calculation variables
-    mgba_printf(MGBALogLevel.INFO, "atk calc: adv %d, base %d, pool %d, distr %d, rng %d",
-        atk_advantage, base_atk_damage, atk_pool, distr_pool, rng1
-    );
-    mgba_printf(MGBALogLevel.INFO, "atk dmg: miss %d, glancing %d, hit %d, strong %d, crit %d",
+    mgba_printf(MGBALogLevel.INFO, "atk calc: miss %d, glancing %d, hit %d, strong %d, crit %d",
         atk_miss, atk_glancing, atk_hit, atk_strong, atk_crit
+    );
+    mgba_printf(MGBALogLevel.INFO, "atk dmg: atkadv %d, spdadv %d, base %d, distr %d, roll %d",
+        atk_advantage, spd_advantage, atk_dmg_base, distr_pool, rng1
     );
     mgba_printf(MGBALogLevel.INFO, "ctr dmg: ceil %d, roll %d, penalty %d, dmg %d",
         counter_ceiling, counter_roll, counter_penalty, counter_dmg
