@@ -208,5 +208,6 @@ void game_logic_interact(pawn_gid_t initiator, pawn_gid_t receiver) {
 
         // if hp empty, kill
         game_logic_kill_if_dead(receiver);
+        game_logic_kill_if_dead(initiator);
     }
 }
