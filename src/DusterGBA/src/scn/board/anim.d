@@ -194,10 +194,14 @@ void run_queued_move(QueuedMove* move) {
         animate_pawn_move(move.pawn0, move.start_pos, move.end_pos);
         break;
     case QueuedMoveType.QUEUEDMOVE_INTERACT:
-        sfx_play_interact();
+        bool ally = pawn_util_on_same_team(move.pawn1, move.pawn0);
+        if (ally) {
+            sfx_play_interact_ally();
+        } else {
+            sfx_play_interact_foe();
+        }
         animate_pawn_move(move.pawn0, move.start_pos, move.end_pos);
-        animate_pawn_flash(move.pawn1, move.pawn0,
-            pawn_util_on_same_team(move.pawn1, move.pawn0));
+        animate_pawn_flash(move.pawn1, move.pawn0, ally);
         break;
     default:
         break;

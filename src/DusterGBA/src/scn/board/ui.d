@@ -111,10 +111,14 @@ void on_cursor_click_move(VPos16 dest_pos) {
             // move our pawn to the intermediate
             animate_pawn_move(sel_pawn_gid, cursor_click_pos, interact_itmdt_pos);
             // flash the dest pawn
-            bool is_same_team = pawn_util_on_same_team(sel_pawn_gid, dest_pawn_gid);
-            animate_pawn_flash(dest_pawn_gid, sel_pawn_gid, is_same_team);
 
-            sfx_play_interact();
+            bool ally = pawn_util_on_same_team(sel_pawn_gid, dest_pawn_gid);
+            if (ally) {
+                sfx_play_interact_ally();
+            } else {
+                sfx_play_interact_foe();
+            }
+            animate_pawn_flash(dest_pawn_gid, sel_pawn_gid, ally);
 
             // interact with the pawn
             mgba_printf(MGBALogLevel.INFO, "interact (me: %d) with pawn (%d)", sel_pawn_gid, dest_tile

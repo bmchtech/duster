@@ -69,7 +69,18 @@ void sfx_play_click() {
     mmEffectEx(&sfx);
 }
 
-void sfx_play_interact() {
+void sfx_play_interact_foe() {
+    mm_sound_effect sfx;
+    sfx.handle = 0;
+    sfx.id = SFX_NV01;
+    sfx.rate = (int)(1.0f * (1 << 10));
+    sfx.volume = 255;
+    sfx.panning = 128;
+    // play sound effect
+    mmEffectEx(&sfx);
+}
+
+void sfx_play_interact_ally() {
     mm_sound_effect sfx;
     sfx.handle = 0;
     sfx.id = SFX_DN02;
