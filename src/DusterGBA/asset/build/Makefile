@@ -4,7 +4,7 @@ TOOLS_DIR ?= ../../../tools
 
 IMGS_DIR := ../img
 MAPS_DIR := ../map
-RAWMAPS_DIR := ../rawmap
+RAWBGS_DIR := ../rawbg
 GAMEMAPS_DIR := ../gamemap
 SOUND_DIR := ../snd
 
@@ -14,8 +14,8 @@ ATLS_PNG := $(ATLS_OUT:%_=%_0.png)
 
 IMGS_BIN := $(notdir $(ATLS_PNG:%.png=%.img.bin))
 
-RAWMAPS_SRC := $(shell find $(RAWMAPS_DIR) -name '*.png')
-RAWMAPS_BIN := $(notdir $(RAWMAPS_SRC:%.png=%.img.bin))
+RAWBGS_SRC := $(shell find $(RAWBGS_DIR) -name '*.png')
+RAWBGS_BIN := $(notdir $(RAWBGS_SRC:%.png=%.img.bin))
 
 # MAPS_SRC := $(shell find $(MAPS_DIR) -name '*.tmx')
 # MAPS_BIN := $(notdir $(MAPS_SRC:%.tmx=%.bin))
@@ -33,7 +33,7 @@ GRIT_RMP_BPP := 8
 GRIT_RMP_FLAGS := -gt -p -m -g -gB $(GRIT_RMP_BPP) -gu32 -pu32 -ftb -fh!
 CRUNCH_FLAGS := -p -j -b -s256 -p0
 
-all: $(RAWMAPS_BIN) $(IMGS_BIN) $(SOUND_BIN) $(SOUND_H) $(GAMEMAPS_BIN)
+all: $(RAWBGS_BIN) $(IMGS_BIN) $(SOUND_BIN) $(SOUND_H) $(GAMEMAPS_BIN)
 
 clean:
 	rm -rfv *.bin
@@ -64,7 +64,7 @@ $(ATLS_PNG): $(ATLS_OUT)
 	@true
 
 # rule for building raw maps
-%.img.bin: ../rawmap/%.png
+%.img.bin: ../rawbg/%.png
 	$(call rawmap2grit,1,0,0)
 
 # rule for building soundbank
