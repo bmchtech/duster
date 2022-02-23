@@ -1,10 +1,13 @@
 PATH := $(DEVKITARM)/bin:$(PATH)
 
 TITLE		:= Duster
+VERSION		:= v0.4.3
 
 #  Project settings
 
 NAME		:= $(TITLE)
+ROMREVISION := 0
+
 SOURCE_DIR 	:= src
 LIB_DIR    	:= lib
 TOOLS_DIR	:= ../tools
@@ -62,14 +65,15 @@ else
 endif
 
 # get revision id from git
-REVISIONID := $(shell printf "r%s" "$(shell git rev-parse --short HEAD)")
+GITVERSION_ID := $(shell printf "r%s" "$(shell git rev-parse --short HEAD)")
 # append debug flag if in debug mode
 ifneq ($(DEBUG),0)
-	REVISIONID := $(addsuffix .d$(DEBUG),$(REVISIONID))
+	GITVERSION_ID := $(addsuffix .d$(DEBUG),$(GITVERSION_ID))
 endif
-$(info build id: $(REVISIONID))
+$(info build id: $(GITVERSION_ID))
 
-CFLAGS += -DGAME_BUILD_ID="\"$(REVISIONID)\""
+# add defines for version and git version
+CFLAGS += -DVERSION_ID_DEF="\"$(VERSION)\"" -DGAME_BUILD_ID="\"$(GITVERSION_ID)\""
 
 .PHONY : build clean
 
@@ -118,7 +122,7 @@ $(NAME).gba : $(NAME)-code.gba $(NAME).gbfs
 
 $(NAME)-code.gba : $(NAME).elf
 	$(OBJCOPY) -v -O binary $< $@
-	-@gbafix $@ -t$(NAME)
+	-@gbafix $@ -t$(NAME) -r$(ROMREVISION)
 	padbin 256 $@
 
 $(NAME).elf : $(APP_OBJECTS) $(APP_MAIN_OBJECT)
