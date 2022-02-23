@@ -32,7 +32,7 @@ INCFLAGS := -I$(DUSK_DIR)/include -I$(LIBTONC)/include -I$(DEVKITPRO)/libgba/inc
 LIBFLAGS := -L$(DUSK_DIR)/lib -ldusk -L$(LIBTONC)/lib -ltonc -L$(DEVKITPRO)/libgba/lib -lmm
 ASFLAGS	:= -mthumb-interwork
 CFLAGS	:= $(ARCH) -Wall -Werror -Wno-error=unused-variable -fno-strict-aliasing -mcpu=arm7tdmi -mtune=arm7tdmi $(INCFLAGS) $(LIBFLAGS)
-LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map
+LDFLAGS	:= $(ARCH) $(SPECS) $(LIBFLAGS) -Wl,-Map,$(TITLE).map -Wl,--undefined=DUSK_LIB_VERSION -Wl,--undefined=DUSK_LIB_BUILD
 DFLAGS  := -betterC --defaultlib=no -mtriple=arm-none-eabi -mcpu=arm7tdmi \
 				-mattr=+strict-align,+loop-align\
 				-I$(SOURCE_DIR) \
@@ -73,7 +73,7 @@ endif
 $(info build id: $(GITVERSION_ID))
 
 # add defines for version and git version
-CFLAGS += -DVERSION_ID_DEF="\"$(VERSION)\"" -DGAME_BUILD_ID="\"$(GITVERSION_ID)\""
+CFLAGS += -DVERSION_ID_DEF="\"$(VERSION)\"" -DGAME_BUILD_ID_DEF="\"$(GITVERSION_ID)\""
 
 .PHONY : build clean
 
