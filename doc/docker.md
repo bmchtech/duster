@@ -1,11 +1,18 @@
 
-# docker
+# docker/podman container building
 
-## docker build
+1. clone repository
+2. enter directory of cloned repository
+3. based on container program, follow below instructions
+## docker
 
 ```sh
-git clone --recursive https://github.com/redthing1/duster duster_dockerbuild
-pushd duster_dockerbuild
-docker run -it --rm -v $(pwd):/source --user "$(id -u):$(id -g)" xdrie/dkarm_gba_docker:v0.3 -l -c "pushd . && git submodule update --init --recursive && cd src/DusterGBA && make clean && make build && popd"
-popd
+docker run -it --rm -v $(pwd):/source --user "$(id -u):$(id -g)" xdrie/dkarm_dusk:v0.5 -l -c "pushd . && git submodule update --init --recursive && cd src/DusterGBA && make clean && make build && popd"
+```
+
+## podman (rootless)
+
+```sh
+podman unshare chown "$(id -u):$(id -g)" -R .
+podman run -it --rm -v $(pwd):/source --user "$(id -u):$(id -g)" docker.io/xdrie/dkarm_dusk:v0.5 -l -c "pushd . && git submodule update --init --recursive && cd src/DusterGBA && make clean && make build && popd"
 ```
