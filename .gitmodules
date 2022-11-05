@@ -13,3 +13,6 @@
 [submodule "lib/libtonc"]
 	path = lib/libtonc
 	url = https://github.com/redthing1/libtonc
+[submodule "src/tools/retiler"]
+	path = src/tools/retiler
+	url = https://github.com/redthing1/retiler
