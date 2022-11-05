@@ -1,0 +1,17 @@
+name: D
+
+on: push
+
+permissions:
+  contents: read
+
+jobs:
+  build-redbuild:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: 'redbuild'
+      run: |
+        ./redbuild.sh
