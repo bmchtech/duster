@@ -53,8 +53,5 @@ RUN curl -fsS https://dlang.org/install.sh | bash -s install ldc-1.30.0 \
 
 WORKDIR /source
 
-
 # set up main to run bash
-ENTRYPOINT ["/bin/bash"]
-# default arguments to run inside bash
-CMD ["-l", "-c", "cd /prj && pushd . && git submodule update --init --recursive && cd src/DusterGBA && make clean && make build && popd"]
+CMD ["/bin/bash", "-l"]
