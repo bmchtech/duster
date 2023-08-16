@@ -147,12 +147,13 @@ $(NAME).gbfs: assets
 	gbfs $@ $(shell find $(DATA_DIR) -name '*.bin')
 
 clean:
-	@rm -fv *.gba
-	@rm -fv *.elf
-	@rm -fv *.map
-	@rm -fv *.sav
-	@rm -fv *.gbfs
-	@rm -rf $(APP_OBJECTS)
-	@rm -rf $(APP_MAIN_OBJECT)
+	@rm -vf *.gba
+	@rm -vf *.elf
+	@rm -vf *.map
+	@rm -vf *.sav
+	@rm -vf *.gbfs
+	@rm -rvf $(APP_OBJECTS)
+	@rm -rvf $(APP_MAIN_OBJECT)
+	@rm -rvf $(TOOLS_DIR)/bin/*
 	cd $(DUSK_DIR) && make clean
 	cd asset/build && make clean
