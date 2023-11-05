@@ -1,4 +1,4 @@
-name: redbuild
+name: redbuild v2
 on: [ push, pull_request ]
 jobs:
   build-redbuild:
